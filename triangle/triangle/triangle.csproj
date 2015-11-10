@@ -35,7 +35,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FunTr.cs" />
+    <Compile Include="RightTr.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
