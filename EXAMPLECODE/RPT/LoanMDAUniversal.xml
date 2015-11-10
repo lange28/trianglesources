@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.RPT.LoanMDAUniversal">
+<Description>
+Печатная форма: договор MDA универсальный</Description>
+<IncludeCode>EMCConst,EMCReport,ApplicationSettingsConst</IncludeCode>
+<Super>%CSP.SessionEvents,%CSP.Page</Super>
+<TimeCreated>62509,50155.030969</TimeCreated>
+
+<Method name="OnPage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.RPT.LoanMDAUniversal","WebForm","OnClick",1,"Печатная форма: договор MDA универсальный")
+	// Подготовка данных для вывода на печать
+	s TextMessage=..GetData(.Parameters)
+	// В случае проблем подготовки данных
+	i TextMessage'="" {
+	&html<
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+	<html><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+	<title></title>
+	<body>#(TextMessage)#</body></html>
+	</html>>
+	q $$$OK
+	}
+	// Вывод отчета
+	&html<
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+<title></title>
+<style type="text/css"><!-- 
+.page_break {page-break-before: always;}
+.s0 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Top;
+}
+.s1 {
+ font-family: Times New Roman;
+ font-size: 12px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+.s2 {
+ font-family: Times New Roman;
+ font-size: 12px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Top;
+}
+.s3 {
+ font-family: Times New Roman;
+ font-size: 12px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Justify; vertical-align: Top;
+}
+.s4 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Top;
+}
+.s5 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+.s6 {
+ font-family: Arial;
+ font-size: 1px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 1;
+ border-bottom-width: 0px;
+ text-align: Left; vertical-align: Top;
+}
+.s7 {
+ font-family: Arial;
+ font-size: 11px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+--></style>
+</head>
+<body onload="printpage()"
+ bgcolor="#FFFFFF" text="#000000">
+  <script language="Javascript1.2">
+	function printpage()
+	{
+		window.print();
+	}
+	</script>
+<a name="PageN1"></a>
+<table width="682" border="0" cellspacing="0" cellpadding="0">
+<tr style="height: 1px"><td width="7"/><td width="4"/><td width="16"/><td width="20"/><td width="3"/><td width="48"/><td width="137"/><td width="16"/><td width="88"/><td width="20"/><td width="27"/><td width="22"/><td width="108"/><td width="81"/><td width="8"/><td width="65"/><td width="10"/><td width="1"/></tr>
+<tr style="height:18px">
+<td colspan="17" class="s0">ДОГОВОР ЗАЙМА № #(Parameters("Value","lSysCode"))#</td><td/>
+</tr>
+<tr style="height:33px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:5px">
+<td colspan="6" rowspan="3" class="s1">г. #(Parameters("Value","lSity"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:16px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="3" class="s2">#(Parameters("Value","lDate"))#</td><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:16px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:66px">
+<td colspan="17" class="s3">Микрофинансовая организация #(Parameters("Value","lOrganisation"))#, в лице #(Parameters("Value","lFIO"))# ,именуемая  в дальнейшем  «Займодавец» с одной стороны, и #(Parameters("Value","lClientsFIO"))#, именуемый(ая) в дальнейшем «Заемщик», с другой стороны, вместе именуемые Стороны заключили настоящий договор о нижеследующем:</td><td/>
+</tr>
+<tr style="height:21px">
+<td colspan="17" class="s4">1. Предмет договора</td><td/>
+</tr>
+<tr style="height:1px">
+<td colspan="17" rowspan="2" class="s3">1.1. Займодавец предоставляет Заемщику в собственность денежные средства в размере #(Parameters("Value","lLoanSum"))# (#(Parameters("Value","lLoanSumProp"))# рублей (далее – сумма займа), со сроком возврата не позднее #(Parameters("Value","lEndDate"))# <br>
+1.2. За пользование займом Заемщик уплачивает Займодавцу проценты из расчета #(Parameters("Value","lPerc"))# в #(Parameters("Value","lPercType"))# от суммы займа.<br> 
+1.3. Заем  по настоящему договору не является целевым.</td>
+<td/>
+</tr>
+<tr style="height:66px">
+<td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:22px">
+<td colspan="17" class="s4">2. Порядок предоставления займа, его возврата и уплаты процентов по нему</td><td/>
+</tr>
+<tr style="height:80px">
+<td colspan="17" class="s3">2.1. Займодавец предоставил Заемщику сумму займа указанную в п. 1.1 настоящего договора, наличными денежными средствами в день подписания настоящего договора. Передача суммы займа Заёмщику подтверждается подписанием сторонами расходного кассового ордера.<br>
+2.2. Проценты за пользование Займом начисляются, со дня подписания настоящего договора и по день возврата займа включительно (п.1.2.).<br>
+2.3. Сумма займа и начисленные проценты  возвращаются Заемщиком в порядке, установленном графиком платежей, являющимся неотъемлемой частью настоящего Договора (Приложение № 1).</td><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:22px">
+<td colspan="17" class="s4">3. Права и обязанности сторон</td><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:319px">
+<td colspan="17" class="s3">3.1. Займодавец обязан:<br>
+3.1.1. Предоставить Заемщику сумму займа в день подписания настоящего договора.<br>
+3.1.2. Предоставлять Заемщику полную и достоверную информацию о порядке и об условиях предоставления займа, включая информацию о всех платежах, связанных с получением, обслуживанием и возвратом займа.<br>
+3.2. Займодавец вправе:<br>
+3.2.1. Информировать Заемщика о наличии просрочек по возврату суммы займа, уплате процентов за пользование займом и неустоек.<br>
+3.2.2.Начислять проценты за пользование заемными средствами и пени (неустойку) за несвоевременное возврат суммы займа и начисленных процентов за пользование займом.<br>
+3.2.3. Требовать от Заемщика досрочного возврата суммы займа, выплаты  причитающихся  процентов за пользование займом и уплаты пени  в  случае невыплаты и/или несвоевременной выплаты процентов и суммы займа.<br>
+3.2.4. Переуступить право требования по настоящему Договору, в т.ч. суммы займа, начисленных процентов и неустоек (пени), без согласия Заемщика третьим лицам.<br>
+3.2.5. Займодавец вправе отказать Заемщику в продлении срока займа.<br> 
+3.3. Заемщик обязан возвратить сумму займа, уплатить проценты, начисленные за пользование Займом, а также уплатить пени (при возникновении)  в порядке и сроки, предусмотренные настоящим договором.<br>
+3.4. Заемщик вправе произвести возврат займа или части займа досрочно, путем подачи Заявления при согласии Займодавца.<br> 
+3.4.1.При отсутствии Заявления о досрочном возврате займа (части займа),  сумма, перечисленная сверх начисленной к уплате, засчитывается в счет погашения процентов за следующий период.<br>
+3.5. В случае досрочного погашения займа полностью, проценты начисляются за фактическое время пользования займом, но не менее чем за 7 (семь) календарных дней включительно.<br> 
+3.6. В случае досрочного возврата части задолженности по займу, сумма досрочного платежа засчитывается в следующем порядке:<br>
+- на погашение начисленных пени;<br>
+- на погашение процентов за пользование займом;<br>
+- на погашения суммы основного долга.<br>
+3.7. При досрочном возврате части задолженности по займу, Заемщик и Займодавец подписывают новый График платежей.<br>
+3.8. Срок, указанный в п. 1.1. настоящего договора, может быть продлен по соглашению сторон, путем заключения Дополнительного соглашения и уплаты всей суммы процентов начисленных за пользование Займом, в соответствии с Графиком платежей на дату подписания Дополнительного соглашения. <br>
+3.9. Заемщик обязуется предоставить «Займодавцу» достоверные личные данные необходимые для заполнения Заявления-Анкеты на предоставление займа.<br>
+3.10. Заемщик согласен с условиями и способами погашения займа и начисленных процентов, с порядком начисления процентов за пользование денежными средствами, с последствиями пропуска, установленного настоящим договором, срока возврата "Суммы займа" и процентов, что подтверждается подписанием Заемщиком Заявки на предоставление займа.</td><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:27px">
+<td colspan="17" class="s4">4. Ответственность сторон</td><td/>
+</tr>
+<tr style="height:3px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:99px">
+<td colspan="17" class="s3">4.1. В случае   не возврата  в срок суммы займа и причитающихся  процентов за пользование займом Заемщик  уплачивает «Займодавцу» пени (неустойку)  в  размере  #(Parameters("Value","ProcPros"))# % от суммы займа за каждый  день просрочки. Неустойка начисляется до даты возврата суммы займа и уплаты начисленных процентов.  Уплата  неустойки  не освобождает Заемщика от выплаты займа и процентов за пользование займом.<br>
+4.2. В случаях, не предусмотренных настоящим договором, имущественная ответственность определяется в соответствии с действующим законодательством РФ. </td><td/> 
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:70px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td colspan="6" class="s6" style="font-size:1px"><span style="font-size:1px">.</span>
+</td><td/><td/><td/>
+<td colspan="6" class="s6" style="font-size:1px"><span style="font-size:1px">.</span>
+</td><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td colspan="8" rowspan="2" class="s7">Подпись.Займодавец</td><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:26px">
+<td/><td/><td colspan="8" class="s7">Подпись.Заемщик.</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:27px">
+<td colspan="17" class="s4">5. Обстоятельства непреодолимой силы (форс-мажор)</td><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:115px">
+<td colspan="17" class="s3">5.1. Сторона, не исполнившая или ненадлежащим образом исполнившая какое-либо обязательство по настоящему договору, несет ответственность, если не докажет, что надлежащее исполнение оказалось невозможным вследствие непреодолимой силы, то есть чрезвычайных и непредотвратимых при данных условиях обстоятельств, непосредственно влияющих на возможность такой Стороны исполнять свои обязательства по настоящему договору.<br>
+5.2. Сторона, затронутая форс-мажорными обстоятельствами, должна в срок не более 48-ми часов уведомить другую сторону о возникновении, виде и возможной продолжительности действия форс-мажорных обстоятельств, которые препятствуют исполнению Договора.<br> 
+5.3.  Наступление форс-мажорных обстоятельств при условии соблюдения требований, предусмотренных п.п. 5.1 и 5.2 настоящего Договора, продлевает срок исполнения договорных обязательств на период, который в целом соответствует сроку действия наступившего обстоятельства.<br>
+5.4.Подтверждением наличия и продолжительности форс-мажорных обстоятельств является соответствующий документ, выданный уполномоченным органом</td><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:27px">
+<td colspan="17" class="s4">6. Разрешение споров, прекращение договора</td><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:99px">
+<td colspan="17" class="s3">6.1. Возникшие в рамках настоящего договора споры и разногласия разрешаются путем переговоров Исковые требования  Займодавца к  Заемщику о возврате сумм займа, начисленных процентов и неустойки  рассматриваются в суде по месту нахождения «Займодавца».<br>
+6.2. Претензионный порядок досудебного урегулирования споров из настоящего договора не является для Сторон обязательным.<br>
+6.3. Претензионные письма  направляются Сторонами почтовым отправлением по местонахождению Сторон, указанным в п. 8 настоящего договора. Направление Сторонами претензионных писем иным способом не допускается.<br>
+6.4. Срок рассмотрения претензионного письма составляет не более 5(пяти) рабочих дней со дня получения последнего адресатом.<br>
+6.5. Претензионное письмо, отправленное по последнему известному местонахождению Стороны, считается доставленным, даже если адресат по этому адресу более не проживает или не находится, а также при отказе адресата принять претензионное письмо.</td><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:23px">
+<td colspan="17" class="s4">7. Заключительные положения</td><td/>
+</tr>
+<tr style="height:5px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:257px">
+<td colspan="17" class="s3">7.1. Условия настоящего договора являются конфиденциальными. Ни одна из Сторон не будет передавать третьим лицам информацию относительно действительных условий или порядка выполнения настоящего договора, кроме случаев, предусмотренных законодательством Российской Федерации.<br>
+7.2. Заемщик дает согласие на обработку указанных в целях исполнения настоящего Договора персональных данных (с использованием средств автоматизации или без использования таких средств), представленных Заемщиком любыми способами, предусмотренными действующим законодательством РФ (включая сбор, систематизацию, накопление, хранение, уточнение (обновление, изменение), использование, в т.ч. для рассылки и получения SMS-сообщений; для автоматических голосовых сообщений (автодозвон) на номера стационарной телефонной связи; распространение, в том числе передачу третьим лицам в целях обработки персональных данных, обезличивание, блокирование, уничтожение персональных данных)), в целях направления указанным лицом (или третьими лицами)  в целях продвижения товаров, работ, услуг на рынке, сообщений о новостях (в т.ч.  акциях, скидках, открытиях, дисконтных программах, специальных предложениях), направления поздравлений с днем рождения и иных праздничных дат. Указанное согласие действует в течение пяти лет. Согласие на обработку персональных данных может быть отозвано Заемщиком путем направления уведомления об отзыве заказным письмом.<br> 
+Заемщик дает  согласие на направление информации о положительной или отрицательной кредитной истории Заемщика в Бюро кредитных историй в соответствии с Федеральным Законом № 218-ФЗ.<br>
+7.3. Заемщик гарантирует, что заключает настоящий договор не под влиянием обмана, насилия, угрозы, злонамеренного соглашения представителя одной стороны с другой стороной, не вследствие стечения тяжелых обстоятельств на крайне невыгодных для себя условиях, чем другая сторона воспользовалась (кабальная сделка) и не с целью заведомо противной основам правопорядка и нравственности. Заемщик гарантирует, что является полностью дееспособным, полностью понимает содержание условий настоящего договора и возможные последствия для него, связанные с неисполнением или несвоевременным исполнением условий настоящего договора.<br>
+7.4. Заемщик гарантирует, что денежные средства, предоставляемые  по настоящему договору, не будут использованы Заемщиком для финансирования терроризма, организованной преступной группы, незаконного вооруженного формирования, преступного сообщества и прочей деятельности, запрещенной на территории Российской Федерации. 
+7.5. Любые изменения и дополнения к настоящему договору действительны при условии, что они совершены в письменной форме и подписаны сторонами.<br>
+7.6. Стороны обязуются немедленно письменно извещать друг друга в случае изменения сведений, указанных в п. 8 настоящего договора.<br>
+7.7. Настоящий договор вступает в силу с момента передачи Заемщику суммы займа и действует до полного исполнения сторонами обязательств.</td><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:22px">
+<td colspan="17" class="s4">8. Адреса и реквизиты сторон</td><td/>
+</tr>
+<tr style="height:8px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="4" rowspan="2" class="s0">Заемщик</td><td/><td/><td/>
+</tr>
+<tr style="height:16px">
+<td/><td/><td/><td colspan="5" rowspan="2" class="s0">Займодавец</td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:7px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td colspan="8" rowspan="2" class="s5">#(Parameters("Value","lOrganisation"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:26px">
+<td/><td/><td colspan="8" class="s1">#(Parameters("Value","lClientsFIO"))#</td>
+<tr style="height:11px">
+<td/><td colspan="8" rowspan="2" class="s5">Телефон: #(Parameters("Value","lOrgPhone"))#</td><td/>
+</tr>
+<tr></tr>
+</tr>
+<tr style="height:10px">
+<td/><td colspan="8" rowspan="5" class="s1">Адрес: #(Parameters("Value","lOrgAddress"))#</td>
+<td/><td colspan="8" rowspan="3" class="s1">Дата рождения: #(Parameters("Value","lClientsBirthDay"))#</td>
+</tr>
+<tr style="height:1px">
+<td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td colspan="8" rowspan="2" class="s1">Паспорт серия/номер: #(Parameters("Value","lPassportNumber"))#</td>
+</tr>
+<tr style="height:1px">
+<td/><td colspan="8" rowspan="3" class="s1">ИНН/КПП:  #(Parameters("Value","lINNKPP"))#</td><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td colspan="8" rowspan="4" class="s1">Кем выдан: #(Parameters("Value","lPassportIssue"))#</td>
+</tr>
+<tr style="height:17px">
+<td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:19px">
+<td/><td colspan="8" class="s1">ОГРН: #(Parameters("Value","lOGRN"))#</td><td/>
+</tr>
+<tr style="height:15px">
+<td/><td colspan="8" rowspan="3" class="s1">Расчетный счет:  #(Parameters("Value","lRS"))#<br>#(Parameters("Value","lBank"))#</td><td/><td colspan="8" class="s1">Дата выдачи: #(Parameters("Value","lPassportDateIssue"))#</td>
+</tr>
+<tr style="height:15px">
+<td/><td/><td colspan="8" class="s1">Код подразделения: #(Parameters("Value","lPassportCode"))#</td>
+</tr>
+<tr style="height:2px">
+<td/><td/><td colspan="8" rowspan="3" class="s1">Телефон: #(Parameters("Value","laPhoneMobile"))#</td>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:11px">
+<td/><td colspan="8" rowspan="3" class="s1">Корр.счет:  #(Parameters("Value","lKS"))#</td><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td colspan="8" rowspan="3" class="s1">E-mail: #(Parameters("Value","laEMail"))#</td>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:11px">
+<td/><td colspan="8" rowspan="2" class="s1">БИК: #(Parameters("Value","lBIK"))#</td><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:29px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td colspan="6" class="s6" style="font-size:1px"><span style="font-size:1px">.</span>
+</td><td/><td/><td/>
+<td colspan="6" class="s6" style="font-size:1px"><span style="font-size:1px">.</span>
+</td><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td colspan="8" rowspan="2" class="s7">Подпись.Займодавец</td><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:26px">
+<td/><td/><td colspan="8" class="s7">Подпись.Заемщик.</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:13px">
+<td/><td/><td colspan="2" rowspan="3" class="s7">М. П.</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+</table>
+</body></html>
+>
+ Quit $$$OK
+]]></Implementation>
+</Method>
+
+<UDLText name="T">
+<Content><![CDATA[
+// Подготовка данных для вывода в отчете
+
+]]></Content>
+</UDLText>
+
+<Method name="GetData">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&Parameters]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	// Инициализация данных
+	s Parameters("Value","lSysCode")=" "
+	s Parameters("Value","lSity")=" "
+	s Parameters("Value","lDate")=" "
+	s Parameters("Value","lOrganisation")=" "
+	s Parameters("Value","lWarrant")=" "
+	s Parameters("Value","lFIO")=" "
+	s Parameters("Value","lDateWarrant")=" "
+	s Parameters("Value","lClientsFIO")=" "
+	s Parameters("Value","lLoaSum")=" "
+	s Parameters("Value","lLoaSumProp")=" "
+	s Parameters("Value","lEndDate")=" "
+	s Parameters("Value","lPerc")=" "
+	s Parameters("Value","lPercType")=" "
+	s Parameters("Value","lMinPeriod")=" "
+	s Parameters("Value","lMinPeriodProp")=" "
+	s Parameters("Value","lEdIzm")=" "
+	s Parameters("Value","ProcPros")=" "
+	s Parameters("Value","lOrgAddress")=" "
+	s Parameters("Value","lINNKPP")=" "
+	s Parameters("Value","lOGRN")=" "
+	s Parameters("Value","lRS")=" "
+	s Parameters("Value","lBank")=" "
+	s Parameters("Value","laPhoneMobile")=" "
+	s Parameters("Value","lKS")=" "
+	s Parameters("Value","laEMail")=" "
+	s Parameters("Value","lBIK")=" "
+    
+    s Parameters("Value","lLoanSum")=" "
+    s Parameters("Value","lLoanSumProp")=" "
+    s Parameters("Value","lEndDate")=" "  
+    
+    s Parameters("Value","lClientsBirthDay")=" "
+
+    s Parameters("Value","lPassportNumber")=" "
+    s Parameters("Value","lPassportIssue")=" "
+    s Parameters("Value","lPassportDateIssue")=" "
+    s Parameters("Value","lPassportCode")=" "
+    
+    s Parameters("Value","lOrgPhone")=" " 	
+
+
+    //для теста
+    //s ID=##class(Docs.Loan).OpenSysCode("1211231011070001").%Id()
+	s ID=$g(%request.Data("ID",1))
+	i ID="" q "Не задан ID договора"
+ 	s obj=##class(Docs.Loan).%OpenId(ID)
+	i '$IsObject(obj) q "Не найден договор, ID="_ID
+	try {
+		s res=..InitData(ID,.Parameters)
+	} catch ex {
+		s res="Параметры типа договора не соответствуют ожидаемым в печатной форме."
+	}
+	q res
+]]></Implementation>
+</Method>
+
+<Method name="InitData">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[id="",&Parameters]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+ i id="" q "Не задан ID договора"
+ s obj=##class(Docs.Loan).%OpenId(id)
+ i '$IsObject(obj) q "Не найден договор, ID="_id
+ d OnGetWEBVariables^prtLoanExpress1(id,.Parameters)
+ q ""
+]]></Implementation>
+</Method>
+</Class>
+</Export>

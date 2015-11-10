@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.LoanCashOrderEdit">
+<Description>
+Форма для возврата переплаты</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62731,45070.109884</TimeCreated>
+
+<Property name="LoanID">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="LoanID"/>
+</Property>
+
+<Parameter name="JSINCLUDES">
+<Type>STRING</Type>
+<Default>jquery.js,jquery.maskedinput-1.2.2.js</Default>
+</Parameter>
+
+<XData name="Style">
+<Data><![CDATA[
+<style type="text/css">
+
+#userControls {
+	height: 200px;
+	overflow: auto;
+}
+
+.required {
+}
+.required:after {
+	color: red;
+	content: " *";
+}
+/*перебиваем дефолтное межстрочное растояние между контролами*/
+.zendiv {
+	padding-bottom: 5px;
+}
+/*в группе платежного калькулятора изменем дефолт по межстрочному отступу*/
+#frmCalc .zendiv {
+	padding-bottom: 1px;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page id="page" title="Возврат переплаты" xmlns="http://www.intersystems.com/zen">
+<titleBox id="titlePageHeader" title="" subtitle=""/>
+<fieldSet>
+<hgroup labelPosition="left" align="right">
+<dateText id="edtPDate" controlClass="dateMask" label="Дата операции" onchange="zenPage.dedtDateChange();"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="edtLoan" label="Договор" size="60" readOnly="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="edtPassport" label="Паспорт заемщика" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<combobox id="cmbType" label="Способ возврата" size="60"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="edtPOfficeID" label="Точка обсл. клиента" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="edtPCashier" label="Кассир" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="edtOverpayInfo" label="Сумма переплаты в наличии" size="10" disabled="true"/>
+<spacer width="20"/>
+<text id="edtPSumm" label="Сумма к возврату" size="10"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="edtComment" label="Комментарий к операции" size="60"/>
+</hgroup>
+<hgroup labelPosition="top" align="right">
+<textarea id="memoInfo" label="Отчет о выполнении операции" cols="47" rows="7"/>
+</hgroup>
+<hgroup labelPosition="top" align="right">
+<label id="GLabelTrInfo"/>
+</hgroup>
+<hgroup align="right">
+<button id="btnExec" caption="Выполнить операцию"  align="center" onclick="zenPage.btnExecClick();"/>
+<button id="btnCancel" caption="Выход" align="right" onclick="zenPage.cancelPopup();"/>
+</hgroup>
+</fieldSet>
+</page>
+]]></Data>
+</XData>
+
+<Method name="%DrawJSStrings">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pVisited:%String]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	d ##super()
+	&js<$(function()
+		{
+			$.mask.definitions['~']='[+-]';
+			$('.dateMask').mask('99-99-9999');
+		})
+		>
+	q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.LoanCachOrderEdit","WebForm","OnClick",1,"Форма для возврата переплаты")
+	set ^a= $zdt($h)_" ERROR"
+	set c=..%GetComponentById("titlePageHeader")
+	set c.subtitle=##class(Application.TE.Utils).GetConnStr()
+	
+	//только для формы возврата переплаты
+	set id = ""
+	set ReadOnly = ""
+	set Type = $lb($$$lcoCashOverPayRet,$$$lcoAcntOverPayRet)
+	
+	set LoanID = ##class(Docs.Loan).%OpenId(..LoanID)
+	if $IsObject(LoanID)
+	{
+		set res = ##class(Actions.Execs.TE.ExecOverPayRet).CheckLoanState(LoanID)
+		if $$$ISERR(res) set Err=$system.Status.GetErrorText(res) /*&js<alert('#(Err)#')>*/ quit $$$OK
+		if $IsObject(LoanID.lRegOverPay)&&(LoanID.lRegOverPay.GetBalance(1)<=0)
+		{
+			set ErrText = "По договору №"_LoanID.SysCode_" нет переплаты"
+			//&js<alert('#(Err)#')>
+			quit $$$OK
+		}
+	}
+	if id
+	{
+		set obj=##class(Docs.LoanCashOrder).%OpenId(id)
+		//set %session.Data("ID") = id
+	}
+	else
+	{
+		;дефолтное заполнение для новой записи
+		set obj=##class(Docs.LoanCashOrder).%New()
+		set:$ll(Type)=1 obj.lcoType=$lg(Type)
+		;точка обслуживания
+		set user = ##class(System.TAccount).GetSessionAccount()
+		set sc = ##class(BL.Subj.Office).GetCurrentOffice(user.%Id(),.offID)
+		set:offID obj.lcoOfficeID=##class(Subj.Office).%OpenId(offID)
+		// Кассир
+		set obj.lcoCashierID = ##class(BL.Subj.Employee).GetCurrentEmployee()
+		set obj.lcoLoanID = LoanID
+		set %session.Data("ID") = ..LoanID
+	}
+	if '$IsObject(obj)
+	{
+		set ErrText = "Ошибка открытия/создания объекта Docs.LoanCashOrder ID="_id
+		//&js<alert('#(ErrText)#')>
+		quit $$$OK
+	}
+	set:obj.lcoExecuted ReadOnly = 1 ;запрет редактирования проведенных
+	set caption = $s(id&&('ReadOnly):"Редактирование",'id:"Новая запись",1:"Просмотр")
+	set caption = $s(obj.lcoType = $$$lcoCashOverPayRet:"Возврат денежных средств клиенту с переплаты",
+		obj.lcoType=$$$lcoAcntOverPayRet:"Возврат денежных средств клиенту с переплаты",1:"")_". "_caption
+	//set ..%GetComponentById("page").title = caption
+	; запомнинамем в памяти формы редактируемый объект, чтобы далее не считывать его в остальных обработчиках
+	//set %session.Data("OBJ") = obj
+	set %session.Data("Lock") = $g(LockStr)
+	set %session.Data("ReadOnly") = ReadOnly
+	set %session.Data("Type") = Type
+	set:$IsObject(LoanID) %session.Data("LoanID") = LoanID.%Id()
+	do ..fillCmbType()
+	do ..fillForm(obj)
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="fillCmbType">
+<Implementation><![CDATA[
+	set cnt = 0
+	set filter = $g(%session.Data("Type"))
+	set ref = ##class(%Dictionary.PropertyDefinition).%OpenId("Docs.LoanCashOrder||lcoType")
+	if '$IsObject(ref) quit
+	set value = ref.Parameters.GetAt("VALUELIST")
+	set displ = ref.Parameters.GetAt("DISPLAYLIST")
+	set (valueList,displayList) = ""
+	for i=2:1:$l(value,",")
+	{
+		if $ll(filter)&&('$lf(filter,(i-2))) CONTINUE
+		set newVal = $p(value,",",i)
+		set valueList = valueList_$s(valueList'="":",",1:"")_(i-2)_"~"_newVal
+		set newVal = $p(displ,",",i)
+		set displayList = displayList_$s(displayList'="":",",1:"")_newVal
+		set l(i-2) = ""
+		set cnt = cnt+1
+	}
+	set tCombo = ..%GetComponentById("cmbType")
+	set tCombo.valueList = valueList
+	set tCombo.displayList = displayList
+	/*set obj = %session.Data("OBJ")
+	if $IsObject(obj)&&(obj.lcoType)&&('$d(l(obj.lcoType))) $$$SetProp(%W,"cmbType.Items.Add",obj.lcoType_"~"_obj.lcoTypeLogicalToDisplay(obj.lcoType))*/
+	if cnt = 1 set ..%GetComponentById("cmbType").disabled = 1
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="fillForm">
+<FormalSpec>obj:Docs.LoanCashOrder</FormalSpec>
+<Implementation><![CDATA[
+	//set obj = %session.Data("OBJ")  ; всегда заполненно, контроль заполнения стоит в ..Open(
+	set ..%GetComponentById("edtPDate").value = $s(obj.lcoDate:$zd(obj.lcoDate,3),1:"")
+	set ..%GetComponentById("edtPSumm").value = +obj.lcoSumm
+	set ..%GetComponentById("memoInfo").value = obj.Info
+	if $IsObject(obj.lcoCashierID) set ..%GetComponentById("edtPCashier").value = obj.lcoCashierID.sePersonID.ObjectName
+	do ..fillLoanInfo(obj)
+	set id = +obj.%Id()
+	set scActive = $$$scActive
+	set am = $$$teAcntOSN
+	&sql(select id into :operID from Data_TE.Oper where dteoxMainDoc=:id and Status=:scActive and dteoxType->TOTxAcntModule=:am)
+	if 'SQLCODE
+	{
+		set ..%GetComponentById("GLabelTrInfo").hidden = 0
+		set count = ##class(BL.TE.Oper).sGetTrQnt(operID)
+		if count
+		{
+			set str = "Проводок: "_(+count)_"шт."
+			set ..%GetComponentById("GLabelTrInfo").value = str
+		}
+		else
+		{
+			set ..%GetComponentById("GLabelTrInfo").hidden = 1
+		}
+	}
+	else
+	{
+		set ..%GetComponentById("GLabelTrInfo").hidden = 1
+	}
+	if $IsObject(obj.lcoOfficeID)
+	{
+		set ..%GetComponentById("edtPOfficeID").value = obj.lcoOfficeID.ObjectName
+	}
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="SetControls">
+<Implementation><![CDATA[
+	set obj = ##class(Docs.LoanCashOrder).%OpenId(%session.Data("ID")) ; всегда заполненно, контроль заполнения стоит в ..Open(
+	if obj.%Id()
+	{
+		set ..%GetComponentById("cmbType").disabled = 1
+	}
+	if $g(%W("Obj").Data("LoanID"))
+	{
+		set ..%GetComponentById("edtLoan").disabled = 1
+		//set ..%GetComponentById("").hidden = 
+		//$$$SetProp(%W,"BOK.Visible",$$$False)
+	}
+	if obj.lcoType=$$$lcoAcntOverPayRet
+	{
+		set ..%GetComponentById("edtPOfficeID").hidden = 1
+		set ..%GetComponentById("edtPCashier").hidden = 1
+	}
+	if obj.lcoType=$$$lcoCashOverPayRet
+	{
+		set ..%GetComponentById("edtPOfficeID").hidden = 0
+		set ..%GetComponentById("edtPCashier").hidden = 0
+	}
+	if obj.lcoExecuted
+	{
+		set ..%GetComponentById("edtOverpayInfo").hidden = 1
+	}
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="fillLoanInfo">
+<FormalSpec>obj:Docs.LoanCashOrder</FormalSpec>
+<Implementation><![CDATA[
+	//set obj = %session.Data("OBJ")  ; всегда заполненно, контроль заполнения стоит в ..Open(
+	if $IsObject(obj.lcoLoanID)
+	{
+		set ..%GetComponentById("edtLoan").value = obj.lcoLoanID.BL.ToString()
+		if $IsObject(obj.lcoLoanID.lRegOverPay) set ..%GetComponentById("edtOverpayInfo").value = obj.lcoLoanID.lRegOverPay.GetBalance(1)
+		if $IsObject(obj.lcoLoanID.lLoanAppID.laPassportID) set ..%GetComponentById("edtPassport").value = obj.lcoLoanID.lLoanAppID.laPassportID.BL.ToString()
+	}
+	else
+	{
+		set ..%GetComponentById("edtLoan").value = ""
+		set ..%GetComponentById("edtOverpayInfo").value = ""
+		set ..%GetComponentById("edtPassport").value = ""
+	}
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="fillCard">
+<FormalSpec><![CDATA[card:Docs.LoanCashOrder,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	set flagExecute = 1
+	set str = ..%GetComponentById("edtPDate").value
+	if str = "" set ErrText = $g(ErrText)_"Дата операции\n"
+	else  set card.lcoDate = $zdh(str,3)
+	;
+	if '$IsObject(card.lcoLoanID) set ErrText = $g(ErrText)_"Договор займа\n"
+	;
+	set str = ..%GetComponentById("cmbType").selectedIndex
+	if (str<0) set ErrText = $g(ErrText)_"Способ возврата\n"
+	set card.lcoType = +str
+	;
+	/*set hid = ..%GetComponentById("edtPOfficeID").hidden
+	if (hid=0)
+	{
+		if '$IsObject(card.lcoOfficeID) set ErrText = $g(ErrText)_"Точка обслуживания\n"
+	}
+	else
+	{
+		set card.lcoOfficeID = ""
+	}*/
+	set user = ##class(System.TAccount).GetSessionAccount()
+	set sc = ##class(BL.Subj.Office).GetCurrentOffice(user.%Id(),.offID)
+	set:offID card.lcoOfficeID = ##class(Subj.Office).%OpenId(offID)
+	;
+	// кассир
+	/*
+	set hid = ..%GetComponentById("edtPCashier").hidden
+	if hid=0
+	{
+		if '$IsObject(card.lcoCashierID) set ErrText = $g(ErrText)_"Кассир\n"
+	}
+	else
+	{
+		set card.lcoCashierID = ""
+	}
+	;*/
+	set card.lcoCashierID = ##class(BL.Subj.Employee).GetCurrentEmployee()
+	set str = ..%GetComponentById("edtPSumm").value
+	if ('str)&&(flagExecute) set ErrText=$g(ErrText)_"Сумма к возврату\n"
+	set card.lcoSumm = +str
+	;
+	set str = ..%GetComponentById("memoInfo").value
+	set card.Info = $tr(str,$c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20))
+	;
+	quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="showErrFillControls">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ErrText:%String="",ControlList:%List=""</FormalSpec>
+<Implementation><![CDATA[
+	if ErrText'="" s ErrText="Не заполнены следующие поля:\n"_ErrText
+	&js<alert('#(ErrText)#');>
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="btnExecClick">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	//жесткий быдлокод
+	set obj=##class(Docs.LoanCashOrder).%New()
+	//точка обслуживания
+	set user = ##class(System.TAccount).GetSessionAccount()
+	set sc = ##class(BL.Subj.Office).GetCurrentOffice(user.%Id(),.offID)
+	set:offID obj.lcoOfficeID = ##class(Subj.Office).%OpenId(offID)
+	// Кассир
+	set obj.lcoCashierID = ##class(BL.Subj.Employee).GetCurrentEmployee()
+	set obj.lcoLoanID = ##class(Docs.Loan).%OpenId(..LoanID)
+	//s obj=%W("Obj").Data("OBJ") ; всегда заполненно, контроль заполнения стоит в ..Open(
+	set (ErrText,ControlList) = ""
+	set err = 0
+	if ..fillCard(obj,.ErrText)'=$$$OK set err=1
+	if err do ..showErrFillControls(ErrText) quit
+	set user = ##class(System.TAccount).GetSessionAccount()
+	set ret = user.Exec(.doc,"TE.ExecOverPayRet",obj.lcoDate,obj)
+	if $$$ISERR(ret)
+	{
+		set ErrText = $System.Status.GetErrorText(ret)
+		&js<alert('#(ErrText)#');>
+		quit
+	}
+	else
+	{
+		;печать документов
+		if ##class(Docs.LoanCashOrder).%ExistsId(obj.%Id())
+		{
+			//set res=..cashOrder(obj)
+			//if $$$ISERR(res) set Err = $system.Status.GetErrorText(res) &js<alert('#(Err)#')>
+		}
+	}
+	; все ОК - закрытие формы и возврат id "наружу"
+	&js<alert("Операция возврата средств успешно проведена.");>
+	&js<zenPage.firePopupAction("OK","",true);>
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="dedtDateChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = %page.%GetComponentById("edtPDate").value
+	if (str = "-1") set %page.%GetComponentById("edtPDate").value = "" quit
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

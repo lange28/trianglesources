@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.Prolongation">
+<Description>
+Форма установления даты пролонгации</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62693,51966.906364</TimeCreated>
+
+<Parameter name="PAGENAME">
+<Default>Prolongation</Default>
+</Parameter>
+
+<Property name="LoanID">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="LoanID"/>
+</Property>
+
+<Parameter name="JSINCLUDES">
+<Type>STRING</Type>
+<Default>jquery.js,jquery.maskedinput-1.2.2.js</Default>
+</Parameter>
+
+<XData name="Style">
+<Data><![CDATA[
+<style type="text/css">
+
+#userControls {
+	height: 200px;
+	overflow: auto;
+}
+
+.required {
+}
+.required:after {
+	color: red;
+	content: " *";
+}
+/*перебиваем дефолтное межстрочное растояние между контролами*/
+.zendiv {
+	padding-bottom: 5px;
+}
+/*в группе платежного калькулятора изменем дефолт по межстрочному отступу*/
+#frmCalc .zendiv {
+	padding-bottom: 1px;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page title="Пролонгация договора" xmlns="http://www.intersystems.com/zen">
+<titleBox id="titlePageHeader" title="" subtitle=""/>
+<fieldSet>
+<hgroup labelPosition="left" align="right">
+<text id="edtDeal" label="Договор" size="60" readOnly="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="clientFIO" label="ФИО клиента" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="edtDealType" label="Тип займа" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<dateText id="dedtARDate" controlClass="dateMask" label="Дата доп. соглашения" labelClass="required" labelStyle="font-weight:bold" onchange="zenPage.dedtARDateChange();"/>
+<spacer width="20"/>
+<text id="geProlongationPeriod" label="Пролонгация на срок" size="9" labelClass="required" labelStyle="font-weight:bold"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<dateText id="gdeProlongationDate" label="Дата пролонгации" disabled="true"/>
+<spacer width="20"/>
+<dateText id="dedtDate" controlClass="dateMask" label="Дата операции" onchange="zenPage.dedtDateChange();"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="edtComment" label="Комментарий к операции" size="60"/>
+</hgroup>
+<hgroup labelPosition="top" align="right">
+<textarea id="memoInfo" label="Отчет о выполнении операции" cols="47" rows="7"/>
+</hgroup>
+<hgroup align="right">
+<button id="btnExec" caption="Выполнить операцию"  align="center" onclick="zenPage.btnExecClick();"/>
+<button id="btnCancel" caption="Выход" align="right" onclick="zenPage.cancelPopup();"/>
+</hgroup>
+</fieldSet>
+</page>
+]]></Data>
+</XData>
+
+<Method name="%DrawJSStrings">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pVisited:%String]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	d ##super()
+	&js<$(function()
+		{
+			$.mask.definitions['~']='[+-]';
+			$('.dateMask').mask('99-99-9999');
+		})
+		>
+	q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.Prolongation","WebForm","OnClick",1,"Форма установления даты пролонгации")
+	set ^a= $zdt($h)_" ERROR"
+	set c=..%GetComponentById("titlePageHeader")
+	set c.subtitle=##class(Application.TE.Utils).GetConnStr()
+	
+	set obj=##class(Docs.Loan).%OpenId(..LoanID)
+	if '$IsObject(obj)
+	{
+		set Err="Ошибка открытия объекта Docs.Loan ID="_..LoanID
+		//&js<alert('#(Err)#');>
+		quit $$$OK
+	}
+	if 'obj.lConditions.ptcProductTypeID.PTDAllowManualProlong 
+	{
+		//&js<alert("Пролонгация для продукта не предусмотрена.");>
+		quit $$$OK
+	}
+	set res=##class(Actions.Execs.TE.ExecProlongation).CheckLoanState(obj)
+	if $$$ISERR(res) set Err = $system.Status.GetErrorText(res)/*&js<alert("#(Err)#")>*/ quit $$$OK
+	set %session.Data("Deal","ID")=..LoanID
+	
+	set ..%GetComponentById("dedtDate").value = $zd(+$H,3)
+	do ..fillForm()
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="fillForm">
+<Implementation><![CDATA[
+	set dealID=%session.Data("Deal","ID")
+	quit:'dealID
+	set deal=##class(Docs.Loan).%OpenId(dealID)
+	if '$IsObject(deal)
+	{
+		set Err="Ошибка открытия объекта Docs.Loan ID="_dealID
+		//&js<alert('#(Err)#');>
+		quit
+	}
+	set str="№"_deal.SysCode_" от "_$$$HorologToDateEdit(deal.lDateReg)
+	set ..%GetComponentById("edtDeal").value = str
+	set str=deal.lLoanAppID.laClientID.PersonID.ObjectName
+	set ..%GetComponentById("clientFIO").value = str
+	set str=deal.lConditions.ptcProductTypeID.ObjectName_", "_deal.lSummCurrent_" руб. на срок "_deal.lPeriodCurrent_" "_deal.lConditions.ptcProductTypeID.PTEdLogicalToDisplay(deal.lConditions.ptcProductTypeID.PTEd)
+	set ..%GetComponentById("edtDealType").value = str
+	set str=deal.lPeriod
+	set ..%GetComponentById("geProlongationPeriod").value = str
+	set str=$zd(deal.lDateProposeConcl,3)
+	set ..%GetComponentById("gdeProlongationDate").value = str
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="checkForm">
+<Implementation><![CDATA[
+ 
+	set Err = ""
+	;--
+	set Cntrl = "edtDeal"
+	set Text = ..%GetComponentById(Cntrl).value
+	if Text=""
+	{
+		set Err = Err_"\nНе указан договор"
+	}
+	set Cntrl = "dedtDate"
+	set Text = ..%GetComponentById(Cntrl).value
+	if Text = ""
+	{
+		set Err = Err_"\nНе указана дата операции"
+	}
+	set Cntrl = "dedtARDate"
+	set Text = ..%GetComponentById(Cntrl).value
+	if Text=""
+	{
+		set Err = Err_"\nНе указана дата заключения доп. соглашения."
+	}
+	set Cntrl = "geProlongationPeriod"
+	set Text = ..%GetComponentById(Cntrl).value
+	if (Text="") || (Text=0)
+	{
+		set Err = Err_"\nНе заполнено поле ""Прологация на срок""."
+	}
+	if Err'=""
+	{
+		&js<alert('#(Err)#')>
+		quit 1
+	}
+	quit ""
+]]></Implementation>
+</Method>
+
+<Method name="btnExecClick">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	quit:..checkForm()
+	set deal = %session.Data("Deal","ID")
+	if 'deal quit
+	set deal = ##class(Docs.Loan).%OpenId(deal)
+	if '$IsObject(deal) &js<alert("Невозможно открыть объект Docs.Loan id="+'#(deal)#')> quit
+	do deal.%Reload()
+
+	set date = ..%GetComponentById("dedtDate").value
+	set date = $zdh(date,3)
+	set dateProlongT = ..%GetComponentById("gdeProlongationDate").value
+	set dateProlong = $zdh(dateProlongT,3)
+	set comment = ..%GetComponentById("edtComment").value
+	set ardate = ..%GetComponentById("dedtARDate").value
+	set ardate = $zdh(ardate,3)
+	set ProlontgationPeriod = ..%GetComponentById("geProlongationPeriod").value
+	if comment'=""
+	{
+		set commentText = "Дата заключ. доп.соглашения:"_$zd(ardate,3)_", Пролонгация на срок: "_
+		ProlontgationPeriod_", "_comment
+	}
+	else
+	{
+		set commentText = "Дата заключ. доп.соглашения:"_$zd(ardate,3)_", Пролонгация на срок: "_
+		ProlontgationPeriod
+	}
+	// Проверки
+	set res = deal.BL.sIsProlongationAllow(deal)
+	if res'=""
+	{
+		&js<alert('#(res)#')>
+		quit
+	}
+	set ptID = deal.lConditions.ptcProductTypeID.%Id()
+	set ptID = $g(ptID)
+	if ptID
+	{
+		set pt = ##class(Docs.ProductType).%OpenId(ptID)
+		if '$IsObject(pt) s Err="Не найден тип продукта ID="_ptID $$$SysLogError($$$EMCSysErr,Err) &js<alert('#(Err)#')> quit
+	}
+	if ptID&&$IsObject(pt)&&(pt.PTDynamicConditions)
+	{
+		if (pt.PTDCMaxPeriod)&&(ProlontgationPeriod>pt.PTDCMaxPeriod)
+		{
+			set ErrText="Указанный срок пролонгации не соответствует продукту договора.\nСрок займа больше чем максимально возможный для продукта ("_pt.PTDCMaxPeriod_")"
+			&js<alert('#(ErrText)#')>
+			quit
+		}
+		if (pt.PTDCMinPeriod)&&(ProlontgationPeriod<pt.PTDCMinPeriod)
+		{
+			s ErrText="Указанный срок пролонгации не соответствует продукту договора.\nСрок займа меньше чем минимально возможный для продукта ("_pt.PTDCMinPeriod_")"
+			&js<alert('#(ErrText)#')>
+			quit
+		}
+	}
+	if $IsObject(deal.lLoanAppID.laPassportID)
+	{
+		set gender = $s(deal.lLoanAppID.laClientID.PersonID.Gender=1:"M",deal.lLoanAppID.laClientID.PersonID.Gender=2:"W",1:"")
+		// Проверка паспортных данных на дату заключения соглашения о пролонгации - ardate
+		set res=##class(BL.Docs.LoanApp).PassportCheck(deal.lLoanAppID.laClientID.PersonID.DateOfBirth,deal.lLoanAppID.laPassportID.psDateIssue,gender,.TypeStatus,.TypeReason,1,ardate)
+		if $$$ISERR(res)
+		{
+			set ErrText = $System.Status.GetErrorText(res)
+			&js<alert("Паспортные данные заемщика недействительны.\n"+'#(ErrText)#')>
+			quit
+		}
+	}
+	set ptED=deal.lConditions.ptcProductTypeID.PTEd
+	set ptED=$g(ptED)
+	if ptED'=""
+	{
+		set CountMax=0
+		if ptED=1 set CountMax=365  // Ед-ца измерения: "День" 
+		if ptED=2 set CountMax=52 // Ед-ца измерения: "Неделя"
+		if ptED=3 set CountMax=12 // Ед-ца измерения: "Месяц"
+		if ptED=4 set CountMax=1 // Ед-ца измерения: "Год"
+		if (dateProlong+ProlontgationPeriod-deal.lDateReg)>CountMax
+		{
+			&js<alert("Срок по договору превышает 1 год.")>
+			quit
+		}
+	}
+	if deal.lProlongationPeriod'=""
+	{
+		&js<alert("Для договора уже установлен признак пролонгации.\nПролонгация будет осуществлена автоматически в последний день графика платежей.")>
+		quit
+	}
+	set p=deal.BL.GetIncomingSumm(,$zdh(dateProlongT,3))
+	set s=deal.BL.GetChargePerSumm($zdh(dateProlongT,3),.SummPer,.SummPen)
+	set strMess="На настоящее время ("_$zd(date,3)_") для пролонгации ("_$fn(SummPer,"",2)_
+		") поступило недостаточно платежей ("_$fn(p,"",2)_"). \nЕсли до срока пролонгации ("_
+		dateProlongT_") платежи не поступят, то пролонгация не осуществится."
+	if p<SummPer &js<alert('#(strMess)#')>
+	/// Пролонгацию будем делать автоматически при проведении регламентной операции "Выноса на просрочку"
+	/// Здесь устанавливаем только период - в качестве признака, что нужно сделать пролонгацию в момент проведения регламентной операции выноса на просрочку
+	set comment = "Дата пролонгации: "_dateProlongT_", Дата закл. доп. согл.: "_$zd(ardate,3)_
+		", Срок пролонгации: "_ProlontgationPeriod
+	set user = ##class(System.TAccount).GetSessionAccount()
+	s res = user.Exec(.doc,"TE.ExecSetProlongationPeriod",ardate,date,deal,comment,ProlontgationPeriod)
+	if $$$ISERR(res)
+	{
+		set ErrText = "Ошибка исполнения операции:"
+		set ErrText = ErrText_"\n"_$System.Status.GetErrorText(res)
+		&js<alert('#(ErrText)#')>
+		quit
+	}
+	set Report = "Договор "_deal.SysCode_" будет пролонгирован "_ dateProlongT_" на срок: "_ProlontgationPeriod_"."
+	set ..%GetComponentById("memoInfo").value = Report
+	// Печатаем доп.соглашение
+	// устанавливаем Название фирмы
+	set objFN = ##class(System.TInfoObject).%New()
+	if ##class(System.Options).GetOptions(objFN,"FirmName",.lOrganisation)
+	// нахаловка "FirmName"
+	set id = deal.%Id()
+	//set res = ##class(GUI.PRT.PayGraphicsProlong).Open(id,$$$HorologToDateEdit(dateProlong+1),ardate)
+	if $$$ISERR(res) set ErrText = $System.Status.GetErrorText(res) &js<alert('#(ErrText)#')>
+	&js<if (confirm("Распечатать дополнительное соглашение?"))
+		{
+			zenPage.SRVprintOrder(#(id)#,#(dateProlong+1)#,#(ardate)#);
+		}
+		else
+		{
+			zenPage.firePopupAction("OK","",true);
+		}>
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="SRVprintOrder">
+<FormalSpec>ID:%String,StartDate:%String,ardate:%String</FormalSpec>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	/*&js<alert(#(ID)#);>
+	&js<alert(#(StartDate)#);>*/
+	&js<zenPage.gotoPage(zenLink('GUI.WEB.RPT.ProlongationLoan.cls?ID=#(ID)#&StartDate=#(StartDate)#&ardate=#(ardate)#'));>
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="dedtARDateChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = %page.%GetComponentById("dedtARDate").value
+	if (str = "-1") set %page.%GetComponentById("dedtARDate").value = "" quit
+]]></Implementation>
+</Method>
+
+<Method name="dedtDateChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = %page.%GetComponentById("dedtDate").value
+	if (str = "-1") set %page.%GetComponentById("dedtDate").value = "" quit
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

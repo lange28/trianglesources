@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.PaysTable">
+<Description>
+Таблица платежей</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>GUI.WEB.TablePageTemplate</Super>
+<TimeCreated>62508,53537.974645</TimeCreated>
+
+<XData name="mainTablePane">
+<Description>
+This XML block defines the contents of the table pane..</Description>
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<pane id="tPane" xmlns="http://www.intersystems.com/zen">
+<tableNavigatorBar id="navBar" showPageSize="true" tablePaneId="mainTable" 
+ />
+  <csMenuBar id="mainTableMenu" width="100%">
+  <csMenuBarItem caption="Редактировать">
+    <contextMenu id="fileMenu" >
+      <csMenuItem icon="images/file.png" caption="Добавить" onclick="zenPage.addPay(zenThis);"  />
+      <csMenuItem icon="images/open.png" caption="Изменить" onclick="zenPage.rowDblClick(zenThis);"  />
+      <csMenuItem icon="images/cut.png" caption="Удалить" onclick="zenPage.jsDelPay();"  />
+    </contextMenu>
+  </csMenuBarItem>
+  <!--<csMenuBarItem caption="Действия">
+    <contextMenu id="actionMenu" >
+      <csMenuItem icon="images/buildall.png" caption="Загрузка платежей QIWI" onclick="alert('Не доступно');"  />
+      <csMenuItem icon="images/compile.png" caption="Пакетное проведение" onclick="alert('Не доступно');"  />
+      <csMenuItem icon="images/workspace.png" caption="Перенос платежа на другой договор" onclick="alert('Не доступно');"  />
+    </contextMenu>
+  </csMenuBarItem>-->
+  <csMenuBarItem caption="Печать">
+    <contextMenu id="printMenu" >
+      <csMenuItem icon="images/print.png" caption="Приходный кассовый ордер" onclick="zenPage.CLprintMenu(zenThis)"  />
+    </contextMenu>
+  </csMenuBarItem>
+
+</csMenuBar>
+<tablePane id="mainTable"
+	width="100%"
+	useSnapshot="true"
+	maxRows="1000"
+	pageSize="20"
+	tableName="Docs.Pay"
+	valueColumn="ID"
+	ondblclick="zenPage.rowDblClick(zenThis);"
+	showQuery="false"
+	showZebra="true"
+	useKeys="false"
+	fixedHeaders="true"
+	bodyHeight="30em"
+	headerLayout="headersOnTop"
+	OnCreateResultSet="CrtSQL"
+	orderByClause="id desc"
+	>
+<column colName="ID" 
+		width="50"
+		hidden="true"
+		/>
+<column colName="SysCode"
+header="№ договора"
+		width="140"
+		id="filterSysCode"
+		colExpression="pLoanID->SysCode" 
+		filterType="text"
+		filterOp="="
+		 />
+<column colName="Client"
+header="Клиент"
+		width="200"
+		id="filterClient"
+		colExpression="pLoanID->lLoanAppID->laClientID->PersonID->ObjectName"
+		filterType="text"
+		filterOp="%STARTSWITH"
+		 />
+
+<column colName="Cashier"
+header="Кассир"
+		colExpression="pCashierID->sePersonID->ObjectName" 
+		width="150"
+		filterType="text"
+		filterOp="%STARTSWITH"
+		/>
+<column colName="Executed"  
+header="Пр."
+		colExpression="pExecuted" 
+		width="45"
+		filterEnum="1,0"
+		filterEnumDisplay="Да,Нет"
+		 filterType="enum"/>
+<column colName="pDate" 
+header="Дата"
+		width="100"
+		colExpression="pDate"
+		filterType="date"
+		filterOp="BETWEEN"
+		 />
+<column colName="pSumm" 
+header="Сумма"
+		width="80"
+		colExpression="pSumm"
+		filterType="text"
+		filterOp="="
+		 />
+<column colName="pSet" 
+header="Назначение"
+		width="80"
+		colExpression="pSet"
+		filterType="text"
+		filterOp="="
+		 />
+<column colName="pOfficeID" 
+header="Точка обсл."
+		width="150"
+		colExpression="pOfficeID->ObjectName"
+		filterType="text"
+		filterOp="%STARTSWITH" 
+		 />
+<column colName="pType" 
+header="Тип"
+		width="75"
+		colExpression="pType"
+		filterType="text"
+		filterOp="="
+		 />
+<column colName="Info" 
+header="Комментарий"
+		width="130"
+		colExpression="Info"
+		filterType="text"
+		filterOp="="
+		 />
+<condition colName="Executed" 
+		predicate="EQ" 
+		value="Да" rowStyle="font-weight: bold;"/>
+
+</tablePane>
+
+<spacer height="10"/>
+
+</pane>
+]]></Data>
+</XData>
+
+<Method name="CrtSQL">
+<FormalSpec>*tSC:%Status,pInfo:%ZEN.Auxiliary.QueryInfo</FormalSpec>
+<ReturnType>%ResultSet</ReturnType>
+<Implementation><![CDATA[
+	s myOfficeID=%session.Data("CurrentOffice","ID")
+	Set tSELECT = "select ID, pLoanID->SysCode as SysCode, pLoanID->lLoanAppID->laClientID->PersonID->ObjectName as Client,pCashierID->sePersonID->ObjectName as Cashier,pExecuted as Executed,pDate,pSumm,pSet,pOfficeID->ObjectName as pOfficeID,pType,Info"
+	Set tSELECT = tSELECT_" from Docs.Pay where cls='Docs.Pay' and Status='A' and ((pLoanID->lLoanAppID->laLocationOfficeID = "_myOfficeID_" or pLoanID->lLoanAppID->laLocationOfficeID->Parent = "_myOfficeID_"  or pLoanID->lLoanAppID->laLocationOfficeID->Parent->Parent = "_myOfficeID_") or(pLoanID->lLoanAppID->laServiceOfficeID = "_myOfficeID_" or pLoanID->lLoanAppID->laServiceOfficeID->Parent = "_myOfficeID_"  or pLoanID->lLoanAppID->laServiceOfficeID->Parent->Parent = "_myOfficeID_") or pOfficeID = "_myOfficeID_")"	 
+	
+	If ($G(pInfo.filters("SysCode"))'="") Set tWHERE = tWHERE _ " AND " _ "pLoanID->SysCode %STARTSWITH '" _ pInfo.filters("SysCode") _ "'"
+	If ($G(pInfo.filters("Client"))'="") Set tWHERE = tWHERE _ " AND " _ "pLoanID->lLoanAppID->laClientID->PersonID->ObjectName %STARTSWITH '" _ pInfo.filters("Client") _ "'"
+	If ($G(pInfo.filters("Cashier"))'="") Set tWHERE = tWHERE _ " AND " _ "pCashierID->sePersonID->ObjectName %STARTSWITH '" _ pInfo.filters("Cashier") _ "'"
+	If ($G(pInfo.filters("Executed"))'="") Set tWHERE = tWHERE _ " AND " _ "pExecuted %STARTSWITH '" _ pInfo.filters("Executed") _ "'"
+	If ($G(pInfo.filters("pDate"))'="")
+	{
+		Set date1 = $$$HorologToDateEdit($zdh($p(pInfo.filters("pDate"),",",1),3))
+		Set date2 = $$$HorologToDateEdit($zdh($p(pInfo.filters("pDate"),",",2),3))
+		Set tWHERE = tWHERE _ " AND " _ "(pDate BETWEEN '" _ date1 _ "' AND '" _ date2 _ "')"
+	}
+	If ($G(pInfo.filters("pSumm"))'="") Set tWHERE = tWHERE _ " AND " _ "pSumm %STARTSWITH '" _ pInfo.filters("pSumm") _ "'"
+	If ($G(pInfo.filters("pSet"))'="") Set tWHERE = tWHERE _ " AND " _ "pSet %STARTSWITH '" _ pInfo.filters("pSet") _ "'"
+	If ($G(pInfo.filters("pOfficeID"))'="") Set tWHERE = tWHERE _ " AND " _ "pOfficeID->ObjectName %STARTSWITH '" _ pInfo.filters("pOfficeID") _ "'"
+	If ($G(pInfo.filters("pType"))'="") Set tWHERE = tWHERE _ " AND " _ "pType %STARTSWITH '" _ pInfo.filters("pType") _ "'"
+	If ($G(pInfo.filters("Info"))'="") Set tWHERE = tWHERE _ " AND " _ "Info %STARTSWITH '" _ pInfo.filters("Info") _ "'"
+	
+	Set tSELECT = tSELECT_" ORDER BY ID desc" 
+	Set tRS = ##class(%ResultSet).%New()
+	Set tSC = tRS.Prepare(tSELECT)
+	Set pInfo.queryText = tSELECT
+	Quit tRS
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.PaysTable","WebForm","OnClick",1,"Таблица платежей")
+ s ..PAGENAME="Реестр платежей"
+ q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="rowDblClick">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	var parms = new Object();
+  	parms.PayID = id;
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.PayEdit.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=600,height=630',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="CLprintMenu">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	this.SRVprintOrder(id);
+]]></Implementation>
+</Method>
+
+<Method name="SRVprintOrder">
+<FormalSpec>ID:%String</FormalSpec>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ s cashOrder=##class(Docs.CashOrder).OpenBy(ID)
+ i '$IsObject(cashOrder) {
+	 s ErrText="Платеж не имеет печатного документа"
+	 &js<alert('#(ErrText)#');>
+	 q
+ }
+ &js<zenPage.gotoPage(zenLink('GUI.WEB.RPT.CashPaysOrder.cls?ID=#(cashOrder.%Id())#'));>
+ q
+]]></Implementation>
+</Method>
+
+<Method name="addPay">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var parms = new Object();
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.PayEdit.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=600,height=630',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="onPopupAction">
+<FormalSpec>popupName,action,value</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[	zenPage.getComponentById('mainTable').executeQuery();
+]]></Implementation>
+</Method>
+
+<Method name="jsDelPay">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	if (confirm("Вы уверены что хотите удалить строку?")==false) return;
+	this.DelPay(id);
+]]></Implementation>
+</Method>
+
+<Method name="DelPay">
+<FormalSpec>id:%String</FormalSpec>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ s o=##class(Docs.Pay).%OpenId(id)
+ i '$IsObject(o) s ErrText="Ошибка открытия объекта Docs.Pay ID="_id $$$SysLogError($$$EMCSysErr,ErrText) &js<alert('#(ErrText)#');> q 
+ i o.pExecuted {
+ 	s ErrText="Проведенные платежи запрещено удалять"
+ 	&js<alert('#(ErrText)#');>
+ 	q
+ }
+ s user=##class(Application.TE.Utils).GetCurrEmpl().sePersonID.AccountID
+ s res=user.Exec(.doc,"Docs.unregisterCashOrder",id) 
+ if $$$ISERR(res) {
+ 	s ErrText=$replace($system.Status.GetErrorText(res),"^",$c(13,9))
+ 	&js<alert('#($zcvt(ErrText,"O","JS"))#');> 
+ 	q
+ }
+ &js<zenPage.getComponentById('mainTable').executeQuery();>
+ q
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

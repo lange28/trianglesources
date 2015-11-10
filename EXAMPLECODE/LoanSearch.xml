@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.LoanSearch">
+<Description>
+Таблица поиска по договорам 2</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62745,48582.093282</TimeCreated>
+
+<XData name="Style">
+<Data><![CDATA[
+<style type="text/css">
+
+/* style for message box */
+#msgBox {
+	height: 8.0em;
+	width: 10.0em;
+	overflow: auto;
+	border: 1px solid darkblue;
+	background: white;
+}
+/* шрифт главной таблицы реестра */
+#mainTable table {
+	font-size: 0.7em;
+	font-family: verdana;
+	width: 800px;
+}
+/* шрифт фильтра главной таблицы реестра */
+#mainTable .tpFilter {
+	font-size: 1.4em;
+}
+/* шрифт фильтра по дате главной таблицы реестра */
+#mainTable .tpFilterDate {
+	font-size: 1.2em;
+}
+/* стиль меню */
+.csActiveMenuItem {
+	color: red;
+	background: gray;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+#rightAutoExpand {
+	padding: 5px;
+	background: #CBE6EB;
+	background-position: right;
+	background-image: url(images/docindexgradient.png);
+	background-repeat: repeat-y;
+	height: 100%;
+}
+
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page xmlns="http://www.intersystems.com/zen" title="">
+<activeVGroup split="95%">
+<tablePane id="mainTable"
+	width="100%"
+	useSnapshot="true"
+	maxRows="1000"
+	pageSize="100"
+	tableName="Docs.Loan"
+	valueColumn="SysCode"
+	ondblclick="zenPage.doClick(zenThis);"
+	showQuery="false"
+	showZebra="true"
+	useKeys="false"
+	fixedHeaders="true"
+	bodyHeight="100em"
+	headerLayout="headersOnTop"
+	OnCreateResultSet="CrtSQL"
+	orderByClause="id desc"
+	>
+<column colName="ID" 
+		width="50"
+		hidden="true"
+		/>
+<column colName="SysCode"
+header="№ договора"
+		width="140"
+		id="filterSysCode"
+		colExpression="SysCode" 
+		filterType="text"
+		filterOp="="
+		 />
+<column colName="Client"
+header="ФИО Клиента"
+		width="180"
+		id="filterClient"
+		colExpression="lLoanAppID->laClientID->PersonID->ObjectName"
+		filterType="text"
+		filterOp="%STARTSWITH"
+		 />
+<column colName="State"
+header="Статус"
+		colExpression="lStateItemID->lsiStateID->ObjectName" 
+		width="100"
+		filterType="text"
+		filterOp="%STARTSWITH"
+		/>
+<column colName="lDateValutation" 
+header="Дата выдачи"
+		width="100"
+		colExpression="lDateValutation"
+		filterType="date"
+		filterOp="BETWEEN"
+		 />
+<column colName="pSumm" 
+header="Сумма"
+		width="80"
+		colExpression="lConditions->ptcAmount "
+		filterType="text"
+		filterOp=">="
+		 />
+<column colName="pDate" 
+header="Срок оплаты"
+		width="100"
+		colExpression="lDateProposeConcl"
+		filterType="date"
+		filterOp="BETWEEN"
+		 />
+<column colName="Product" 
+header="Продукт"
+		width="100"
+		colExpression="lConditions->ptcProductTypeID->ObjectName"
+		filterType="text"
+		filterOp="%STARTSWITH" 
+		 />
+<column colName="laiCurrentDebts" 
+header="Просроченная задолженность"
+		width="90"
+		colExpression="lAccountsItemID->laiCurrentDebts"
+		filterType="text"
+		filterOp=">="
+		 />
+<column colName="lDateConclusion" 
+header="Дата факт. погашения"
+		width="100"
+		colExpression="lDateConclusion"
+		filterType="date"
+		filterOp="BETWEEN"
+		 />
+<condition colName="State"
+		predicate="EQ"
+		value="Действует" rowStyle="color: blue;"/>
+<condition colName="State"
+		predicate="EQ"
+		value="Погашен" rowStyle="color: green;"/>
+<condition colName="State"
+		predicate="EQ"
+		value="Платеж опаздывает" rowStyle="color: fuchsia;"/>
+<condition colName="State"
+		predicate="EQ"
+		value="Проблемный" rowStyle="color: red;"/>
+<condition colName="State"
+		predicate="EQ"
+		value="Просрочен" rowStyle="color: red;"/>
+</tablePane>
+<hgroup align="center">
+<button id="do" caption="   Выбрать   " onclick="zenPage.doClick(zenThis);"/>
+<button id="cancel" caption="   Закрыть   " onclick="zenPage.cancelPopup();"/>
+</hgroup>
+</activeVGroup>
+</page>
+]]></Data>
+</XData>
+
+<Method name="CrtSQL">
+<FormalSpec>*tSC:%Status,pInfo:%ZEN.Auxiliary.QueryInfo</FormalSpec>
+<ReturnType>%ResultSet</ReturnType>
+<Implementation><![CDATA[
+	set myOfficeID = %session.Data("CurrentOffice","ID")
+	set tSELECT = "select ID,SysCode,lLoanAppID->laClientID->PersonID->ObjectName as Client,lStateItemID->lsiStateID->ObjectName as State,case when lDateValutation='' then '-' else %external(lDateValutation) end as lDateValutation,lConditions->ptcAmount as pSumm,lDateProposeConcl as pDate,lConditions->ptcProductTypeID->ObjectName as Product,lAccountsItemID->laiCurrentDebts as laiCurrentDebts,case when lDateConclusion='' then '-' else %external(lDateConclusion) end as lDateConclusion"
+	set tSELECT = tSELECT_" from Docs.Loan where cls='Docs.Loan' and Status='A' and ((lLoanAppID->laLocationOfficeID = "_myOfficeID_" or lLoanAppID->laLocationOfficeID->Parent = "_myOfficeID_"  or lLoanAppID->laLocationOfficeID->Parent->Parent = "_myOfficeID_") or(lLoanAppID->laServiceOfficeID = "_myOfficeID_" or lLoanAppID->laServiceOfficeID->Parent = "_myOfficeID_"  or lLoanAppID->laServiceOfficeID->Parent->Parent = "_myOfficeID_"))"
+	
+	Set tWHERE = ""
+	If ($G(pInfo.filters("SysCode"))'="") Set tWHERE = tWHERE _ " AND " _ "SysCode %STARTSWITH '" _ pInfo.filters("SysCode") _ "'"
+	If ($G(pInfo.filters("Client"))'="") Set tWHERE = tWHERE _ " AND " _ "lLoanAppID->laClientID->PersonID->ObjectName %STARTSWITH '" _ pInfo.filters("Client") _ "'"
+	If ($G(pInfo.filters("State"))'="") Set tWHERE = tWHERE _ " AND " _ "lStateItemID->lsiStateID->ObjectName %STARTSWITH '" _ pInfo.filters("State") _ "'"
+	If ($G(pInfo.filters("lDateValutation"))'="")
+	{
+		Set date1 = $$$HorologToDateEdit($zdh($p(pInfo.filters("lDateValutation"),",",1),3))
+		Set date2 = $$$HorologToDateEdit($zdh($p(pInfo.filters("lDateValutation"),",",2),3))
+		Set tWHERE = tWHERE _ " AND " _ "(lDateValutation BETWEEN '" _ date1 _ "' AND '" _ date2 _ "')"
+	}
+	If ($G(pInfo.filters("pSumm"))'="") Set tWHERE = tWHERE _ " AND " _ "lConditions->ptcAmount %STARTSWITH '" _ pInfo.filters("pSumm") _ "'"
+	If ($G(pInfo.filters("pDate"))'="")
+	{
+		Set date1 = $$$HorologToDateEdit($zdh($p(pInfo.filters("pDate"),",",1),3))
+		Set date2 = $$$HorologToDateEdit($zdh($p(pInfo.filters("pDate"),",",2),3))
+		Set tWHERE = tWHERE _ " AND " _ "(lDateProposeConcl BETWEEN '" _ date1 _ "' AND '" _ date2 _ "')"
+	}
+	If ($G(pInfo.filters("Product"))'="") Set tWHERE = tWHERE _ " AND " _ "lConditions->ptcProductTypeID->ObjectName %STARTSWITH '" _ pInfo.filters("Product") _ "'"
+	If ($G(pInfo.filters("laiCurrentDebts"))'="") Set tWHERE = tWHERE _ " AND " _ "lAccountsItemID->laiCurrentDebts %STARTSWITH '" _ pInfo.filters("laiCurrentDebts") _ "'"
+	If ($G(pInfo.filters("lDateConclusion"))'="")
+	{
+		Set date1 = $$$HorologToDateEdit($zdh($p(pInfo.filters("lDateConclusion"),",",1),3))
+		Set date2 = $$$HorologToDateEdit($zdh($p(pInfo.filters("lDateConclusion"),",",2),3))
+		Set tWHERE = tWHERE _ " AND " _ "(lDateConclusion BETWEEN '" _ date1 _ "' AND '" _ date2 _ "')"
+	}
+	
+	If ($G(pInfo.filters("laPeriod"))'="") Set tWHERE = tWHERE _ " AND " _ "laPeriod %STARTSWITH '" _ pInfo.filters("laPeriod") _ "'"
+	If ($G(pInfo.filters("PTEd"))'="") Set tWHERE = tWHERE _ " AND " _ "laProductTypeID->PTEd %STARTSWITH '" _ pInfo.filters("PTEd") _ "'"
+	If ($G(pInfo.filters("Birthday"))'="") Set tWHERE = tWHERE _ " AND " _ "laClientID->PersonID->DateOfBirth %STARTSWITH '" _ pInfo.filters("Birthday") _ "'"
+	If ($G(pInfo.filters("laSex"))'="") Set tWHERE = tWHERE _ " AND " _ "laSex %STARTSWITH '" _ pInfo.filters("laSex") _ "'"
+	If ($G(pInfo.filters("phNumber"))'="") Set tWHERE = tWHERE _ " AND " _ "laPhoneMobileID->phNumber %STARTSWITH '" _ pInfo.filters("phNumber") _ "'"
+	If ($G(pInfo.filters("StatusDate"))'="") Set tWHERE = tWHERE _ " AND " _ "laStateItemID->siDate %STARTSWITH '" _ pInfo.filters("StatusDate") _ "'"
+	If ($G(pInfo.filters("Reason"))'="") Set tWHERE = tWHERE _ " AND " _ "laStateItemID->siReasonID->ObjectName %STARTSWITH '" _ pInfo.filters("Reason") _ "'"
+	If ($G(pInfo.filters("LocationOffice"))'="") Set tWHERE = tWHERE _ " AND " _ "laLocationOfficeID->ObjectName %STARTSWITH '" _ pInfo.filters("LocationOffice") _ "'"
+	If ($G(pInfo.filters("ServiceOffice"))'="") Set tWHERE = tWHERE _ " AND " _ "laServiceOfficeID->ObjectName %STARTSWITH '" _ pInfo.filters("ServiceOffice") _ "'"
+	set:tWHERE'="" tSELECT = tSELECT _tWHERE
+	set tSELECT = tSELECT_" ORDER BY ID desc"
+ 	set tRS = ##class(%ResultSet).%New()
+	set tSC = tRS.Prepare(tSELECT)
+	set pInfo.queryText = tSELECT
+	quit tRS
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.LoanSearch","WebForm","OnClick",1,"Таблица поиска по договорам 2")
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="doClick">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var sysCode = table.getProperty('value');
+	if (sysCode=="")
+	{
+		alert("Ничего не выбрано");
+		return
+	}
+	zenPage.firePopupAction("OK",sysCode,true);
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

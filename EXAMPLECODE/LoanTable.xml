@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.LoanTable">
+<Description>
+Таблица договоров</Description>
+<IncludeCode>EMCConst,EMCReport</IncludeCode>
+<Super>GUI.WEB.TablePageTemplate</Super>
+<TimeCreated>62508,53537.974645</TimeCreated>
+
+<XData name="mainTablePane">
+<Description>
+This XML block defines the contents of the table pane</Description>
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<pane id="tPane" xmlns="http://www.intersystems.com/zen">
+<tableNavigatorBar id="navBar" showPageSize="true" tablePaneId="mainTable" 
+ />
+  <csMenuBar id="mainTableMenu" width="100%">
+  <csMenuBarItem caption="Редактировать">
+    <contextMenu id="fileMenu">
+      <csMenuItem icon="images/file.png" caption="Добавить" onclick="zenPage.addLoan(zenThis);"  />
+      <csMenuItem icon="images/open.png" caption="Открыть" onclick="zenPage.rowDblClick(zenThis);"  />
+    </contextMenu>
+  </csMenuBarItem>
+  <csMenuBarItem caption="Действия">
+    <contextMenu id="actionMenu">
+      <!--<csMenuItem icon="" caption="Изменить стадию коллектинга" onclick="zenPage.changeLoanStage(zenThis);"/>-->
+      <!--<csMenuItem icon="" caption="Прощение долга по умершим" onclick="alert('В разработке');"/>-->
+      <csMenuItem icon="" caption="Ввод даты досрочного погашения" onclick="zenPage.setAdvRepDate(zenThis);"/>
+      <csMenuItem icon="" caption="Досрочное погашение" onclick="zenPage.advRepayment(zenThis);"/>
+      <!--!!!<csMenuItem icon="" caption="Частичное досрочное погашение" onclick="zenPage.advPartRepayment(zenThis);"/>-->
+      <!--<csMenuItem icon="" caption="Аннулирование займа" onclick="alert('В разработке');"/>-->
+      <csMenuItem icon="" caption="Установка даты пролонгации" onclick="zenPage.prolongation(zenThis);"/>
+      <csMenuItem icon="" caption="Установка условий пролонгации" onclick="zenPage.prolongationByChangeProduct(zenThis);"/>
+      <csMenuItem icon="" caption="Смена паспортных данных" onclick="zenPage.passportChange(zenThis);"/>
+      <!--<csMenuItem icon="" caption="Прощение пени" onclick="alert('В разработке');"/>-->
+      <csMenuItem icon="" caption="Возврат переплаты" onclick="zenPage.loanCashOrderEdit(zenThis);"/>
+    </contextMenu>
+  </csMenuBarItem>
+  <csMenuBarItem caption="Информация">
+    <contextMenu id="infoMenu" >
+      <csMenuItem icon="" caption="Просмотр заявки" onclick="zenPage.viewLoanApp(zenThis);"/>
+      <!--<csMenuItem icon="" caption="Платежи по договору" onclick="alert('В разработке');"/>-->
+      <!--<csMenuItem icon="" caption="История статусов" onclick="alert('В разработке');"/>-->
+      <!--<csMenuItem icon="" caption="Прикрепленные документы" onclick="zenPage.viewAttachDocsTable(zenThis);"/>-->
+    </contextMenu>
+  </csMenuBarItem>
+  <csMenuBarItem caption="Печать">
+    <contextMenu id="printMenu" >
+      <csMenuItem icon="images/print.png" caption="Расходный кассовый ордер" onclick="zenPage.CLprintMenu(zenThis)"/>
+      <csMenuItem icon="" caption="Анкета клиента" onclick="zenPage.jsAppQuestPrint(zenThis)"/>
+      <csMenuItem icon="" caption="График платежей" onclick="zenPage.jsPGPrint(zenThis)"/>
+      <csMenuItem icon="" caption="Договор займа" onclick="zenPage.jsLoanPrint(zenThis)"/>
+    </contextMenu>
+  </csMenuBarItem>
+  </csMenuBar>
+<tablePane id="mainTable"
+	width="100%"
+	useSnapshot="true"
+	maxRows="1000"
+	pageSize="20"
+	tableName="Docs.Loan"
+	valueColumn="ID"
+	ondblclick="zenPage.rowDblClick(zenThis);"
+	showQuery="false"
+	showZebra="true"
+	useKeys="false"
+	fixedHeaders="true"
+	bodyHeight="100em"
+	headerLayout="headersOnTop"
+	OnCreateResultSet="CrtSQL"
+	orderByClause="id desc"
+	>
+<column colName="ID" 
+		width="50"
+		hidden="true"
+		/>
+<column colName="SysCode"
+header="№ договора"
+		width="140"
+		id="filterSysCode"
+		colExpression="SysCode" 
+		filterType="text"
+		filterOp="="
+		 />
+<column colName="Client"
+header="ФИО Клиента"
+		width="300"
+		id="filterClient"
+		colExpression="lLoanAppID->laClientID->PersonID->ObjectName"
+		filterType="text"
+		filterOp="%STARTSWITH"
+		 />
+<column colName="State"
+header="Статус"
+		colExpression="lStateItemID->lsiStateID->ObjectName" 
+		width="100"
+		filterType="text"
+		filterOp="%STARTSWITH"
+		/>
+<column colName="lDateValutation" 
+header="Дата выдачи"
+		width="100"
+		colExpression="lDateValutation"
+		filterType="date"
+		filterOp="BETWEEN"
+		 />
+<column colName="pSumm" 
+header="Сумма"
+		width="80"
+		colExpression="lConditions->ptcAmount "
+		filterType="text"
+		filterOp=">="
+		 />
+<column colName="pDate" 
+header="Срок оплаты"
+		width="100"
+		colExpression="lDateProposeConcl"
+		filterType="date"
+		filterOp="BETWEEN"
+		 />
+<column colName="Product" 
+header="Продукт"
+		width="100"
+		colExpression="lConditions->ptcProductTypeID->ObjectName"
+		filterType="text"
+		filterOp="%STARTSWITH" 
+		 />
+<column colName="laiCurrentDebts" 
+header="Просроченная задолженность"
+		width="90"
+		colExpression="lAccountsItemID->laiCurrentDebts"
+		filterType="text"
+		filterOp=">="
+		 />
+<column colName="lDateConclusion" 
+header="Дата факт. погашения"
+		width="100"
+		colExpression="lDateConclusion"
+		filterType="date"
+		filterOp="BETWEEN"
+		 />
+<condition colName="State"
+		predicate="EQ"
+		value="Действует" rowStyle="color: blue; font-weight: bold;"/>
+<condition colName="State"
+		predicate="EQ"
+		value="Погашен" rowStyle="color: green; font-weight: bold;"/>
+<condition colName="State"
+		predicate="EQ"
+		value="Платеж опаздывает" rowStyle="color: fuchsia; font-weight: bold;"/>
+<condition colName="State"
+		predicate="EQ"
+		value="Проблемный" rowStyle="color: red; font-weight: bold;"/>
+<condition colName="State"
+		predicate="EQ"
+		value="Просрочен" rowStyle="color: red; font-weight: bold;"/>
+</tablePane>
+<spacer height="10"/>
+</pane>
+]]></Data>
+</XData>
+
+<Method name="CrtSQL">
+<FormalSpec>*tSC:%Status,pInfo:%ZEN.Auxiliary.QueryInfo</FormalSpec>
+<ReturnType>%ResultSet</ReturnType>
+<Implementation><![CDATA[
+	s myOfficeID=%session.Data("CurrentOffice","ID")
+	Set tSELECT = "select ID,SysCode,lLoanAppID->laClientID->PersonID->ObjectName as Client,lStateItemID->lsiStateID->ObjectName as State,case when lDateValutation='' then '-' else %external(lDateValutation) end as lDateValutation,lConditions->ptcAmount as pSumm,lDateProposeConcl as pDate,lConditions->ptcProductTypeID->ObjectName as Product,lAccountsItemID->laiCurrentDebts as laiCurrentDebts,case when lDateConclusion='' then '-' else %external(lDateConclusion) end as lDateConclusion"
+	Set tSELECT = tSELECT_" from Docs.Loan where cls='Docs.Loan' and Status='A' and ((lLoanAppID->laLocationOfficeID = "_myOfficeID_" or lLoanAppID->laLocationOfficeID->Parent = "_myOfficeID_"  or lLoanAppID->laLocationOfficeID->Parent->Parent = "_myOfficeID_") or(lLoanAppID->laServiceOfficeID = "_myOfficeID_" or lLoanAppID->laServiceOfficeID->Parent = "_myOfficeID_"  or lLoanAppID->laServiceOfficeID->Parent->Parent = "_myOfficeID_"))"
+	If ($G(pInfo.filters("SysCode"))'="") Set tWHERE = tWHERE _ " AND " _ "SysCode %STARTSWITH '" _ pInfo.filters("SysCode") _ "'"
+	If ($G(pInfo.filters("Client"))'="") Set tWHERE = tWHERE _ " AND " _ "laClientID->PersonID->ObjectName %STARTSWITH '" _ pInfo.filters("Client") _ "'"
+	If ($G(pInfo.filters("State"))'="") Set tWHERE = tWHERE _ " AND " _ "lStateItemID->lsiStateID->ObjectName %STARTSWITH '" _ pInfo.filters("State") _ "'"
+	If ($G(pInfo.filters("pSumm"))'="") Set tWHERE = tWHERE _ " AND " _ "lConditions->ptcAmount %STARTSWITH '" _ pInfo.filters("pSumm") _ "'"
+	If ($G(pInfo.filters("laiCurrentDebts"))'="") Set tWHERE = tWHERE _ " AND " _ "lAccountsItemID->laiCurrentDebts %STARTSWITH '" _ pInfo.filters("laiCurrentDebts") _ "'"
+	If ($G(pInfo.filters("lDateValutation"))'="")
+	{
+	Set date1 = $$$HorologToDateEdit($zdh($p(pInfo.filters("lDateValutation"),",",1),3))
+	Set date2 = $$$HorologToDateEdit($zdh($p(pInfo.filters("lDateValutation"),",",2),3))
+	Set tWHERE = tWHERE _ " AND " _ "(lDateValutation BETWEEN '" _ date1 _ "' AND '" _ date2 _ "')"
+	}
+	If ($G(pInfo.filters("lDateProposeConcl"))'="")
+	{
+	Set date1 = $$$HorologToDateEdit($zdh($p(pInfo.filters("lDateProposeConcl"),",",1),3))
+	Set date2 = $$$HorologToDateEdit($zdh($p(pInfo.filters("lDateProposeConcl"),",",2),3))
+	Set tWHERE = tWHERE _ " AND " _ "(lDateProposeConcl BETWEEN '" _ date1 _ "' AND '" _ date2 _ "')"
+	}
+	If ($G(pInfo.filters("lDateConclusion"))'="")
+	{
+	Set date1 = $$$HorologToDateEdit($zdh($p(pInfo.filters("lDateConclusion"),",",1),3))
+	Set date2 = $$$HorologToDateEdit($zdh($p(pInfo.filters("lDateConclusion"),",",2),3))
+	Set tWHERE = tWHERE _ " AND " _ "(lDateConclusion BETWEEN '" _ date1 _ "' AND '" _ date2 _ "')"
+	} 
+	If ($G(pInfo.filters("Product"))'="") Set tWHERE = tWHERE _ " AND " _ "lConditions->ptcProductTypeID->ObjectName %STARTSWITH '" _ pInfo.filters("Product") _ "'" 
+	Set tSELECT = tSELECT_" ORDER BY ID desc"
+	  Set tRS = ##class(%ResultSet).%New()
+	Set tSC = tRS.Prepare(tSELECT)
+	Set pInfo.queryText = tSELECT
+	Quit tRS
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.LoanTable","WebForm","OnClick",1,"Таблица договоров")
+ s ..PAGENAME="Реестр договоров"
+ q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="advPartRepayment">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	var parms = new Object();
+  	parms.LoanID = id;
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.AdvPartRepayment.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=650,height=430',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="viewLoanApp">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	var parms = new Object();
+  	parms.LoanAppID = id;
+  	parms.isLoan = 1;
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.LoanAppEdit.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=1150,height=704',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="viewAttachDocsTable">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	var parms = new Object();
+  	parms.LoanID = id
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.AttachDocsTable.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=1000,height=700',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="loanCashOrderEdit">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	var parms = new Object();
+  	parms.LoanID = id;
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.LoanCashOrderEdit.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=650,height=430',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="setAdvRepDate">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	var parms = new Object();
+  	parms.LoanID = id;
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.SetAdvRepDate.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=650,height=430',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="advRepayment">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	var parms = new Object();
+  	parms.LoanID = id;
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.AdvRepayment.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=650,height=430',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="prolongation">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	var parms = new Object();
+  	parms.LoanID = id;
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.Prolongation.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=650,height=430',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="prolongationByChangeProduct">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	var parms = new Object();
+  	parms.LoanID = id;
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.ProlongationByChangeProduct.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=650,height=530',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="passportChange">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	var parms = new Object();
+  	parms.LoanID = id;
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.PassportChange.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=650,height=530',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="changeLoanStage">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	var parms = new Object();
+  	parms.LoanID = id;
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.CO.ChangeLoanStage.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=650,height=530',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="rowDblClick">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	var parms = new Object();
+  	parms.LoanID = id;
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.LoanEdit.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=600,height=630',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="CLprintMenu">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	this.SRVprintOrder(id);
+]]></Implementation>
+</Method>
+
+<Method name="SRVprintOrder">
+<FormalSpec>ID:%String</FormalSpec>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ s cashOrder=##class(Docs.CashOrder).OpenBy(ID)
+ i '$IsObject(cashOrder) {
+	 s ErrText="Договор не имеет печатного документа"
+	 &js<alert('#(ErrText)#');>
+	 q
+ }
+ &js<zenPage.gotoPage(zenLink('GUI.WEB.RPT.CashOutOrder.cls?ID=#(ID)#'));>
+ q
+]]></Implementation>
+</Method>
+
+<Method name="jsAppQuestPrint">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	this.AppQuestPrint(id);
+]]></Implementation>
+</Method>
+
+<Method name="AppQuestPrint">
+<FormalSpec>ID:%String</FormalSpec>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ s obj=##class(Docs.Loan).%OpenId(ID)
+ i '$IsObject(obj) {
+	 s ErrText="Договор не найден"
+	 &js<alert('#(ErrText)#');>
+	 q
+ }
+ &js<zenPage.gotoPage(zenLink('GUI.WEB.RPT.LoanAppQuestionnaire.cls?ID=#(obj.lLoanAppID.%Id())#'));>
+ q
+]]></Implementation>
+</Method>
+
+<Method name="jsPGPrint">
+<Description>
+Пока в лоб текущий действующий график</Description>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	zenPage.gotoPage(zenLink('GUI.WEB.RPT.PayGraphics.cls?ID='+id));
+]]></Implementation>
+</Method>
+
+<Method name="jsLoanPrint">
+<Description>
+Пока в лоб одна печатная форма договора, надо перевести на метаданные или ф-ию выбора класса-представления </Description>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set id = ..%GetComponentById("mainTable").value
+	if (id="")
+	{
+		&js<alert("Ничего не выбрано");>
+		quit
+	}
+	&SQL(SELECT lConditions->ptcProductTypeID->PTDPrintBlank->ptpbPrintBlank into :prtBlank FROM Docs.Loan WHERE id = :id)
+	if SQLCODE=0
+	{
+		if (prtBlank=$$$prtLoanMEDNullPerc)
+		{
+			&js<zenPage.gotoPage(zenLink('GUI.WEB.RPT.LoanMEDNullPerc.cls?ID=#(id)#'));>
+		}
+		elseif (prtBlank=$$$prtLoanMDALombard)
+		{
+			&js<zenPage.gotoPage(zenLink('GUI.WEB.RPT.LoanMDALombard.cls?ID=#(id)#'));>
+		}
+		elseif (prtBlank=$$$prtLoanIZIUniversal)
+		{
+			&js<zenPage.gotoPage(zenLink('GUI.WEB.RPT.LoanEasyUniversal.cls?ID=#(id)#'));>
+		}
+		elseif (prtBlank=$$$prtLoanIZIExpress1)
+		{
+			&js<zenPage.gotoPage(zenLink('GUI.WEB.RPT.LoanEasyExpress1.cls?ID=#(id)#'));>
+		}
+		elseif (prtBlank=$$$prtLoanMDAToPayDay)
+		{
+			&js<zenPage.gotoPage(zenLink('GUI.WEB.RPT.LoanMDAToPayDay.cls?ID=#(id)#'));>
+		}
+		else
+		{
+			&js<zenPage.gotoPage(zenLink('GUI.WEB.RPT.LoanMDAUniversal.cls?ID=#(id)#'));>
+		}
+	}
+	
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="addLoan">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var parms = new Object();
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.LoanEdit.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=1100,height=704',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="onPopupAction">
+<FormalSpec>popupName,action,value</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[	zenPage.getComponentById('mainTable').executeQuery();
+]]></Implementation>
+</Method>
+</Class>
+</Export>

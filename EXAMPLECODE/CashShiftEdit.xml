@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.CashShiftEdit">
+<Description>
+Форма приема/сдачи смены</Description>
+<IncludeCode>%Guiconst,EMCConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62045,54339.751991</TimeCreated>
+
+<Parameter name="APPLICATION">
+<Description>
+Class name of application this page belongs to</Description>
+</Parameter>
+
+<Parameter name="PAGENAME">
+<Description>
+Displayed name of this page</Description>
+<Default>CashShiftEdit</Default>
+</Parameter>
+
+<Property name="CashShiftID">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="CashShiftID"/>
+</Property>
+
+<Property name="ReadOnly">
+<Type>%Boolean</Type>
+<Parameter name="ZENURL" value="ReadOnly"/>
+</Property>
+
+<Parameter name="JSINCLUDES">
+<Type>STRING</Type>
+<Default>jquery.js,jquery.maskedinput-1.2.2.js</Default>
+</Parameter>
+
+<XData name="Style">
+<Data><![CDATA[
+<style type="text/css">
+
+#userControls {
+	height: 200px;
+	overflow: auto;
+}
+
+.required {
+}
+.required:after {
+	color: red;
+	content: " *";
+}
+/*перебиваем дефолтное межстрочное растояние между контролами*/
+.zendiv {
+	padding-bottom: 5px;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page title="Акт приема/передачи денежных средств" xmlns="http://www.intersystems.com/zen">
+<titleBox id="titlePageHeader" title="" subtitle=""/>
+<fieldSet id="frmCashShiftEdit" legend="Акт приема/передачи денежных средств" labelPosition="left">
+
+<dateText id="edtDate" label="Дата операции" controlClass="dateMask" format="DMY" 
+ labelClass="required" required="true" onchange="zenPage.edtDateChange()" />
+<spacer width="20"/>
+
+<dataCombo id="edtCashier" name="edtCashier" size="50" label="Кассир" required="true" 
+ editable="false" 
+ searchKeyLen="0" dropdownWidth="650"
+ columnHeaders="№,Фамилия Имя Отчество,Должность"
+ OnCreateResultSet="edtCashierCreate"
+ onchange="zenPage.edtCashierChange(zenThis);"
+ displayColumns="2,3,4"
+ valueColumn="1"
+ choiceColumn="3"
+ auxColumn="1" 	
+/>
+<spacer width="20"/>
+
+<text id="edtOffice" label="Точка обслуживания клиентов (касса)" value="" size="50" readOnly="true" disabled="true"/>
+<spacer width="20"/>
+
+<text id="edtSumm" label="Сумма на начало смены" labelClass="required" size="15" required="true" />
+<spacer width="20"/>
+
+<text id="edtSummDb" label="Получено" labelClass="required" size="15" readOnly="true" disabled="true" />
+<spacer width="20"/>
+
+<text id="edtInDoc" label="№№ документов" labelClass="required" size="15" readOnly="true" disabled="true" />
+<spacer width="20"/>
+
+<text id="edtSummCr" label="Выдано" labelClass="required" size="15" readOnly="true" disabled="true" />
+<spacer width="20"/>
+
+<text id="edtOutDoc" label="№№ документов" labelClass="required" size="15" readOnly="true" disabled="true" />
+<spacer width="20"/>
+
+<text id="edtSummCl" label="Сумма на конец смены" labelClass="required" size="15" required="true" />
+<spacer width="20"/>
+
+<text id="edtSummDefc" label="Недостача" labelClass="required" size="15" required="true" />
+<spacer width="20"/>
+
+<text id="edtSummPls" label="Излишек" labelClass="required" size="15" required="true" />
+<spacer width="20"/>
+
+<dataCombo id="edtCashierR" name="edtCashierR" size="50" label="Принимающий кассир" required="true" 
+ editable="false" 
+ searchKeyLen="0" dropdownWidth="650"
+ columnHeaders="№,Фамилия Имя Отчество,Должность"
+ OnCreateResultSet="edtCashierCreate"
+ onchange="zenPage.edtCashierRChange(zenThis);"
+ displayColumns="2,3,4"
+ valueColumn="1"
+ choiceColumn="3"
+ auxColumn="1" 	
+/>
+<textarea id="memoInfo" label="Комментарий" labelClass="required" required="true" rows="4" cols="45"/>
+<spacer width="20"/>
+</fieldSet>
+
+<hgroup align="right">
+<button id="BOK" caption="Сохранить" onclick="zenPage.BOKClick();"/>
+<button id="BCancel" caption="Закрыть" onclick="zenPage.cancelPopup();"/>
+</hgroup>
+</page>
+]]></Data>
+</XData>
+
+<Method name="%DrawJSStrings">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pVisited:%String]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	d ##super()
+	&js<$(function()
+		{
+			$.mask.definitions['~']='[+-]';
+			$('.dateMask').mask('99-99-9999');
+		})
+		>
+	q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.CashShiftEdit","WebForm","OnClick",1,"Форма приема/сдачи смены")
+ s id=..CashShiftID
+ s ReadOnly=..ReadOnly
+
+ s userId=$g(%session.Data("UserId"))
+ s EmplId=%session.Data("EmplId")
+ s OfficeId=%session.Data("CurrentOffice","ID")
+ 
+ s %session.Data("CashShiftEdit","CurrentDate")=+$h
+
+ if id {
+	 s obj=##class(Docs.CashShift).%OpenId(id)
+ } else  {
+	 s obj=##class(Docs.CashShift).%New()
+	 i $IsObject(##class(Subj.Office).%OpenId(OfficeId)) s obj.csOffice=##class(Subj.Office).%OpenId( OfficeId)
+	 i $IsObject(##class(Subj.Employee).%OpenId(EmplId)) s obj.csCashier=##class(Subj.Employee).%OpenId(EmplId)
+	 d ..FillByDateClick(+$h,obj.csOffice,obj.csCashier,.SumIn,.SumOut,.csSumm,.csSummRP,.CashInDoc,.CashOutDoc)
+	 s obj.csSummDb=SumIn
+	 s obj.csSummCr=SumOut
+	 s obj.csListInDoc=CashInDoc
+	 s obj.csListOutDoc=CashOutDoc	
+     s obj.csSumm=csSumm
+     s obj.csSummRP=csSummRP
+ }
+ s caption="Акт приема/передачи денежных средств."_$s('id:"Новая запись",'ReadOnly:"Редактирование",1:"Просмотр")
+ s c=..%GetComponentById("frmCashShiftEdit")
+ s c.legend=caption
+ 
+ i ReadOnly=1 || id {
+	 s ..%GetComponentById("edtDate").disabled  = 1
+	 s ..%GetComponentById("edtCashier").disabled  = 1
+	 s ..%GetComponentById("edtCashierR").disabled  = 1
+ }
+ i ReadOnly=1 {
+	 s ..%GetComponentById("BOK").disabled  = 1
+ }
+ 
+ d ..FillForm(obj)
+ q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="FillForm">
+<Description>
+заполнение формы</Description>
+<FormalSpec>obj:Docs.CashShift</FormalSpec>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ #dim c as %ZEN.Component.control
+ 
+ i '$IsObject(obj) {
+	s ErrText="Ошибка открытия/создания объекта Docs.CashShift.cls"
+	&js<alert('#(ErrText)#');>
+	q $$$ERROR($$$GeneralError,ErrText)
+ }
+ s c=..%GetComponentById("edtDate")
+ s c.value=$zdt(obj.csDate,3)
+ 
+ s c=..%GetComponentById("edtCashier")
+ i $IsObject(obj.csCashier) {
+	 s c.value=obj.csCashier.sePersonID.ObjectName
+	 s c.aux=obj.csCashier.%Id()
+ }
+ s c=..%GetComponentById("edtOffice")  
+ if $IsObject(obj.csOffice) {
+	 s c.value=obj.csOffice.ObjectName
+	 s c.aux=obj.csOffice.%Id()
+ }
+ s c=..%GetComponentById("edtCashierR")
+ i $IsObject(obj.csCashierRP) {
+	 s c.value=obj.csCashierRP.sePersonID.ObjectName
+	 s c.aux=obj.csCashierRP.%Id()
+ }
+ s c=..%GetComponentById("edtSumm")
+ s c.value=$j(obj.csSumm,0,2)
+ s c=..%GetComponentById("edtSummDb")
+ s c.value=$j(obj.csSummDb,0,2)
+ s c=..%GetComponentById("edtSummCr")
+ s c.value=$j(obj.csSummCr,0,2)
+ s c=..%GetComponentById("edtSummCl")
+ s c.value=$j(obj.csSummRP,0,2)
+ s c=..%GetComponentById("edtInDoc")
+ s c.value=obj.csListInDoc
+ s c=..%GetComponentById("edtOutDoc")
+ s c.value=obj.csListOutDoc
+ s c=..%GetComponentById("edtSummDefc")
+ s c.value=obj.csSummDefc
+ s c=..%GetComponentById("edtSummPls")
+ s c.value=obj.csSummPls
+ s c=..%GetComponentById("memoInfo")
+ s c.value=obj.Info
+]]></Implementation>
+</Method>
+
+<Method name="edtCashierCreate">
+<Description>
+Принимающий кассир</Description>
+<FormalSpec>*tSC:%Status,pInfo:%ZEN.Auxiliary.QueryInfo</FormalSpec>
+<ReturnType>%ResultSet</ReturnType>
+<Implementation><![CDATA[
+ ;исключаем уволенных
+ s Date=%session.Data("CashShiftEdit","CurrentDate")
+ s OfficeID = %session.Data("CurrentOffice","ID")
+ s condition="cls='Subj.Employee' and Status='"_$$$scActive_"'"
+ s condition=condition_" and seOfficeID = '"_OfficeID_"' and (nvl(seDismissDate,'')='' or seDismissDate>'"_Date_"')"
+
+ s tSELECT = "select ID,SysCode as TabNumber,sePersonID->ObjectName as Name,seStaffID->ObjectName as Staff"
+ s tSELECT = tSELECT_" from Subj.Employee where "_condition
+ s tRS = ##class(%ResultSet).%New()
+ s tSC = tRS.Prepare(tSELECT)
+ s pInfo.queryText = tSELECT
+ q tRS
+]]></Implementation>
+</Method>
+
+<Method name="edtCashierChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ #dim c as %ZEN.Component.control
+ s date=%session.Data("CashShiftEdit","CurrentDate")
+ s c=..%GetComponentById("edtCashier")
+ s id=c.value
+ i $IsObject(##class(Subj.Employee).%OpenId(id)) { s c.aux=id }
+ s c=..%GetComponentById("edtOffice")
+ i $IsObject(##class(Subj.Employee).%OpenId(id)) {
+	 s o=##class(Subj.Employee).%OpenId(id)
+     if $IsObject(o.seOfficeID) {
+	     s c.value=o.seOfficeID.ObjectName
+	     s c.aux=o.seOfficeID.%Id()
+     }
+ }
+ s c=..%GetComponentById("edtOffice")
+ s OfficeId=c.aux
+ d ..FillByDateClick(date,OfficeId,id,.SumIn,.SumOut,.csSumm,.csSummRP,.CashInDoc,.CashOutDoc)
+ s c=..%GetComponentById("edtSumm")
+ s c.value=$j(csSumm,0,2)
+ s c=..%GetComponentById("edtSummDb")
+ s c.value=$j(SumIn,0,2)
+ s c=..%GetComponentById("edtSummCr")
+ s c.value=$j(SumOut,0,2)
+ s c=..%GetComponentById("edtSummCl")
+ s c.value=$j(csSummRP,0,2)
+ s c=..%GetComponentById("edtInDoc")
+ s c.value=CashInDoc
+ s c=..%GetComponentById("edtOutDoc")
+ s c.value=CashOutDoc
+]]></Implementation>
+</Method>
+
+<Method name="edtCashierRChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ #dim c as %ZEN.Component.control
+ s c=..%GetComponentById("edtCashierR")
+ s id=c.value
+ i $IsObject(##class(Subj.Employee).%OpenId(id)) { s c.aux=id }
+]]></Implementation>
+</Method>
+
+<Method name="edtDateChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ s c=..%GetComponentById("edtDate")
+ s date=$zdh(c.value,3,,,,,,,"")
+ i date="" q
+ s %session.Data("CashShiftEdit","CurrentDate")=date
+ s c=..%GetComponentById("edtCashier")
+ s CashierId=c.aux
+ s c=..%GetComponentById("edtOffice")
+ s OfficeId=c.aux
+ d ..FillByDateClick(date,OfficeId,CashierId,.SumIn,.SumOut,.csSumm,.csSummRP,.CashInDoc,.CashOutDoc)
+ s c=..%GetComponentById("edtSumm")
+ s c.value=$j(csSumm,0,2)
+ s c=..%GetComponentById("edtSummDb")
+ s c.value=$j(SumIn,0,2)
+ s c=..%GetComponentById("edtSummCr")
+ s c.value=$j(SumOut,0,2)
+ s c=..%GetComponentById("edtSummCl")
+ s c.value=$j(csSummRP,0,2)
+ s c=..%GetComponentById("edtInDoc")
+ s c.value=CashInDoc
+ s c=..%GetComponentById("edtOutDoc")
+ s c.value=CashOutDoc
+]]></Implementation>
+</Method>
+
+<Method name="FillCard">
+<Description>
+Заполнение данными с формы объекта (card) для последующей записи в БД
+по ссылке возврат сообщения о незаполненных обязательных полях и список контролов по этим полям</Description>
+<FormalSpec><![CDATA[card:Docs.CashShift,&ErrText:%String=""]]></FormalSpec>
+<Implementation><![CDATA[
+ #dim c as %ZEN.Component.control
+
+ i '$IsObject(card) {
+	s ErrText="Ошибка открытия/создания объекта Docs.CashShift"
+	&js<alert('#(ErrText)#');>
+	q $$$ERROR($$$GeneralError,ErrText)
+ }
+
+ s c=..%GetComponentById("edtDate")
+ s value=$zdh(c.value,3,,,,,,,"")
+ i value="" s ErrText=ErrText_"Дата операции^"
+ else  s card.csDate=value
+
+ s c=..%GetComponentById("edtOffice")  
+ s id=c.aux
+ i $IsObject(##class(Subj.Office).%OpenId(id)) {s card.csOffice=##class(Subj.Office).%OpenId(id)}
+ else  {s ErrText=ErrText_"Точка обслуживания"}
+ 
+ s c=..%GetComponentById("edtCashier")
+ s id=c.aux
+ i $IsObject(##class(Subj.Employee).%OpenId(id)) {s card.csCashier=##class(Subj.Employee).%OpenId(id)}
+ else  {s ErrText=ErrText_"Кассир"}
+ 
+ s c=..%GetComponentById("edtSumm")
+ s value=c.value
+ i 'value s ErrText=ErrText_"Сумма на начало смены^"
+ s card.csSumm=+value
+
+ s c=..%GetComponentById("edtSummCl")
+ s value=c.value
+ i 'value s ErrText=ErrText_"Сумма на конец смены^"
+ s card.csSummRP=+value
+
+ s c=..%GetComponentById("edtSummDb")
+ s value=c.value
+ s card.csSummDb=+value
+ 
+ s c=..%GetComponentById("edtSummCr")
+ s value=c.value
+ s card.csSummCr=+value
+
+ s c=..%GetComponentById("edtSummDefc")
+ s value=c.value
+ s card.csSummDefc=+value
+ 
+ s c=..%GetComponentById("edtSummPls")
+ s value=c.value
+ s card.csSummPls=+value
+ 
+ s c=..%GetComponentById("edtCashierR")
+ s id=c.aux
+
+ i $IsObject(##class(Subj.Employee).%OpenId(id)) {s card.csCashierRP=##class(Subj.Employee).%OpenId(id)}
+ else  {s ErrText=ErrText_"Принимающий кассир"}
+ 
+ s c=..%GetComponentById("edtInDoc")
+ s value=c.value
+ s card.csListInDoc=value
+ 
+ s c=..%GetComponentById("edtOutDoc")
+ s value=c.value
+ s card.csListOutDoc=value
+ 
+ s c=..%GetComponentById("memoInfo")
+ s value=c.value
+ s card.Info=$tr(value,$c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20))
+
+ i ErrText'="" s ErrText="Не заполнены следующие поля:\n\r"_$replace(ErrText,"^","\n\r")
+ q $s(ErrText="":$$$OK,1:'$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="BOKClick">
+<Description>
+Сохранить</Description>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ i ..CashShiftID { s obj=##class(Docs.CashShift).%OpenId(..CashShiftID) }
+ else { s obj=##class(Docs.CashShift).%New() }
+ i ..FillCard(obj,.ErrText)'=$$$OK {
+	 i ErrText'="" &js<alert('#(ErrText)#');>
+	 q
+ }
+ s ret=obj.SaveAction()
+ i $$$ISERR(ret) {
+	 s ErrText=$zcvt($System.Status.GetErrorText(ret),"O","JS")
+	 &js<alert('#(ErrText)#');>
+	 q
+ } 
+ ;все ОК - закрытие формы
+ &js<zenPage.firePopupAction("OK",#(ret)#,true);>
+]]></Implementation>
+</Method>
+
+<Method name="FillByDateClick">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[Date,OfficeId="",CashierId="",&SumIn,&SumOut,&csSumm,&csSummRP,&CashInDoc,&CashOutDoc]]></FormalSpec>
+<Implementation><![CDATA[
+ s (SumIn,SumOut,csSumm,csSummRP)=0
+ s (CashInDoc,CashOutDoc)=""
+
+ i '$IsObject(OfficeId) s OfficeId=##class(Subj.Office).%OpenId(OfficeId)
+ i '$IsObject(CashierId) s CashierId=##class(Subj.Employee).%OpenId(CashierId)
+ i $IsObject(OfficeId) && ($IsObject(CashierId)) {
+	 ;входящие и исходящие остатки по счету кассы
+     s reg=OfficeId.BL.GetCashReg()  ;счет кассы  для точки выдачи
+	 i $IsObject(reg) {
+		 s csSumm=reg.GetBalanceDt(Date-1,1)
+		 s csSummRP=reg.GetBalanceDt(Date,1)
+		 //i reg.GetSummRegDt(Data,Date,.SumDt,.SumCt){
+		 //	s csSummDb=SumDt
+		 //	s csSummCr=SumCt
+		 //}
+	 }
+	 ;обороты и номера документов по кассовым ордерам 
+	 s sc=##class(BL.Docs.CashOrder).GetCashSummDt(Date,OfficeId.%Id(),CashierId.%Id(),.SumIn,.SumOut,.CashInDoc,.CashOutDoc)
+	 ;если была передача смены от начала дня определяем вход.остаток как сумму переданных средств
+	 ;пока не надо!
+	 ;i ##class(BL.Docs.CashShift).GetCashSumDt(Date,OfficeId,CashierId,.CachSum) s csSumm=CachSum
+  }
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

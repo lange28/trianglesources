@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.MainPage">
+<Description>
+Домашняя страница</Description>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62518,43118.15846</TimeCreated>
+
+<Property name="PAGENAME">
+<Description>
+Текст, отображаемый в шапке страницы
+Для программного заполнения вставьте код заполнения в %OnAfterCreatePage</Description>
+<Type>%String</Type>
+</Property>
+
+<XData name="Style">
+<Description>
+описание css</Description>
+<Data><![CDATA[
+<style type="text/css">
+#rightGroup {
+	padding: 5px;
+	background: #CBE6EB;
+	background-position: right;
+	background-image: url(images/docindexgradient.png);
+	background-repeat: repeat-y;
+	height: 100%;
+	overflow: hidden;
+}
+body
+{
+	NObackground-image: url(images/mbg_winter.jpg);
+	background-color: #B0C4DE;
+}
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<Description>
+Не нужно переопределять этот блок в подклассах - там нужно только переопределять панель mainTablePane</Description>
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page xmlns="http://www.intersystems.com/zen" title= "Мултицентровое исследование">
+<hgroup>
+<pane xmlns="http://www.intersystems.com/zen" paneName="titleBox"/>
+<vgroup>
+<button caption="О программе" onclick="zenPage.about();"/>
+<button caption="     Выход     " onclick="zenPage.exit();"/>
+</vgroup>
+</hgroup>
+<activeHGroup split="85%" handleThickness="5">
+<image src="NOimages/welcome_winter.jpg"/>
+<vgroup valign="top" id="rightGroup">
+<label value="Управляющее дерево" />
+<dynaTree
+	id="tree"
+	showLines="true"
+	OnGetTreeInfo="GetTreeInfo"
+	onclick="zenPage.treeClick(zenThis);">
+	<parameter paramName="count" value="20"/>
+</dynaTree>
+</vgroup>
+</activeHGroup>
+</page>
+]]></Data>
+</XData>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.MainPage","WebForm","OnClick",1,"Домашняя страница")
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="exit">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	kill %session.Data
+	&js<window.location='GUI.WEB.Index.cls'>
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="about">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	&js<alert("Мультицентровое рандомизированное слепое плацебо-контролируемое исследование\nэффективности реабилитации пациентов с посинсультными двигательными нарушениями с помощью\nэкзоскелета кисти, управляемого через интерфейс мозг-компьютер, основанный на воображении движений\n\n ООО 'ИмэджериСофт'");>
+	quit
+]]></Implementation>
+</Method>
+
+<XData name="titleBox">
+<Description>
+Единообразная шапка страниц реестров</Description>
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<pane xmlns="http://www.intersystems.com/zen">
+<html OnDrawContent="DrawTitle"/>
+</pane>
+]]></Data>
+</XData>
+
+<Method name="DrawTitle">
+<Description>
+Ручная отрисовка шапки старницы</Description>
+<FormalSpec>pSeed:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	#; Whatever HTML we render here will be used as the title bar
+	&html<<table class="helpDeskTitle" border="0" cellpadding="0" cellspacing="0" width="100%">
+		<tr>
+		<td align="left" width="40"><img width="300" height="100" src="images/logo.png"/></td>
+		<td align="left" width="90%">
+		<div style="font-size: 1.5em;font-weight: bold;color: blue;"> Добро пожаловать, <br>
+		#(%session.Data("FirstName"))# #(%session.Data("MiddleName"))# </div>
+		</td>
+		<td width = "1000" align = "right"><br></td></tr>
+		</table>>
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="GetTreeInfo">
+<Description>
+Sample of a OnGetTreeInfo callback.</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[pRoot:%String,*pTree,&pParms]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+ set res=##class(Application.WEB.Utils).GetMainTree(.pTree)
+ Quit res
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="treeClick">
+<Description>
+treeClick</Description>
+<FormalSpec>tree</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+</Method>
+</Class>
+</Export>

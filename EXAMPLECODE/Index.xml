@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.Index">
+<Description>
+Страница входа в систему</Description>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62651,42930.030327</TimeCreated>
+
+<XData name="Style">
+<Description>
+Этот блок Style содержит определение CSS стиля страницы.</Description>
+<Data><![CDATA[
+<style type="text/css">
+body
+{
+NObackground-image: url(images/mbg_winter.jpg);
+background-color: #B0C4DE;
+}
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<Description>
+Этот XML блок описывает содержимое этой страницы.</Description>
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page xmlns="http://www.intersystems.com/zen" title="Вход в систему">
+<html>
+Автоматизированная информационная система<br/>. ООО "ИмэджериСофт"
+<br/><br/><br/><br/><br/><br/><br/>
+<center><font size="20">Вход в систему</font></center>
+</html>
+<vgroup align="center">
+<text id="loginTxt" label="Имя пользователя:" width="30"/>
+<password id="passwordTxt" label="Пароль:" width="30"/>
+<password id="newPasswordTxt" label="Новый пароль:" width="30" hidden="true"/>
+<password id="repeatNewPasswordTxt" label="Подтверждение:" width="30" hidden="true"/>
+<hgroup align="center">
+<button id="loginBtn" caption=" Войти " onclick="zenPage.logInMethod();"/>
+</hgroup>
+</vgroup>
+</page>
+]]></Data>
+</XData>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set ^a= $zdt($h)_" ERROR"
+	set %session.Data("hidChangePas") = 1
+	
+	s sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.Index","WebForm","OnClick",1,"Вход в Систему")
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="logInMethod">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set gotUserName = %page.%GetComponentById("loginTxt").value
+	set gotPassword = %page.%GetComponentById("passwordTxt").value
+	set res=##class(BL.Subj.Employee).CheckLogin(gotUserName,gotPassword)
+	if $$$ISOK(res)
+	{
+		set Obj=##class(System.TAccount).CheckLogin(gotUserName,gotPassword)
+		set Pas = gotPassword
+		if $IsObject(Obj) // проверка наличия объекта
+		{
+			// в случае успеха
+			if (Obj.Blocked)
+			{
+				// пользователь заблокирован
+				&js<alert('Доступ в систему для Вас заблокирован.')>
+			}
+			else
+			{
+				if (Obj.FirstEnter=1)&&(%session.Data("hidChangePas"))
+				{
+					set ..%GetComponentById("newPasswordTxt").hidden = 0
+					set ..%GetComponentById("repeatNewPasswordTxt").hidden = 0
+					set %session.Data("hidChangePas") = 0
+					quit
+				}
+				if Obj.FirstEnter=1
+				{
+					set newPas = ..%GetComponentById("newPasswordTxt").value
+					set repeatNewPas = ..%GetComponentById("repeatNewPasswordTxt").value
+					do %page.%SetValueById("newPasswordTxt","")
+					do %page.%SetValueById("repeatNewPasswordTxt","")
+					if (newPas="")
+					{
+						&js<alert("Введите новый пароль!");>
+						quit
+					}
+					if newPas'=repeatNewPas
+					{
+						&js<alert("Введенный новый пароль и его подтверждение не совпадают!");>
+						quit
+					}
+					if newPas=Pas
+					{
+						&js<alert("Новый пароль идентичен старому!\nВыберите другой пароль.");>
+						quit
+					}
+					else
+					{
+						if $zObjState(Obj)
+						{
+							set Obj.FirstEnter=0
+							do Obj.PasswordSet(newPas)
+							set res=Obj.%Save()
+							if $$$ISERR(res)
+							{
+								set Err = $$ErrorTextToDisplay^%Guifunc(res)
+								&js<alert('#(Err)#')>
+							}
+							else
+							{
+								set %session.Data("Password")=newPas
+							}
+						}
+					}
+				}
+			}
+		}
+		set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.Index","WebForm","OnClick",1,"Вход в систему")
+		&js<window.location='GUI.WEB.MainPage.cls'>
+	}
+	else
+	{
+		s ^mtempbda("CheckLogin")=$system.Status.GetErrorText(res)
+		// проверка логина/пароля неудачна
+		if $g(%session.Data("Login"))=2
+		{
+			&js<alert('Колличество попыток для авторизации исчерпано!\nДоступ'+
+			' в систему для Вас теперь заблокирован.')>
+			//set Obj.Blocked = 1
+		}
+		else
+		{
+			if $i(%session.Data("Login"))
+			&js<alert('Вход в систему невозможен!\nПроверьте правильность ввода '+
+			'имени пользователя и повторите ввод пароля.')> // $EC="Не определен пользователь Ем.КоМФОрт"
+			do %page.%SetValueById("passwordTxt","")
+		}
+	}
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<Description>
+This class method callback is called just before the server-side page 
+object is created.</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	d $SYSTEM.License.PublicWebAppUser()
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="onkeydownHandler">
+<Description>
+This client event, if present, is fired when a keydown event occurs on the page.</Description>
+<FormalSpec>evt</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	if (evt.keyCode == 13)
+		zenPage.logInMethod();
+]]></Implementation>
+</Method>
+</Class>
+</Export>

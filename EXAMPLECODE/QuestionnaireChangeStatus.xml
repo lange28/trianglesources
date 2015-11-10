@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.QuestionnaireChangeStatus">
+<Description>
+Форма для возвращения к редактированию заявки</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62763,52763.375332</TimeCreated>
+
+<Parameter name="PAGENAME">
+<Default>LoanAppStateRollBack</Default>
+</Parameter>
+
+<Property name="LoanAppID">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="LoanAppID"/>
+</Property>
+
+<Parameter name="JSINCLUDES">
+<Type>STRING</Type>
+<Default>jquery.js,jquery.maskedinput-1.2.2.js</Default>
+</Parameter>
+
+<XData name="Style">
+<Data><![CDATA[
+<style type="text/css">
+
+#userControls {
+	height: 200px;
+	overflow: auto;
+}
+.required {
+}
+.required:after {
+	color: red;
+	content: " *";
+}
+/*перебиваем дефолтное межстрочное растояние между контролами*/
+.zendiv {
+	padding-bottom: 5px;
+}
+/*в группе платежного калькулятора изменем дефолт по межстрочному отступу*/
+#frmCalc .zendiv {
+	padding-bottom: 1px;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page title="Вернуться к редактированию заявки" xmlns="http://www.intersystems.com/zen">
+<titleBox id="titlePageHeader" title="" subtitle=""/>
+<fieldSet legend=" Сведенья о займе ">
+<hgroup labelPosition="left" align="right">
+<text id="demandNumber" label="№ заявки" size="20" disabled="true"/>
+<spacer width="20"/>
+<dateText id="dtReg" label="Дата регистрации" disabled="true"/>
+<text id="ID" hidden="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="gEditInfo1" label="ФИО клиента" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<dateText id="gEditInfo2" label="Дата рождения" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="currStatusName" label="Текущий статус" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<dateText id="currStatusDate" label="Дата текущего статуса" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<button id="btnExec" caption=" ОК "  align="center" onclick="zenPage.btnExecClick();"/>
+<button id="btnCancel" caption="Выход" align="right" onclick="zenPage.cancelPopup();"/>
+</hgroup>
+</fieldSet>
+</page>
+]]></Data>
+</XData>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.LoanAppStateRollBack","WebForm","OnClick",1,"Форма для возвращения к редактированию заявки")
+	set ^a= $zdt($h)_" ERROR"
+	set c=..%GetComponentById("titlePageHeader")
+	set c.subtitle=##class(Application.TE.Utils).GetConnStr()
+
+	set ID = ..LoanAppID
+	if ID=""
+	{
+		//&js<alert("Не задан ID заявки.");>
+		quit $$$OK
+	}
+	
+	if ##class(Docs.LoanApp).%ExistsId(ID)'=$$$OK
+	{
+		set ErrText="Объект Docs.LoanApp с ID="_ID_" не существует."
+		//&js<alert('#(ErrText)#');> 
+		quit $$$OK
+	}
+	set ..%GetComponentById("ID").value = ID
+	set %session.Data("LoanAppID") = ID
+	do ..fillForm()
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="fillForm">
+<Implementation><![CDATA[
+	set id = %session.Data("LoanAppID")
+	set obj = ##class(Docs.LoanApp).%OpenId(id)
+	set ..%GetComponentById("demandNumber").value = obj.SysCode
+	set ..%GetComponentById("dtReg").value = $zd(obj.laDateReg,3)
+	set ..%GetComponentById("gEditInfo1").value = obj.laClientID.PersonID.ObjectName
+	set ..%GetComponentById("gEditInfo2").value = $zd(obj.laClientID.PersonID.DateOfBirth,3)
+	set ..%GetComponentById("currStatusName").value = """"_obj.laStateItemID.siStateID.ObjectName_""" """_
+														obj.laStateItemID.siReasonID.ObjectName_""""
+	set ..%GetComponentById("currStatusDate").value = $zd(obj.laStateItemID.siDate,3)
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="btnExecClick">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set LoanAppID = %session.Data("LoanAppID")
+	set obj = ##class(Docs.LoanApp).%OpenId(LoanAppID)
+	if '$IsObject(obj)
+	{
+		set ErrText="Объект Docs.LoanApp с ID="_LoanAppID_" не существует."
+		&js<alert('#(ErrText)#');>
+		quit
+	}
+	//Проверка на возможность отката статуса заявки
+	set res=##class(BL.Docs.LoanApp).CheckRollbackLoanAppStatus(LoanAppID,$$$laBlank)
+	if $$$ISERR(res) d OK^%WMUTIL($system.Status.GetErrorText(res)) quit
+
+	set str = "Вы уверены, что хотите вернуть заявку на редактирование?"
+	&js<if (!confirm("Запрос на подтверждение действия\n"+'#(str)#'))
+	{
+		return
+	}>
+	set res = ##class(BL.Docs.LoanApp).JumpLoanAppStatusLink($$$laBlank,obj.laStateItemID.siStateID,.StatusLinkID,.StatusName)
+	if $$$ISERR(res) quit res
+	set CommentStatus = "Ручной откат состояния заявки к редактируемому состоянию."
+	set DateStatus = +$h
+	set TypeReason=$$$lasrEmpty
+	&SQL(Select ID into :ReasonID from Docs.LoanAppStateReason where cls='Docs.LoanAppStateReason' and SysCode=:TypeReason)
+	if SQLCODE=100
+	{
+		&js<alert("Отсутствует причина перехода заявки с SysCode="+'#(TypeReason)#');>
+		quit
+	}
+	elseif SQLCODE<0
+	{
+		set ErrText = $System.SQL.SQLCODE(SQLCODE)
+		&js<alert("Ошибка SQL-запроса определения причины перехода заявкии. SQLCODE="+'#(ErrText)#');>
+		quit
+	}
+
+	set user = ##class(System.TAccount).GetSessionAccount()
+	set res = user.Exec(.doc,"Docs.registerStateLoanApp", obj, StatusLinkID, ReasonID, CommentStatus, DateStatus)
+	if $$$ISERR(res) 
+	{
+		do doc.Error("Ошибка при установки нового состояния заявки.\n"_$system.Status.GetErrorText(res))
+		quit
+	}
+	&js<zenPage.firePopupAction("OK","",true);>
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

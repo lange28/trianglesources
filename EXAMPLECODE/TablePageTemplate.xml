@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.TablePageTemplate">
+<Description>
+Шаблон страницы списка записей справочника (реестр)
+Имя страницы задается либо статично в св-ве PAGENAME либо програмно в методе %OnAfterCreatePage
+Состав локатора mainLocator заполняется в %OnAfterCreatePage
+XData.Contents в подклассах не переопределять - переопраеделяется дизайн таблицы и состав меню в
+XData.mainTablePane, причем имя используемой там таблицы должны быть mainTable
+http://server2008:57772/csp/rnd_stas/GUI.WEB.TablePageTemplate.cls</Description>
+<Abstract>1</Abstract>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62518,43118.15846</TimeCreated>
+
+<Property name="PAGENAME">
+<Description>
+Текст, отображаемый в шапке страницы
+Для программного заполнения вставьте код заполнения в %OnAfterCreatePage</Description>
+<Type>%String</Type>
+<InitialExpression>"Страница"</InitialExpression>
+</Property>
+
+<XData name="Style">
+<Description>
+описание css</Description>
+<Data><![CDATA[
+<style type="text/css">
+
+/* style for message box */
+#msgBox {
+	height: 8.0em;
+	width: 10.0em;
+	overflow: auto;
+	border: 1px solid darkblue;
+	background: white;
+}
+/* шрифт главной таблицы реестра */
+#mainTable table {
+	font-size: 0.7em;
+	font-family: verdana;
+	width: 800px;
+}
+/* шрифт фильтра главной таблицы реестра */
+#mainTable .tpFilter {
+	font-size: 1.4em;
+}
+/* шрифт фильтра по дате главной таблицы реестра */
+#mainTable .tpFilterDate {
+	font-size: 1.2em;
+}
+/* стиль меню */
+.csActiveMenuItem {
+	color: red;
+	background: gray;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+#rightAutoExpand {
+	padding: 5px;
+	background: #CBE6EB;
+	background-position: right;
+	background-image: url(images/docindexgradient.png);
+	background-repeat: repeat-y;
+	height: 100%;
+}
+body
+{
+	NObackground-image: url(images/mbg_winter.jpg);
+	background-color: #B0C4DE;
+}
+
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<Description>
+Не нужно переопределять этот блок в подклассах - там нужно только переопределять панель mainTablePane</Description>
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page xmlns="http://www.intersystems.com/zen" title= "ИмэджериСофт" >
+<hgroup>
+<pane xmlns="http://www.intersystems.com/zen" paneName="titleBox"/>
+<vgroup>
+<button caption="     К визитам     " onclick="zenPage.home();"/>
+<button caption="     Выход     " onclick="zenPage.exit();"/>
+</vgroup>
+</hgroup>
+<locatorBar id="mainLocator">
+<locatorLink caption="Домашняя страница" title="Домашняя страница" href="GUI.WEB.MainPage.cls"/>
+<locatorLink caption="Текущая страница" title="#" />
+</locatorBar>
+<activeHGroup split="-5" autoExpand="-250" handleThickness="5">
+<vgroup width="100%" valign="top">
+<pane xmlns="http://www.intersystems.com/zen" paneName="mainTablePane"/>
+<spacer height="20"/>
+</vgroup>
+<vgroup valign="top" id="rightAutoExpand">
+<label value="Управляющее дерево" />
+<dynaTree
+	id="tree"
+	showLines="true"
+	OnGetTreeInfo="GetTreeInfo"
+	onclick="zenPage.treeClick(zenThis);">
+	<parameter paramName="count" value="20"/>
+</dynaTree>
+</vgroup>
+</activeHGroup>
+</page>
+]]></Data>
+</XData>
+
+<Method name="exit">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	kill %session.Data
+	&js<window.location='GUI.WEB.Index.cls'>
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="home">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	&js<window.location='GUI.WEB.MainPage.cls'>
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="changeAutoExpand">
+<Language>java</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var edt = zenPage.getComponentById('activeHGroup');
+	//edt.setProperty("autoExpand",edt.getProperty("autoExpand"));
+]]></Implementation>
+</Method>
+
+<XData name="titleBox">
+<Description>
+Единообразная шапка страниц реестров</Description>
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<pane xmlns="http://www.intersystems.com/zen">
+<html OnDrawContent="DrawTitle"/>
+</pane>
+]]></Data>
+</XData>
+
+<Method name="DrawTitle">
+<Description>
+Ручная отрисовка шапки старницы</Description>
+<FormalSpec>pSeed:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	//s str=##class(Application.TE.Utils).GetConnStr()
+	#; Whatever HTML we render here will be used as the title bar
+	&html<<table class="helpDeskTitle" border="0" cellpadding="0" cellspacing="0" width="100%">
+		<tr>
+		<td align="left" width="40"><img width="240" height="100" src="images/logo.png"/></td>
+		<td align="left" width="90%">
+		<div style="font-size: 1.2em;font-weight: bold;color: blue;"> Пользователь <br>
+		#(%session.Data("LastName"))# #(%session.Data("FirstName"))# #(%session.Data("MiddleName"))# </div>
+		</td>
+		<td width = "1000" align = "right"><br></td></tr>
+		</table>>
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="GetTreeInfo">
+<Description>
+Sample of a OnGetTreeInfo callback.</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[pRoot:%String,*pTree,&pParms]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+ s res=##class(Application.WEB.Utils).GetMainTree(.pTree)
+ Quit res
+]]></Implementation>
+</Method>
+
+<Method name="exitPage">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	//set 
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="treeClick">
+<Description>
+treeClick</Description>
+<FormalSpec>tree</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+</Method>
+
+<XData name="mainTablePane">
+<Description>
+Панель с описанием таблицы реестра
+Оставлена здесь для отладки дизайна. Секция должна быть переопределена в наследниках</Description>
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<pane id="tPane" xmlns="http://www.intersystems.com/zen">
+<tableNavigatorBar id="navBar" showPageSize="true" tablePaneId="mainTable"/>
+  <csMenuBar id="mainTableMenu" width="100%">
+  <csMenuBarItem caption="Редактировать">
+    <contextMenu id="fileMenu" >
+      <csMenuItem icon="images/file.png" caption="Добавить" onclick="zenPage.addPay(zenThis);"  />
+      <csMenuItem icon="images/open.png" caption="Изменить" onclick="zenPage.rowDblClick(zenThis);"  />
+      <csMenuItem icon="images/cut.png" caption="Удалить" onclick="zenPage.jsDelPay();"  />
+    </contextMenu>
+  </csMenuBarItem>
+  <csMenuBarItem caption="Действия">
+    <contextMenu id="actionMenu" >
+      <csMenuItem icon="images/buildall.png" caption="Загрузка платежей QIWI" onclick="alert('Under construction');"  />
+      <csMenuItem icon="images/compile.png" caption="Пакетное проведение" onclick="alert('Under construction');"  />
+      <csMenuItem icon="images/workspace.png" caption="Перенос платежа на другой договор" onclick="alert('Under construction');"  />
+    </contextMenu>
+  </csMenuBarItem>
+  <csMenuBarItem caption="Печать">
+    <contextMenu id="printMenu" >
+      <csMenuItem icon="images/print.png" caption="Приходный кассовый ордер" onclick="zenPage.CLprintMenu(zenThis)"  />
+    </contextMenu>
+  </csMenuBarItem>
+</csMenuBar>
+<tablePane id="mainTable"
+	width="100%"
+	useSnapshot="true"
+	maxRows="1000"
+	pageSize="20"
+	tableName="Docs.Pay"
+	valueColumn="ID"
+	ondblclick=""
+	showQuery="false"
+	showZebra="true"
+	useKeys="false"
+	fixedHeaders="true"
+	bodyHeight="30em"
+	headerLayout="headersOnTop"
+	orderByClause="id desc"
+	>
+<column colName="ID" 
+		width="50"
+		hidden="true"
+		/>
+<column colName="SysCode"
+header="№ договора"
+		width="140"
+		id="filterSysCode"
+		colExpression="pLoanID->SysCode" 
+		filterType="text"
+		filterOp="="
+		 />
+<column colName="Client"
+header="Клиент"
+		width="300"
+		id="filterClient"
+		colExpression="pLoanID->lLoanAppID->laClientID->PersonID->ObjectName"
+		filterType="text"
+		filterOp="%STARTSWITH"
+		 />
+
+<column colName="Cashier"
+header="Кассир"
+		colExpression="pCashierID->sePersonID->ObjectName" 
+		width="150"
+		filterType="text"
+		filterOp="%STARTSWITH"
+		/>
+<column colName="Executed"  
+header="Пр."
+		colExpression="pExecuted" 
+		width="45"
+		filterEnum="1,0"
+		filterEnumDisplay="Да,Нет"
+		 filterType="enum"/>
+<column colName="pDate" 
+header="Дата"
+		width="100"
+		colExpression="pDate"
+		filterType="date"
+		filterOp="BETWEEN"
+		 />
+<column colName="pSumm" 
+header="Сумма"
+		width="80"
+		colExpression="pSumm"
+		filterType="text"
+		filterOp=">="
+		 />
+<column colName="pSet" 
+header="Назначение"
+		width="80"
+		colExpression="pSet"
+		 />
+<column colName="pOfficeID" 
+header="Точка обсл."
+		width="150"
+		colExpression="pOfficeID->ObjectName"
+		filterType="text"
+		filterOp="%STARTSWITH" 
+		 />
+<condition colName="Executed" 
+		predicate="EQ" 
+		value="Да" rowStyle="font-weight: bold;"/>
+</tablePane>
+<spacer height="10"/>
+</pane>
+]]></Data>
+</XData>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

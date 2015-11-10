@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.RPT.CachKO3List">
+<Description>
+Печатная форма: журнал ПКО/РКО</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62781,62204.86014</TimeCreated>
+
+<Method name="OnPage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.RPT.CachKO3List","WebForm","OnClick",1,"Печатная форма: журнал ПКО/РКО")
+	// Подготовка данных для вывода на печать
+	s TextMessage=..GetData(.Parameters)
+	// В случае проблем подготовки данных
+	i TextMessage'="" {
+	&html<
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+	<html><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+	<title></title>
+	<body>#(TextMessage)#</body>
+	</html>
+	</html>>
+	q $$$OK
+	}
+	// Вывод отчета
+	&html<
+. <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+<title></title>
+<style type="text/css"><!-- 
+.page_break {page-break-before: always;}
+.s0 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Top;
+}
+.s1 {
+ font-family: Arial;
+ font-size: 1px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 2;
+ border-right-width: 0px;
+ border-top-width: 0px;
+ border-bottom-width: 0px;
+ text-align: Left; vertical-align: Top;
+}
+.s2 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Top;
+}
+.s3 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Right; vertical-align: Top;
+}
+.s4 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Left; vertical-align: Top;
+}
+.s5 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Top;
+}
+.s6 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Top;
+}
+.s7 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Top;
+}
+.s8 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 0px;
+ text-align: Center; vertical-align: Top;
+}
+.s9 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 0px;
+ text-align: Center; vertical-align: Top;
+}
+.s10 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Top;
+}
+.s11 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Top;
+}
+.s12 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Top;
+}
+.s13 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Right; vertical-align: Top;
+}
+.s14 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Left; vertical-align: Top;
+}
+.s15 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Right; vertical-align: Top;
+}
+.s16 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Left; vertical-align: Top;
+}
+--></style>
+</head>
+<body
+ bgcolor="#FFFFFF" text="#000000">
+<a name="PageN1"></a>
+<table width="718" border="0" cellspacing="0" cellpadding="0">
+<tr style="height: 1px"><td width="79"/><td width="79"/><td width="79"/><td width="121"/><td width="1"/><td width="78"/><td width="79"/><td width="79"/><td width="121"/></tr>
+<tr style="height:18px">
+<td colspan="2" class="s0">Приходный&nbsp;документ</td><td rowspan="2" class="s5">Сумма,<br>руб.&nbsp;коп.</td><td rowspan="2" class="s5">Примечание</td><td rowspan="3" class="s1" style="font-size:1px">&nbsp;</td><td colspan="2" class="s5">Расходный&nbsp;документ</td><td rowspan="2" class="s5">Сумма,<br>руб.&nbsp;коп.</td><td rowspan="2" class="s5">Примечание</td>
+</tr>
+<tr style="height:18px">
+<td class="s10">Дата</td><td class="s11">Номер</td><td class="s11">Дата</td><td class="s11">Номер</td>
+</tr>
+<tr style="height:18px">
+<td class="s10">1</td><td class="s11">2</td><td class="s11">3</td><td class="s11">4</td><td class="s11">5</td><td class="s11">6</td><td class="s11">7</td><td class="s11">8</td>
+</tr>>
+	s gl=$na(^||M("Data"))
+	k ^bda("pkorko")
+	m ^bda("pkorko")=@gl
+	s i=""
+	f  {
+		s i=$o(@gl@(i))
+		q:i=""
+		&html<
+		<tr style="height:18px">
+		<td class="s12">#($g(@gl@(i,"DataP")))#</td><td class="s13">#($g(@gl@(i,"NomerP")))#</td><td class="s13">#($g(@gl@(i,"SumP")))#</td><td class="s14" style="font-size:1px">#($g(@gl@(i,"NoteP")))#</td><td class="s1" style="font-size:1px">&nbsp;</td><td class="s7">#($g(@gl@(i,"DataR")))#</td><td class="s13">#($g(@gl@(i,"NomerR")))#</td><td class="s13">#($g(@gl@(i,"SumR")))#</td><td class="s14" style="font-size:1px">#($g(@gl@(i,"NoteP")))#</td>
+		</tr>>
+	}
+	&html<
+</table>
+</body></html>>
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="GetData">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&Parameters]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	// Проверка входных параметров
+	// Инициализация данных
+	// для теста
+	/*set FirmName = "ООО ""ООО Медея"""
+	set OKPO = "91972447"
+	set Date = "2012-09-18"
+	set StrPodr = "101107 Восстания 1"
+	set StrPodrID = "27534170"
+	set DirectoryFIO = "СИЗОВА ЕЛЕНА АЛЕКСЕЕВНА"
+	set ChiefAccountantFIO = "СИЗОВА ЕЛЕНА АЛЕКСЕЕВНА"*/
+	
+	set Mode = 0
+	set Year = $g(%request.Data("Year",1))
+	set FirmName = $g(%request.Data("FirmName",1))
+	set OKPO = $g(%request.Data("OKPO",1))
+	set BeginDate = $g(%request.Data("BeginDate",1))
+	set EndDate = $g(%request.Data("EndDate",1))
+	set StrPodr = $g(%request.Data("StrPodr",1))
+	set StrPodrID = $g(%request.Data("StrPodrID",1))
+	set DirectoryFIO = $g(%request.Data("DirectoryFIO",1))
+	set ChiefAccountantFIO = $g(%request.Data("ChiefAccountantFIO",1))
+	
+	set %session.Data("Year") = Year
+	set %session.Data("BeginDate") = BeginDate
+	set %session.Data("EndDate") = EndDate
+	set %session.Data("StrPodr") = StrPodr
+	set %session.Data("StrPodrID") = StrPodrID
+	set %session.Data("Mode") = 0
+
+	set ^||M("Report")= 0
+	set ^||M("Count") = 0
+
+	set SumPBeg = 0
+	set SumPDay = 0
+	set SumRDay = 0
+	set i=0, j=0
+	set SQLCODE = ""
+	set BeginDate = $g(%session.Data("BeginDate"))
+	set EndDate = $g(%session.Data("EndDate"))
+	set Year = $g(%session.Data("Year"))
+
+	if EndDate = "" set EndDate = BeginDate
+
+	if (Year'="") && (BeginDate="") && (EndDate="")
+	{
+		set BeginDate = $zdateH(Year_"0101",3)
+		set EndDate = $zdateH(Year_"1231",3)
+	}
+	elseif (Year="") && (BeginDate="") && (EndDate="")
+	{
+		quit "Не введены даты."
+	}
+	elseif (BeginDate'="") && (EndDate'="")
+	{
+		set BeginDate = $zdateH($tr(BeginDate  ,".","-"),3)   
+		set EndDate = $zdateH($tr(EndDate    ,".","-"),3)   
+	}
+
+	set StrPodrID = $g(%session.Data("StrPodrID"))
+	set OptObj = ##class(System.TInfoObject).%New()
+	set res = ##CLASS(System.Options).GetOptions(OptObj,"CashAccount",.CashAccount)
+	set CashAccount = $s($g(CashAccount)'="":CashAccount,1:"50.1")
+	if 'Mode
+	{
+		if StrPodrID'=""
+		{
+			set StrPodrORef=##class(Subj.Office).%OpenId(StrPodrID)
+			if '$IsObject(StrPodrORef)
+			{
+				set ^||M("Data",0,"NomerDoc") = "" quit "Не найдено структурное подразделение с ID="_StrPodrID
+			}
+			set RegCash=CashAccount_"."_StrPodrORef.SysCode
+		}
+		else
+		{
+			set ^||M("Data",0,"NomerP") = "" quit "Не введено структурное подразделение."
+		}
+	}
+	else
+	{
+		set RegCash=CashAccount_".%"
+	}
+	// Устанавливаем для того, чтобы выводилась пустая таблица (если ничего нет...)
+	set ^||M("Data",1,"NomerR") = ""
+	set ^||M("Data",1,"NomerP") = ""
+	// 1) Отбираем проводки
+	set teAcntOSN=$$$teAcntOSN
+	if 'Mode
+	{
+		&SQL(
+			DECLARE Docs CURSOR FOR 
+			SELECT  DRegID->SysCode, CRegID->SysCode, DRegID->AcntID->SysCode, CRegID->AcntID->SysCode, OperID, OperID->dteoxDate, OperID->dteoxTime,  OperID->dteoxType->SysCode, OperID->dteoxMainDoc,    Summ,    Dt
+			INTO     :DRegIDSysCode,  :CRegIDSysCode,    :DRegIDAcntIDSysCode,    :CRegIDAcntIDSysCode,:OperID,         :OperDate,         :OperTime,            :SysCodeTypeOper,        :dteoxMainDoc, :TrSumm, :TrDt
+			FROM Data_TE.Tr
+			WHERE (CRegID->SysCode=:RegCash  OR  DRegID->SysCode=:RegCash)
+			AND Dt>=:BeginDate AND Dt<=:EndDate and OperID->dteoxType->TOTxAcntModule=:teAcntOSN
+			ORDER BY Dt)
+	}
+	else
+	{
+		&SQL(
+			DECLARE DocsAll CURSOR FOR
+			SELECT  DRegID->SysCode, CRegID->SysCode, DRegID->AcntID->SysCode, CRegID->AcntID->SysCode, OperID, OperID->dteoxDate, OperID->dteoxTime,  OperID->dteoxType->SysCode, OperID->dteoxMainDoc,    Summ,    Dt
+			INTO     :DRegIDSysCode,  :CRegIDSysCode,    :DRegIDAcntIDSysCode,    :CRegIDAcntIDSysCode,:OperID,         :OperDate,         :OperTime,            :SysCodeTypeOper,        :dteoxMainDoc, :TrSumm, :TrDt
+			FROM Data_TE.Tr
+			WHERE (CRegID->SysCode like :RegCash  OR  DRegID->SysCode like :RegCash)
+			AND Dt>=:BeginDate AND Dt<=:EndDate and OperID->dteoxType->TOTxAcntModule=:teAcntOSN
+			ORDER BY Dt)
+	}
+	if 'Mode
+	{
+		&SQL(OPEN Docs)
+	}
+	else
+	{
+		&SQL(OPEN DocsAll)
+	}
+	for 
+	{
+		if 'Mode {&SQL(FETCH Docs)} else {&SQL(FETCH DocsAll)}
+		Quit:SQLCODE
+		// Определяем остаток на начало дня путем пробега по всем операциям (отключено)
+		if 0
+		{
+			//Тут вычисляем начальное значение (на начало дня)
+		}
+		else
+		{
+			// Тут вычисляются суммы за день
+			// Определяем универсальный документ источник - должен быть Data.TE.DocUniDoc
+			if (dteoxMainDoc)=""
+			{
+				Continue
+			} 
+			set ref=##Class(System.TInfoObject).%OpenId(dteoxMainDoc)
+			if '$IsObject(ref)
+			{
+				Continue
+			}
+			//d OK^%WMUTIL("ref.cls="_ref.cls)
+			if ref.cls="Data.TE.DocUniDoc"
+			{
+				set DDUxEventDoc=ref.DDUxEventDoc  //на ID Документ событие
+				if DDUxEventDoc.cls="Docs.Pay"  		//Платеж
+				{
+					set i=i+1
+					set ^||M("Data",i,"NomerP") = ##class(Common.PrintDoc).GetNumBySource(DDUxEventDoc.%Id(),$$$doctypeInCashOrder)
+					set ^||M("Data",i,"SumP") = DDUxEventDoc.pSumm
+					set ^||M("Data",i,"DataP") = $tr($zdate(TrDt,3),"-",".")
+					if $IsObject(DDUxEventDoc.pLoanID.lLoanAppID.laClientID.PersonID)
+					{
+						set ^||M("Data",i,"NoteP") = ""
+					}
+					set SumPDay= SumPDay + $g(^||M("Data",i,"SumP"))
+				}
+				elseif DDUxEventDoc.cls="Docs.Loan"
+				{
+					set j=j+1
+					set ^||M("Data",j,"NomerR") = ##class(Common.PrintDoc).GetNumBySource(DDUxEventDoc.%Id(),$$$doctypeOutCashOrder)
+					set ^||M("Data",j,"SumR") = DDUxEventDoc.lSumm
+					set ^||M("Data",j,"DataR") = $tr($zdate(TrDt,3),"-",".")
+					if $IsObject(DDUxEventDoc.lLoanAppID.laClientID.PersonID)
+					{
+						set ^||M("Data",j,"NoteR") = ""
+					}
+					set SumRDay= SumRDay + $g(^||M("Data",j,"SumR")) 								
+				}
+				else
+				{
+					quit //"Не известный документ событие (не договор, и не платеж) ")
+				}
+			} 
+			elseif (ref.cls="Docs.CashOrder")&&((SysCodeTypeOper=$$$teOTCashIn)||(SysCodeTypeOper=$$$teOTPKO))   //Доставка из банка || Ручной приходный ордер
+			{
+				set i=i+1
+				set ^||M("Data",i,"NomerP") = ##class(Common.PrintDoc).GetNumBySource(ref.%Id(),$$$doctypeInCashOrder)
+				set ^||M("Data",i,"SumP") = ref.coSumm
+				set ^||M("Data",i,"NoteP") = "" //"Доставка из банка"
+				set ^||M("Data",i,"DataP") = $tr($zdate(TrDt,3),"-",".")
+				set SumPDay= SumPDay + $g(^||M("Data",i,"SumP"))
+			}	
+			elseif (ref.cls="Docs.CashOrder")&&((SysCodeTypeOper=$$$teOTCashOut)||(SysCodeTypeOper=$$$teOTRKO))  //Инкасация || Ручной расходный ордер
+			{
+				set j=j+1
+				set ^||M("Data",j,"NomerR") = ##class(Common.PrintDoc).GetNumBySource(ref.%Id(),$$$doctypeOutCashOrder)
+				set ^||M("Data",j,"SumR") = ref.coSumm
+				set ^||M("Data",j,"NoteR") = "" //"Инкасация"
+				set ^||M("Data",j,"DataR") = $tr($zdate(TrDt,3),"-",".")
+				set SumRDay= SumRDay + $g(^||M("Data",j,"SumR"))
+			}
+			elseif (ref.cls="Docs.LoanCashOrder")&&(SysCodeTypeOper=$$$teOTOverpayRetCash)  //Вовзрат переплаты через кассу
+			{
+				set j=j+1
+				set ^||M("Data",j,"NomerR") = ##class(Common.PrintDoc).GetNumBySource(ref.%Id(),$$$doctypeOutCashOrder)
+				set ^||M("Data",j,"SumR") = ref.lcoSumm
+				set ^||M("Data",j,"NoteR") = "" //"вовзрат переплаты"
+				set ^||M("Data",j,"DataR") = $tr($zdate(TrDt,3),"-",".")
+				set SumRDay= SumRDay + $g(^||M("Data",j,"SumR")) 				
+			}
+			else
+			{
+				//Все остальные документы, и другие подразделения  - пропускаем...
+				quit //"Не известный универсальный документ источник (cls="_ref.cls_") : OPERID="_OperID)
+			}
+		}
+	} //Цикла
+	set ^||M("Count")=$select(i>j:i,j>i:j,1:j)
+	if 'Mode
+	{
+		&SQL(CLOSE Docs)
+	}
+	else
+	{
+		&SQL(CLOSE DocsAll)
+	}
+	quit ""
+]]></Implementation>
+</Method>
+</Class>
+</Export>

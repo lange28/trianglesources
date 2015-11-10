@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.CachKO4">
+<Description>
+Страница вывода кассовой книги</Description>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62776,29111.511385</TimeCreated>
+
+<Parameter name="JSINCLUDES">
+<Type>STRING</Type>
+<Default>jquery.js,jquery.maskedinput-1.2.2.js</Default>
+</Parameter>
+
+<XData name="Style">
+<Data><![CDATA[
+<style type="text/css">
+
+#userControls {
+	height: 200px;
+	overflow: auto;
+}
+
+.required {
+}
+.required:after {
+	color: red;
+	content: " *";
+}
+/*перебиваем дефолтное межстрочное растояние между контролами*/
+.zendiv {
+	padding-bottom: 5px;
+}
+/*в группе платежного калькулятора изменем дефолт по межстрочному отступу*/
+#frmCalc .zendiv {
+	padding-bottom: 1px;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page title="Кассовая книга" xmlns="http://www.intersystems.com/zen">
+<titleBox id="titlePageHeader" title="" subtitle=""/>
+<fieldSet align="center">
+<hgroup labelPosition="left" align="right">
+<text id="geFirmName" label="Наименование организации" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="geOKPO" label="Код организации по ОКПО" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="geDirectoryFIO" label="Руководитель" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="geChiefAccountantFIO" label="Гл.бухгалтер" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<spacer/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="cmbStrPodr" label="Структурное подразделение" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<dateText id="gdeBeginDate" controlClass="dateMask" label="Дата кассовой книги" onchange="zenPage.gdeBeginDateChange();"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<button id="btnExec" caption="   ОК   "  align="center" onclick="zenPage.btnExecClick();"/>
+<button id="btnCancel" caption="Выход" align="right" onclick="zenPage.cancelPopup();"/>
+</hgroup>
+</fieldSet>
+</page>
+]]></Data>
+</XData>
+
+<Method name="%DrawJSStrings">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pVisited:%String]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	d ##super()
+	&js<$(function()
+		{
+			$.mask.definitions['~']='[+-]';
+			$('.dateMask').mask('99-99-9999');
+		})
+		>
+	q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.CachKO4","WebForm","OnClick",1,"Страница вывода кассовой книги")
+	set ^a= $zdt($h)_" ERROR"
+	set c=..%GetComponentById("titlePageHeader")
+	set c.subtitle=##class(Application.TE.Utils).GetConnStr()
+	set %session.Data("Mode") = 0
+	
+	do ..fillForm()
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="fillForm">
+<Implementation><![CDATA[
+	set Mode = %session.Data("Mode")
+	set obj = ##class(System.TInfoObject).%New()
+	if '$IsObject(obj) quit
+	set res = ##class(System.Options).GetOptions(obj,"FirmName",.text) 
+	set ..%GetComponentById("geFirmName").value = $g(text)
+	set res = ##class(System.Options).GetOptions(obj,"OKPO",.text) 
+ 	set ..%GetComponentById("geOKPO").value = $g(text)
+	set res = ##class(System.Options).GetOptions(obj,"Year",.text) 
+ 	
+	set res = ##class(System.Options).GetOptions(obj,"DirectoryID",.Dir)
+	if '$$$ISERR(res)
+	{
+		set MainFIODir = ""
+		if ##class(BL.Subj.Employee).GetEmployeeProp(Dir,.MainFIODir)
+		set ..%GetComponentById("geDirectoryFIO").value = MainFIODir
+	}
+	set res = ##class(System.Options).GetOptions(obj,"ChiefAccountantID",.Bux) 
+	if '$$$ISERR(res)
+	{
+		set MainFIOBux = ""
+		if ##class(BL.Subj.Employee).GetEmployeeProp(Bux,.MainFIOBux)
+		set ..%GetComponentById("geChiefAccountantFIO").value = MainFIOBux
+	}
+ 			
+ 	set ..%GetComponentById("cmbStrPodr").value = 
+ 		##class(Application.TE.Utils).GetCurrEmpl().seOfficeID.ObjectName
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="btnExecClick">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set Mode = %session.Data("Mode")
+	set Array = ##class(%ArrayOfDataTypes).%New()
+	set text = ..%GetComponentById("geFirmName").value
+	set Array.Data("FirmName") = text
+	set text = ..%GetComponentById("geOKPO").value
+	set Array.Data("OKPO") = text
+	set text = ..%GetComponentById("gdeBeginDate").value
+	set Array.Data("BeginDate") = text
+	set text = ..%GetComponentById("cmbStrPodr").value
+	set Array.Data("StrPodr") = text
+	if text'=""
+	{
+		if 'Mode
+		{
+			set id=""
+			&SQL(Select ID into :id from Subj.office where cls='Subj.office' AND ObjectName=:text AND Status='A' )
+			if SQLCODE=100
+			{
+				&js<alert("Отсутсвует в базе данных офис: "+'#(text)#'+'#(id)#');>
+				quit ""
+			}
+			elseif SQLCODE<0
+			{
+				set Err = $System.SQL.SQLCODE(SQLCODE)
+				&js<alert("Ошибка SQL-запроса. SQLCODE="+'#(Err)#');>
+				quit ""
+			}
+
+			//// Проверяем на наличие счета кассы у офиса		
+			set StrPodrORef = ##class(Subj.Office).%OpenId(id)
+			set reg = StrPodrORef.BL.GetCashReg()
+			#dim reg as Data.TE.Reg
+			if '$IsObject(reg) 
+			{
+				set ErrText = "Для точки выдачи '"_StrPodrORef.ObjectName_"' не открыт счет кассы"
+				set res = $$$ERROR($$$GeneralError,ErrText)
+				&js<alert('#(ErrText)#')>
+				quit
+			}
+			set Array.Data("StrPodrID") = id
+		}
+		else
+		{
+			set Array.Data("StrPodrID")=""
+		}
+	}
+	else
+	{
+	 	if 'Mode
+	 	{
+		 	&js<alert("Не введено подразделение.");>
+		 	quit
+		 }
+	}
+
+	set text = ..%GetComponentById("geDirectoryFIO").value
+	set Array.Data("DirectoryFIO") = text
+	set text = ..%GetComponentById("geChiefAccountantFIO").value
+ 	set Array.Data("ChiefAccountantFIO") = text
+	//&js<zenPage.Func('#(arg1)#')>
+	//set str = "FirmName="_Array.Data("FirmName")_"&OKPO="_Array.Data("OKPO")_"&Date="_Array.Data("BeginDate")_"&"_
+	//	"StrPodr="_Array.Data("StrPodr")_"&StrPodrID="_Array.Data("StrPodrID")_"&DirectoryFIO="_Array.Data("DirectoryFIO")_"&ChiefAccountantFIO="_Array.Data("ChiefAccountantFIO")
+	&js<zenPage.gotoPage(zenLink('GUI.WEB.RPT.CachKO4List.cls?'+
+		'FirmName=#(Array.Data("FirmName"))#&OKPO=#(Array.Data("OKPO"))#&'+
+		'Date=#(Array.Data("BeginDate"))#&StrPodr=#(Array.Data("StrPodr"))#&'+
+		'StrPodrID=#(Array.Data("StrPodrID"))#&DirectoryFIO=#(Array.Data("DirectoryFIO"))#&'+
+		'ChiefAccountantFIO=#(Array.Data("ChiefAccountantFIO"))#'));>
+	q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="Func">
+<FormalSpec>arg1</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[	return
+]]></Implementation>
+</Method>
+
+<Method name="gdeBeginDateChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = %page.%GetComponentById("gdeBeginDate").value
+	if (str = "-1") set %page.%GetComponentById("gdeBeginDate").value = "" quit
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

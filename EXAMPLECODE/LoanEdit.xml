@@ -1,0 +1,882 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.LoanEdit">
+<Description>
+Форма для редактирования договора</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62045,54339.751991</TimeCreated>
+
+<Parameter name="APPLICATION">
+<Description>
+Class name of application this page belongs to</Description>
+</Parameter>
+
+<Parameter name="PAGENAME">
+<Description>
+Displayed name of this page</Description>
+<Default>LoanEdit</Default>
+</Parameter>
+
+<Property name="LoanID">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="LoanID"/>
+</Property>
+
+<Property name="ReadOnly">
+<Type>%Boolean</Type>
+<Parameter name="ZENURL" value="ReadOnly"/>
+</Property>
+
+<XData name="Style">
+<Data><![CDATA[
+<style type="text/css">
+
+#userControls {
+	height: 200px;
+	overflow: auto;
+}
+
+.required {
+}
+.required:after {
+	color: red;
+	content: " *";
+}
+/*перебиваем дефолтное межстрочное растояние между контролами*/
+.zendiv {
+	padding-bottom: 5px;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page title="Редактирование договора" xmlns="http://www.intersystems.com/zen">
+<titleBox id="titlePageHeader" title="" 
+		subtitle=""/>
+<fieldSet id="frmEdit" legend="Сведения о договоре" labelPosition="left">
+<dataCombo id="edtLSysCode" name="edtLSysCode" label="№" required="true" size="26"
+ editable="true" unrestricted="true"
+ searchKeyLen="0" dropdownWidth="80.0em"
+ valueColumn="2"
+ columnHeaders="№ заявки,Дата,Продукт,Сумма,Срок,Eд.срока,ФИО клиента"
+ displayColumns="2,3,4,5,6,7,8"
+ OnCreateResultSet="edtLSysCodeCreateComboRS"
+ onchange="zenPage.edtLSysCodeOnChange(zenThis);" >	
+</dataCombo>
+<spacer width="25"/>
+
+<combobox id="edtLProductType" label="Продукт" editable="false" labelClass="required" required="true" hidden="true" />
+
+<text id="nedtLProductType" label="Продукт" labelClass="required" size="10" required="true" disabled="true" />
+<spacer width="20"/>
+
+<combobox id="cmbLPeriod" label="Срок"  labelClass="required" size="10" width="10" required="true" hidden="true" onchange="zenPage.cmbLPeriodOnChange(zenThis);" />
+<text id="edtlPeriod" label="Срок" labelClass="required" size="10" required="true" />
+<spacer width="20"/>
+
+<text id="lblLPeriodUnitApp" label="Ед.изм.срока" size="10" disabled="true" />
+<spacer width="20"/>
+
+<combobox id="cmbLSumm" label="Сумма" labelClass="requider" size="10" width="10" required="true" hidden="true"/>
+<text id="nedtlSumm" label="Сумма" labelClass="required" size="10" required="true" />
+<spacer width="20"/>
+
+<dateText id="dedtRegDate" label="Дата подписания" format="DMY" labelClass="required" required="true" />
+<!-- onchange="zenPage.dedtRegDateExit()-->
+<spacer width="20"/>
+<text id="edtlOfficeID" label="Место выдачи" value="" size="50" readOnly="true" disabled="true"/>
+
+<combobox id="cmbIssueMeans" label="Способ выдачи" dropdownHeight="100" editable="false" labelClass="required" required="true" onchange="zenPage.cmbIssueMeansOnChange(zenThis);" />
+</fieldSet>
+<fieldSet id="cardField" legend="Сведения о карте" hidden="true">
+<hgroup labelPosition="left">
+<text id="bankCardAccount" size="20" label="Номер счета в банке" labelClass="required" required="true"/>
+<button id="bankCardSearch" caption="..."/>
+<spacer width="20"/>
+<text id="bankCard" size="20" label="Номер карты" labelClass="required" required="true" disabled="true"/>
+<text id="bankCardAccountID" hidden="true"/>
+</hgroup>
+</fieldSet>
+<hgroup align="right">
+<button id="btnLoanAppView" caption="Просмотреть заявку" hidden="true" onclick="zenPage.LoanAppView();"/>
+<button id="btnOK" caption="Сохранить" onclick="zenPage.BOKClick();"/>
+<button id="btnCancel" caption="Закрыть" onclick="zenPage.cancelPopup();"/>
+</hgroup>
+</page>
+]]></Data>
+</XData>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.LoanEdit","WebForm","OnClick",1,"Форма для редактирования договора")
+ set id=..LoanID
+ set ReadOnly=..ReadOnly
+ i id s obj=##class(Docs.Loan).%OpenId(id)
+ else  s obj=##class(Docs.Loan).%New()
+ i '$IsObject(obj) {
+	s ErrText="Ошибка открытия/создания объекта Docs.Loan ID="_id
+	//&js<alert('#(ErrText)#');>
+	q $$$ERROR($$$GeneralError,ErrText)
+ }
+ i obj.BL.IsReadOnlyStatus() s ReadOnly=1  ;статус полностью запрещает редактирование
+ if id&&('ReadOnly) {
+	 ;блокировки пропущены ...
+     if (obj.lBankAccountRegisterID'="") {
+	     if (obj.lBankAccountRegisterID.%Id()'="") {
+		     s numreestr=obj.lBankAccountRegisterID.barNumber
+		     s LockStr=LockStr_"^Договор включен в реестр № "_numreestr_".^Редактирование запрещено."
+		     s ReadOnly=1
+		     //&js<alert('#(LockStr)#');>
+	     }
+     }
+ }
+  
+ s myOfficeID=$g(%session.Data("CurrentOffice","ID"))
+ i $IsObject(##class(Subj.Office).%OpenId(myOfficeID)) {
+			 s office=##class(Subj.Office).%OpenId(myOfficeID)
+			 s obj.lOfficeID=office
+ }
+ ;способ выдачи
+ d ..FillComboBox("cmbIssueMeans","Docs.Loan||laIssueMeans","")
+ d ..FillForm(obj,ReadOnly)
+ ;закрыть на редактирование номер договора
+ if obj.%Id() {
+	 s c=..%GetComponentById("edtLSysCode") 
+     s c.disabled=1 
+ }
+ ; если были открыты счета, то запрет на смену номера займа и даты подписания
+ i $IsObject(obj.lRegDebt) {
+	s c=..%GetComponentById("dedtRegDate")
+	s c.disabled=1
+    s c=..%GetComponentById("edtLSysCode") 
+    s c.disabled=1 
+ }
+ i ReadOnly {
+	 s c=..%GetComponentById("btnOK")
+	 s c.disabled=1
+	 s c=..%GetComponentById("cmbIssueMeans")
+	 s c.disabled=1 
+	 //for im="cmbLPeriod","cmbLSumm" { s c=..%GetComponentById(im),c.hidden=1 }
+	 for im="edtlPeriod","nedtlSumm" { s c=..%GetComponentById(im),c.disabled=1} 
+ } 
+ q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="FillForm">
+<FormalSpec>lobj:Docs.Loan,ReadOnly</FormalSpec>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ #dim c as %ZEN.Component.control
+
+ if 'lobj.%Id() { s caption="Регистрация нового договора" }
+ else {
+	 s ro=$g(ReadOnly)
+	 s caption=$s(ro:"Просмотр договора №"_lobj.SysCode,1:"Редактирование договора №"_lobj.SysCode)
+	 s:$IsObject(lobj.lStateItemID.lsiStateID) caption=caption_" ["_lobj.lStateItemID.lsiStateID.ObjectName_"]"
+ }
+
+ s c=..%GetComponentById("frmEdit")
+ s c.legend=caption
+ s c=..%GetComponentById("edtLSysCode") 
+ s c.value=lobj.SysCode
+ s c.aux=lobj.%Id()
+ 
+ s c=..%GetComponentById("dedtRegDate")
+ s c.value=$zdt(lobj.lDateReg,3)
+ i $IsObject(lobj.lOfficeID) {
+	 s c=..%GetComponentById("edtlOfficeID")
+	 s c.value=lobj.lOfficeID.ObjectName
+	 s c.aux=lobj.lOfficeID.%Id()
+ }
+ i $IsObject(lobj.lConditions.ptcProductTypeID) {
+	 s p=lobj.lConditions.ptcProductTypeID
+	 s c=..%GetComponentById("edtLProductType")
+	 s c.value=p.ObjectName
+	 s c.aux=p.%Id()
+	 d ..FillAndSetCmbPeriod(p.%Id(),lobj.lConditions.ptcPeriod)
+	 d ..FillAndSetCmbSumm(p.%Id(),lobj.lConditions.ptcPeriod,lobj.lConditions.ptcAmount)
+ 	 s c=..%GetComponentById("nedtLProductType")
+	 s c.value=p.ObjectName
+	 s c.aux=p.%Id()
+	 s str="("_p.PTEdLogicalToDisplay(p.PTEd)_")"
+     s c=..%GetComponentById("lblLPeriodUnitApp")
+ 	 s c.value=str
+ 	 i p.PTDynamicConditions {
+	/*	 s c=..%GetComponentById("edtlPeriod"),c.hidden=0
+		 s c=..%GetComponentById("nedtlSumm"),c.hidden=0
+		 s c=..%GetComponentById("cmbLPeriod"),c.hidden=1
+		 s c=..%GetComponentById("cmbLSumm"),c.hidden=1 */
+	} else {
+		 s c=..%GetComponentById("edtlPeriod"),c.hidden=1
+		 s c=..%GetComponentById("nedtlSumm"),c.hidden=1
+    	 s c=..%GetComponentById("cmbLPeriod"),c.hidden=0
+		 s c=..%GetComponentById("cmbLSumm"),c.hidden=0
+	 }
+ }
+ s period=$s(+lobj.lPeriod:+lobj.lPeriod,1:"")
+ s c=..%GetComponentById("edtlPeriod")
+ s c.value=period
+ s c=..%GetComponentById("nedtlSumm")
+ s c.value=$j(lobj.lSumm,0,2)
+  
+ s c=..%GetComponentById("cmbIssueMeans")
+ s c.value=lobj.laIssueMeans
+]]></Implementation>
+</Method>
+
+<Method name="FillCard">
+<Description>
+Заполнение данными с формы объекта (card) для последующей записи в БД
+по ссылке возврат сообщения о незаполненных обязательных полях</Description>
+<FormalSpec><![CDATA[card:Docs.Loan,&ErrText:%String]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+ #dim c as %ZEN.Component.control
+ s ErrText=""
+ s c=..%GetComponentById("edtLSysCode")
+ s text=c.value
+
+ i card.%Id()="" {
+	 if text'="" && ($IsObject(##class(Docs.LoanApp).OpenSysCode(text))) {
+		 s card.lLoanAppID=##class(Docs.LoanApp).OpenSysCode(text)
+	 } else {
+		 s ErrText="Не найдена заявка "_text
+		 q '$$$OK
+	 }
+ }
+ i text'="" { s card.SysCode=text }
+ else { s ErrText=ErrText_"№ договора^" }
+ 
+ s c=..%GetComponentById("dedtRegDate")
+ s str=$zdh(c.value,3,,,,,,,"")
+ i str="" s ErrText=$g(ErrText)_"Дата регистрации^"
+ else  s card.lDateReg=str
+ 
+ s c=..%GetComponentById("edtLProductType")
+ s ptID=c.aux
+ s ptName=c.value
+ i 'ptID s ErrText=$g(ErrText)_"Продукт^"
+ i '$IsObject(##class(Docs.ProductType).%OpenId(ptID)) {
+	 s ErrText="Не найден тип продукта ID="_ptID
+	 q '$$$OK
+ } else {
+	 s pt=##class(Docs.ProductType).%OpenId(ptID)
+	 
+	 ;тип продукта
+     s Date=card.lDateReg
+ 	 d ..FillComboBoxProductType("edtLProductType",Date)
+     s res=##class(BL.Docs.ProductType).GetListProductType(Date,.list)
+     i '$lf(list,(ptID_"~"_ptName)) {
+	     s ErrText="Тип продукта "_ptName_" не действует на дату регистрации договора "_$zdt(Date,3)
+	     q '$$$OK
+     }
+     s card.lProductTypeID=pt
+	 i 'pt.PTDynamicConditions {
+		 ;статичные суммы и сроки
+		 s id=..GetLConditions()
+		 i 'id {s ErrText=$g(ErrText)_" Срок/Сумма^"}
+		 else {
+			 s card.lConditions=##class(Docs.ProductTypeConditions).%OpenId(id)
+			 i '$IsObject(card.lConditions) {
+				 &js<alert('#("Не найден вариант типа продукта ID="_id)#');>
+				 q '$$$OK
+			 }
+			 s card.lSumm=card.lConditions.ptcAmount
+			 s card.lPeriod=card.lConditions.ptcPeriod
+	 	 }
+	 } else {
+		 ; произвольные сумма/срок
+		 s c=..%GetComponentById("edtlPeriod")
+		 s str=c.value
+		 i str s card.lPeriod=+str 
+		 else  s ErrText=$g(ErrText)_"Срок^"
+		 s c=..%GetComponentById("nedtlSumm")
+		 s str=c.value
+		 i str s card.lSumm=+str 
+		 else  s ErrText=$g(ErrText)_"Сумма^"
+	 }
+ }
+ s c=..%GetComponentById("edtlOfficeID")
+ s str=c.aux
+ i str {d card.lOfficeIDSetObjectId(str)}
+ else  {s ErrText=$g(ErrText)_"Место регистрации^"}
+ 
+ s c=..%GetComponentById("cmbIssueMeans")
+ s str=c.value
+ i str s card.laIssueMeans=str
+ else  s ErrText=$g(ErrText)_"Способ выдачи^"
+ 
+ i ErrText'="" s ErrText="Не заполнены следующие поля:\n\r"_$replace(ErrText,"^","\n\r")
+
+ q $s(ErrText="":$$$OK,1:'$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="GetLConditions">
+<Description>
+По введенным на форме параметрам определяет ID показателей займа Docs.ProductTypeConditions</Description>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ #dim c as %ZEN.Component.control
+ s c=..%GetComponentById("edtLProductType")
+ s ptID=c.aux
+ s c=..%GetComponentById("cmbLPeriod")
+ s period=+c.text
+ s c=..%GetComponentById("cmbLSumm")
+ s summ=+c.text
+ 
+ i ('ptID)||('period)||('summ) q ""
+ s scActive=$$$scActive
+ &sql(select id into :id from Docs.ProductTypeConditions where cls='Docs.ProductTypeConditions' and Status=:scActive
+ and ptcAmount=:summ and ptcPeriod=:period and ptcProductTypeID=:ptID)
+ i SQLCODE<0 {s ErrText="Ошибка SQL:"_$SYSTEM.SQL.SQLCODE(SQLCODE) $$$SysLogError($$$EMCSysErr,ErrText) d OK^%WMUTIL(ErrText) q ""}
+ s ret=$s('SQLCODE:id,1:"")
+ q ret
+]]></Implementation>
+</Method>
+
+<Method name="BOKClick">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ 
+ 	&js<
+	var btn1 = zenPage.getComponentById("btnOK");
+	btn1.setProperty("hidden",true);
+	>	
+	
+ i ..LoanID s obj=##class(Docs.Loan).%OpenId(..LoanID)
+ e  s obj=##class(Docs.Loan).%New()
+ i ..FillCard(obj,.ErrText)'=$$$OK
+ i ErrText'="" {
+     &js<alert('#(ErrText)#');
+		var btn1 = zenPage.getComponentById("btnOK");
+		btn1.setProperty("hidden",false);
+	>
+     q
+ }
+
+ if ($IsObject(obj.lLoanAppID)) && ($IsObject(obj.lLoanAppID.laStateItemID)) {
+	 set res=##class(BL.Docs.LoanApp).GetStateDateLoanApp(obj.lLoanAppID,$$$laApproved,.dateApproved)
+	 if $$$ISERR(res) {
+		s ErrText=$System.Status.GetErrorText(res)
+		&js<alert('#(ErrText)#');
+		var btn1 = zenPage.getComponentById("btnOK");
+		btn1.setProperty("hidden",false);
+		>	
+		q
+	 }
+     if obj.lDateReg<dateApproved {
+	     s ErrText="Невозможно сохранение договора.^«Дата подписания» договора: "_$$$HorologToDateEdit(obj.lDateReg)_" г. меньше даты установки статуса заявки «Одобрено»: "_$$$HorologToDateEdit(dateApproved)_" г."
+	     &js<alert('#(ErrText)#');
+	    	var btn1 = zenPage.getComponentById("btnOK");
+			btn1.setProperty("hidden",false);
+		>	
+	     q
+     }
+ } 
+ if $IsObject(obj.lProductTypeID) {
+	 ;проверка типа займа на флаг "Для повторных клиентов"
+     if obj.lProductTypeID.PTSecond=1 {
+	     s res=##class(BL.Docs.Loan).SecondLoanCheckExeption(obj.lLoanAppID.laClientID.PersonID,obj.lProductTypeID,obj.lDateReg)
+	     if $$$ISERR(res) {
+		     s ErrText=$System.Status.GetErrorText(res)
+		     &js<alert('#(ErrText)#');
+		    	var btn1 = zenPage.getComponentById("btnOK");
+				btn1.setProperty("hidden",false);
+		     >
+		     q
+	     }
+     }
+     ;проверка макс.возможных сроков/суммы для типа займа с произвольными условиями
+     if obj.lProductTypeID.PTDynamicConditions {
+	     s res=##class(Actions.Execs.Docs.registerLoan).CheckProductTypePeriod(obj)
+	     i $$$ISERR(res) {
+ 		     s ErrText=$System.Status.GetErrorText(res)
+ 		      &js<alert('#(ErrText)#');
+		    	var btn1 = zenPage.getComponentById("btnOK");
+				btn1.setProperty("hidden",false);
+ 		      >
+ 		      q
+	     }
+	     s res=##class(Actions.Execs.Docs.registerLoan).CheckProductTypeSumm(obj)
+	     i $$$ISERR(res) {
+		     s ErrText=$System.Status.GetErrorText(res)
+		     &js<alert('#(ErrText)#');
+		    	var btn1 = zenPage.getComponentById("btnOK");
+				btn1.setProperty("hidden",false);
+		     >
+		     q
+	     }
+     }
+ }
+ s user=##class(System.TAccount).GetSessionAccount()
+ s ret=user.Exec(.doc,"Docs.registerLoan",obj)
+ i $$$ISERR(ret) {
+	 s ErrText=$zcvt($System.Status.GetErrorText(ret),"O","JS")
+	 &js<alert('#(ErrText)#');
+	    	var btn1 = zenPage.getComponentById("btnOK");
+			btn1.setProperty("hidden",false);
+	 >
+	 q
+ }
+ ; все ОК - закрытие формы и возрват id "наружу"
+ &js<zenPage.firePopupAction("OK",#(ret)#,true);>
+]]></Implementation>
+</Method>
+
+<Method name="FillAndSetCmbPeriod">
+<Description>
+Перегрузка и опц. установка значения в комбобоксе срока займа</Description>
+<FormalSpec>ProductTypeID,defaultValue=0</FormalSpec>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ s (valueList,displayList,value) = ""
+ s status=$$$scActive
+ &SQL(DECLARE DTP CURSOR FOR select id into :id from Docs.ProductTypeConditions where cls='Docs.ProductTypeConditions' and Status=:status
+ and ptcProductTypeID=:ProductTypeID Group BY ptcPeriod order by ptcPeriod)
+ &SQL(OPEN DTP)
+ f  {
+  	&SQL(FETCH DTP)
+   	q:SQLCODE
+   	s pt=##class(Docs.ProductTypeConditions).%OpenId(id)
+   	s Value=+pt.ptcPeriod
+   	i '$IsObject(pt) CONTINUE
+   	s valueList = valueList_$s(valueList'="":",",1:"")_id
+   	s displayList = displayList _$s(displayList'="":",",1:"")_Value
+   	i defaultValue=Value s value=id
+ }
+ &sql(close DTP)
+ s tCombo = ..%GetComponentById("cmbLPeriod")
+ s tCombo.valueList = valueList
+ s tCombo.displayList = displayList
+ //s ^bda("valueList")=valueList_" / "_displayList 
+ if value'="" {s tCombo.value = value, tCombo.text = defaultValue}
+ else  { s tCombo.value = "", tCombo.text = "" }  
+ q
+]]></Implementation>
+</Method>
+
+<Method name="FillAndSetCmbSumm">
+<Description>
+Перегрузка и опц. установка значения в комбобоксе сумма займа
+Пердполагается, что пользователь сначала указал тип и срок займа, только после этого можно выбирать сумму</Description>
+<FormalSpec>ProductTypeID,Period="",defaultValue=""</FormalSpec>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ s (valueList,displayList,value)=""
+ s status=$$$scActive
+ &SQL(DECLARE DTS CURSOR FOR select id into :id from Docs.ProductTypeConditions where cls='Docs.ProductTypeConditions' and Status=:status
+ and ptcPeriod=:Period and ptcProductTypeID=:ProductTypeID Group BY ptcAmount order by ptcAmount)
+ &SQL(OPEN DTS)
+ f  {
+  	&SQL(FETCH DTS)
+   	q:SQLCODE
+   	s pt=##class(Docs.ProductTypeConditions).%OpenId(id)
+   	s Value=pt.ptcAmount
+   	i '$IsObject(pt) CONTINUE
+   	s valueList = valueList _$s(valueList'="":",",1:"")_id
+   	s displayList = displayList_$s(displayList'="":",",1:"")_Value
+   	i defaultValue=Value s value=id
+ }
+ &sql(close DTS)
+ s tCombo = ..%GetComponentById("cmbLSumm")
+ s tCombo.valueList = valueList
+ s tCombo.displayList = displayList
+ if value'="" {s tCombo.value = value,tCombo.text=defaultValue}
+ else  {s tCombo.value = "",tCombo.text=""}
+]]></Implementation>
+</Method>
+
+<Method name="cmbLPeriodOnChange">
+<Description>
+обработчик смены значения срока займа</Description>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ s c=..%GetComponentById("edtLProductType")
+ s ptID=c.aux
+ s c=..%GetComponentById("cmbLPeriod")
+ s period=+c.text 
+ s c=..%GetComponentById("cmbLSumm")
+ s summ=+c.text 
+ d ..FillAndSetCmbSumm(ptID,period,summ)
+]]></Implementation>
+</Method>
+
+<Method name="edtLSysCodeCreateComboRS">
+<Description>
+Выбор заявки</Description>
+<FormalSpec>*tSC:%Status,pInfo:%ZEN.Auxiliary.QueryInfo</FormalSpec>
+<ReturnType>%ResultSet</ReturnType>
+<Implementation><![CDATA[
+ //Выбираем заявки в статусе "Одобрено"
+ i $IsObject(##class(Docs.LoanAppState).OpenSysCode($$$laApproved)) {
+ 	 s ApprovedId=##class(Docs.LoanAppState).OpenSysCode($$$laApproved).%Id()
+ 	 s Condition=" and laStateItemID->siStateID='"_ApprovedId_"'"
+ }
+ s status=$$$scActive
+ s myOfficeID=%session.Data("CurrentOffice","ID")
+ Set tSELECT = "select ID, SysCode, laDateReg, laProductTypeID->ObjectName as ProductName, laSum, laPeriod, laProductTypeID->PTEd as PTEd, laClientID->PersonID->ObjectName as Client, laClientID->PersonID->DateOfBirth as Birthday, laSex, laPhoneMobileID->phNumber as phNumber, laStateItemID->siStateID->ObjectName as Status, laStateItemID->siDate as StatusDate, laStateItemID->siReasonID->ObjectName as Reason, laLocationOfficeID->ObjectName as LocationOffice, laServiceOfficeID->ObjectName as ServiceOffice from docs.loanApp"
+ Set tSELECT = tSELECT_" where cls='Docs.LoanApp' and Status='A' "_Condition_" and ((laLocationOfficeID = "_myOfficeID_" or laLocationOfficeID->Parent = "_myOfficeID_"  or laLocationOfficeID->Parent->Parent = "_myOfficeID_") or(laServiceOfficeID = "_myOfficeID_" or laServiceOfficeID->Parent = "_myOfficeID_"  or laServiceOfficeID->Parent->Parent = "_myOfficeID_"))"
+ Set tSELECT = tSELECT_" ORDER BY ID desc"
+ Set tRS = ##class(%ResultSet).%New()
+ Set tSC = tRS.Prepare(tSELECT)
+ Set pInfo.queryText = tSELECT
+ Quit tRS
+]]></Implementation>
+</Method>
+
+<UDLText name="T">
+<Content><![CDATA[
+// разрешен ввод номера заявки или рin-кода и номер+ телефон, для заявок,оформленных в чужом офисе
+
+]]></Content>
+</UDLText>
+
+<Method name="edtLSysCodeOnChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ #dim c as %ZEN.Component.control
+ #dim obj as Docs.Loan
+ 
+ s res=##class(System.Options).GetOptions(##class(System.TInfoObject).%New(),"NumberLength",.NumberLеngth)
+ s NumberLеngth=$g(NumberLеngth,13)
+ s myOfficeID=%session.Data("CurrentOffice","ID")
+
+ s c=..%GetComponentById("edtLSysCode")
+ s text1=c.value
+ 
+ s text1=$zzdsp(text1,7)
+ s text=$e(text1,1,NumberLеngth)
+ s text1=$tr($e(text1,NumberLеngth+1,$l(text1))," ()-_","")
+ 
+ s (la,fOpen)=""
+ if $IsObject(##class(Docs.LoanApp).OpenSysCode(text)) {
+	 s la=##class(Docs.LoanApp).OpenSysCode(text)
+ } else {
+	 s scActive=$$$scActive
+	 &SQL(select id into :id from Docs.LoanApp
+	  where cls='Docs.LoanApp' and Status=:scActive and laPincode=:text)
+  	 i SQLCODE=0 {
+	 	 s la=##class(Docs.LoanApp).%OpenId(id)
+	 	 s fOpen=1
+ 	 }
+ }
+ i '$IsObject(la) {
+	 d ..ClearLoanApp()
+	 s ErrText="Не найдена заявка № "_text
+	 &js<alert('#(ErrText)#');>
+	 q
+ }
+ s id=la.%Id()
+ if ..LoanID="" {
+	 //проверяем статус заявки "Одобрено" только для новых договоров
+	 i la.laStateItemID.siStateID.SysCode'=$$$laApproved {
+		 d ..ClearLoanApp()
+		 s ErrText="Заявка "_la.SysCode_" не найдена в статусе ""Одобрено"""
+		 &js<alert('#(ErrText)#');>
+		 q
+	 }
+ }
+ //проверяем офис выдавший заявку
+ if ##class(Subj.Office).%ExistsId(myOfficeID) {
+     ;заявка выдана в своем офисе 
+     i ((la.laLocationOfficeID.%Id()=myOfficeID)||(la.laLocationOfficeID.Parent.%Id()=myOfficeID)||(la.laLocationOfficeID.Parent.Parent.%Id()=myOfficeID)||(la.laServiceOfficeID.%Id()=myOfficeID)||(la.laServiceOfficeID.Parent.%Id()=myOfficeID)||(la.laServiceOfficeID.Parent.Parent.%Id()=myOfficeID)) {
+	     d ..SetLoanApp(la)
+     }
+ 	else {
+	 	if fOpen {
+		 	 d ..SetLoanApp(la)
+	 	} else {
+		 	;если не был введен pin-код, дополнительно проверяем телефон
+		 	i ##class(GUI.FRM.SZDLoanEdit).AddCheckPhone(la,text1) {
+				d ..SetLoanApp(la)
+		 	} else {
+				d ..ClearLoanApp()
+				s ErrText="В подразделении недоступна заявка "_la.SysCode
+			 	&js<alert('#(ErrText)#');>
+		     }
+		 } 
+	 }
+ }
+]]></Implementation>
+</Method>
+
+<Method name="SetLoanApp">
+<FormalSpec>la:Docs.LoanApp</FormalSpec>
+<Implementation><![CDATA[
+ #dim c as %ZEN.Component.control
+
+ i '$IsObject(la) {
+	 s ErrText="Не найдена заявка "_la 
+	 &js<alert('#(ErrText)#');>
+	 q $$$ERROR($$$GeneralError,ErrText)
+ }
+ // Выставляем lock на новую заявку
+ /*s LoanAppID=id
+ $$$lcLock($$$StringLockLoanApp(LoanAppID),0)
+ i $t {
+	$$$lcSetInfoLock($$$StringLockLoanApp(LoanAppID))
+ } else {
+ 	s LockStr=$$$lcText_$$$lcGetInfoLock($$$StringLockLoanApp(LoanAppID))
+	do OK^%WMUTIL(LockStr)
+ 	q
+ }
+ // Снимаем lock со старой заявки
+ s Array=%W("Obj").Data("LockLoanApp")
+ if Array.Data("LoanAppID")'="" {
+	$$$lcUnLock($$$StringLockLoanApp(Array.Data("LoanAppID")))
+ }
+ // Сохраняем id заявки на lock
+ s Array.Data("LoanAppID")=id
+ */
+ s c=..%GetComponentById("edtLSysCode") 
+ s c.value=la.SysCode
+ s c.aux=la.%Id()
+ 
+ s period=$s(+la.laPeriod:+la.laPeriod,1:"")
+ s c=..%GetComponentById("edtlPeriod")
+ s c.value=period
+ s c=..%GetComponentById("nedtlSumm")
+ s summ=$j(la.laSum,0,2)
+ s c.value=summ
+ ;Заполняем поле тип продукта по выбранной заявке
+ if $IsObject(la.laProductTypeID) {
+	 s pt=la.laProductTypeID
+	 s c=..%GetComponentById("edtLProductType")
+	 s c.value=la.laProductTypeID.ObjectName
+	 s c.aux=la.laProductTypeID.%Id()
+
+	 s c=..%GetComponentById("nedtLProductType")
+	 s c.value=pt.ObjectName
+	 s c.aux=pt.%Id()
+	 
+	 s str="("_pt.PTEdLogicalToDisplay(pt.PTEd)_")"
+	 s c=..%GetComponentById("lblLPeriodUnitApp")
+	 s c.value=str 
+	   
+	 s c=..%GetComponentById("edtLProductType")
+	 s c.value=pt.ObjectName
+	 s c.aux=pt.%Id()
+
+	 s c=..%GetComponentById("nedtLProductType")
+	 s c.value=pt.ObjectName
+
+	 d ..FillAndSetCmbPeriod(pt.%Id(),la.laPeriod)
+	 d ..FillAndSetCmbSumm(pt.%Id(),la.laPeriod,+la.laSum)
+	 
+	 i pt.PTDynamicConditions {
+		 s c=..%GetComponentById("edtlPeriod"),c.hidden=0
+		 s c=..%GetComponentById("nedtlSumm"),c.hidden=0
+		 s c=..%GetComponentById("cmbLPeriod"),c.hidden=1
+		 s c=..%GetComponentById("cmbLSumm"),c.hidden=1
+		 //s c=..%GetComponentById("cmbLPeriod"),c.hidden=1
+		 //s c=..%GetComponentById("cmbLSumm"),c.hidden=1
+	 } else {
+		 s c=..%GetComponentById("edtlPeriod"),c.hidden=1
+		 s c=..%GetComponentById("nedtlSumm"),c.hidden=1
+		 s c=..%GetComponentById("cmbLPeriod"),c.hidden=0
+		 s c=..%GetComponentById("cmbLSumm"),c.hidden=0
+	 }
+ }
+]]></Implementation>
+</Method>
+
+<Method name="ClearLoanApp">
+<Implementation><![CDATA[
+ #dim c as %ZEN.Component.control
+
+ s ..%GetComponentById("edtLSysCode").value=""
+ s ..%GetComponentById("edtLSysCode").aux=""
+ s ..%GetComponentById("edtLProductType").value=""
+ s ..%GetComponentById("edtLProductType").aux=""
+ s ..%GetComponentById("nedtLProductType").value=""
+ s ..%GetComponentById("edtlPeriod").value=""
+ s ..%GetComponentById("nedtlSumm").value=0
+ s ..%GetComponentById("cmbLPeriod").value=""
+ s ..%GetComponentById("cmbLSumm").value=""
+]]></Implementation>
+</Method>
+
+<UDLText name="T">
+<Content><![CDATA[
+/*
+ClassMethod edtlOfficeIDButtonClick()
+{
+ s obj=%W("Obj").Data("OBJ") ; всегда заполненно, контроль заполнения стоит в ..Open( 
+ #dim obj as Docs.Loan
+ if '$$$GetProperty(%W,"edtlOfficeID.Tag",id,Err) d OK^%WMUTIL(Err) q '$$$OK
+ s id=##class(GUI.FRM.EMCOrgStructureSel).Open(id)
+ q:'id
+ s o=##class(Subj.Office).%OpenId(id)
+ i '$IsObject(o) s ErrText="Не найден объект Subj.Office ID="_id $$$SysLogError($$$EMCSysErr,ErrText) d OK^%WMUTIL(ErrText) q
+ $$$SetProp(%W,"edtlOfficeID.Tag",id) 
+ $$$SetProp(%W,"edtlOfficeID.Text",o.ObjectName) 
+ q
+}
+*/
+]]></Content>
+</UDLText>
+
+<Method name="cmbIssueMeansOnChange">
+<Description>
+способ выдачи</Description>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set c = ..%GetComponentById("cmbIssueMeans")
+	set i = c.value
+	set text = c.displayList
+	if (i=4)
+	{
+		set ErrText="Способ выдачи """_$p(text,",",i)_""" не входит в базовую версию системы"
+		&js<alert('#(ErrText)#');>
+		quit
+	}
+	if (i=2)
+	{
+		set ..%GetComponentById("cardField").hidden = 0
+	}
+	else
+	{
+		set ..%GetComponentById("bankCard").value = ""
+		set ..%GetComponentById("bankCardAccount").value = ""
+		set ..%GetComponentById("bankCardAccountID").value = ""
+		set ..%GetComponentById("cardField").hidden = 1
+	}
+]]></Implementation>
+</Method>
+
+<Method name="NameComboBox">
+<Description>
+Значение компонента ComboBox</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Name="",defaulValue:%Integer=""</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+ s text=""
+ set ref=##class(%Dictionary.PropertyDefinition).%OpenId(Name)
+ if Name="" q ""
+ if 'defaulValue q ""
+ if $IsObject(ref) {
+	 set value=ref.Parameters.GetAt("DISPLAYLIST")
+ }
+ s text=$p(value,",",defaulValue+1)
+ q text
+]]></Implementation>
+</Method>
+
+<Method name="FillComboBox">
+<Description>
+заполнение компонента ComboBox</Description>
+<FormalSpec>NameComboBox="",Name="",defaulValue=""</FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+ if (NameComboBox="") || (Name="") q 0
+ set ref=##class(%Dictionary.PropertyDefinition).%OpenId(Name)
+ if '$IsObject(ref) quit 0
+ set list=ref.Parameters.GetAt("DISPLAYLIST")
+ s (valueList,displayList) = ""
+ for i=2:1:$l(list,",") {
+	 s types=i-1
+	 s trans=$p(list,",",i) 
+ 	 s valueList = valueList _ $S(valueList'="":",",1:"") _types
+	 s displayList = displayList _ $S(displayList'="":",",1:"") _ trans
+ }
+ s tCombo = ..%GetComponentById(NameComboBox)
+ s tCombo.valueList = valueList
+ s tCombo.displayList = displayList
+ if defaulValue'="" s tCombo.value = defaulValue
+ q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="FillComboBoxProductType">
+<FormalSpec>NameComboBox="",Date="",defaulValue=""</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+ if NameComboBox="" q 0
+ s Date=$g(Date,+$H)
+ s res=##class(BL.Docs.ProductType).GetListProductType(Date,.list)
+ s (valueList,displayList) = ""
+ i res {
+	 f i=1:1:$ll(list) {
+		 s value=$li(list,i)
+		 s types=$p(value,"~")
+		 s trans=$p(value,"~",2) 
+		 s valueList = valueList _ $S(valueList'="":",",1:"") _types
+		 s displayList = displayList _ $S(displayList'="":",",1:"") _ trans
+		 i $g(default)="", value=defaulValue s default=1
+	 }
+ }
+ k tCombo
+ s tCombo = ..%GetComponentById(NameComboBox)
+ s tCombo.valueList = valueList
+ s tCombo.displayList = displayList
+ if $g(default)=1,defaulValue'="" s tCombo.value = defaulValue
+ q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="LoanAppView">
+<Description>
+просмотр заявки</Description>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[ &js<alert("Under construction");>
+]]></Implementation>
+</Method>
+
+<Method name="getGoSave">
+<ReturnType>%Integer</ReturnType>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[	quit %session.Data("goSave")
+]]></Implementation>
+</Method>
+
+<Method name="onunloadHandler">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var res = zenPage.getGoSave();
+	if (res == 1)
+		return "Данные не сохранены. Точно перейти?";
+	else
+		return
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.CachKO3">
+<Description>
+Страница вывода журнала ПКО/РКО</Description>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62780,50561.839506</TimeCreated>
+
+<Parameter name="JSINCLUDES">
+<Type>STRING</Type>
+<Default>jquery.js,jquery.maskedinput-1.2.2.js</Default>
+</Parameter>
+
+<XData name="Style">
+<Data><![CDATA[
+<style type="text/css">
+
+#userControls {
+	height: 200px;
+	overflow: auto;
+}
+
+.required {
+}
+.required:after {
+	color: red;
+	content: " *";
+}
+/*перебиваем дефолтное межстрочное растояние между контролами*/
+.zendiv {
+	padding-bottom: 5px;
+}
+/*в группе платежного калькулятора изменем дефолт по межстрочному отступу*/
+#frmCalc .zendiv {
+	padding-bottom: 1px;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page title="Журнал регистрации приходных и рассходных кассовых ордеров" xmlns="http://www.intersystems.com/zen">
+<titleBox id="titlePageHeader" title="" subtitle=""/>
+<fieldSet align="center">
+<hgroup labelPosition="left" align="right">
+<text id="geFirmName" label="Наименование организации" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="geOKPO" label="Код организации по ОКПО" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="geDirectoryFIO" label="Руководитель" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="geChiefAccountantFIO" label="Гл.бухгалтер" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<spacer/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="cmbStrPodr" label="Структурное подразделение" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<combobox id="cmbPeriod" label="Период" size="20" value=" " unrestricted="true" onchange="zenPage.cmbPeriodChange();">
+<option text="Год"/>
+<option text="Квартал"/>
+<option text="Месяц"/>
+<option text="Произвольно"/>
+</combobox>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<combobox id="cmbYear" label="Год" size="20" unrestricted="true" hidden="true" onchange="zenPage.yearChange();"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<combobox id="cmbQuarter" label="Квартал" size="20" hidden="true" onchange="zenPage.quarterChange();"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<combobox id="cmbMonth" label="Месяц" size="20" hidden="true" onchange="zenPage.monthChange();"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<dateText id="gdeBeginDate" controlClass="dateMask" label="С" hidden="true" onchange="zenPage.gdeBeginDateChange();"/>
+<spacer width="20"/>
+<dateText id="gdeEndDate" controlClass="dateMask" label="по" hidden="true" onchange="zenPage.gdeBeginDateChange();"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<button id="btnExec" caption="   ОК   "  align="center" onclick="zenPage.btnExecClick();"/>
+<button id="btnCancel" caption="Выход" align="right" onclick="zenPage.cancelPopup();"/>
+</hgroup>
+</fieldSet>
+</page>
+]]></Data>
+</XData>
+
+<Method name="%DrawJSStrings">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pVisited:%String]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	d ##super()
+	&js<$(function()
+		{
+			$.mask.definitions['~']='[+-]';
+			$('.dateMask').mask('99-99-9999');
+		})
+		>
+	q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.CachKO3","WebForm","OnClick",1,"Страница вывода журнала ПКО/РКО")
+	set ^a= $zdt($h)_" ERROR"
+	set c=..%GetComponentById("titlePageHeader")
+	set c.subtitle=##class(Application.TE.Utils).GetConnStr()
+	set %session.Data("Mode") = 0
+
+	do ..fillForm()
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="fillForm">
+<Implementation><![CDATA[
+	set Mode = %session.Data("Mode")
+	set obj = ##class(System.TInfoObject).%New()
+	if '$IsObject(obj) quit
+	set res = ##class(System.Options).GetOptions(obj,"FirmName",.text) 
+	set ..%GetComponentById("geFirmName").value = $g(text)
+	set res = ##class(System.Options).GetOptions(obj,"OKPO",.text) 
+ 	set ..%GetComponentById("geOKPO").value = $g(text)
+	set res = ##class(System.Options).GetOptions(obj,"Year",.text) 
+ 	
+	set res = ##class(System.Options).GetOptions(obj,"DirectoryID",.Dir)
+	if '$$$ISERR(res)
+	{
+		set MainFIODir = ""
+		if ##class(BL.Subj.Employee).GetEmployeeProp(Dir,.MainFIODir)
+		set ..%GetComponentById("geDirectoryFIO").value = MainFIODir
+	}
+	set res = ##class(System.Options).GetOptions(obj,"ChiefAccountantID",.Bux) 
+	if '$$$ISERR(res)
+	{
+		set MainFIOBux = ""
+		if ##class(BL.Subj.Employee).GetEmployeeProp(Bux,.MainFIOBux)
+		set ..%GetComponentById("geChiefAccountantFIO").value = MainFIOBux
+	}
+ 			
+ 	set ..%GetComponentById("cmbStrPodr").value = 
+ 		##class(Application.TE.Utils).GetCurrEmpl().seOfficeID.ObjectName
+
+	// Год - инициализация combobox
+	set cmb = ..%GetComponentById("cmbYear")
+	set (valueList,displayList) = ""
+	&SQL(
+		DECLARE Year CURSOR FOR
+		SELECT  ObjectName
+		Into :ObjectName
+		FROM Common.Year
+		WHERE cls='Common.Year' AND Status='A' And 	ObjectName is not NULL 
+		ORDER BY ObjectName
+		)
+		set i=0
+		&SQL(OPEN Year)
+		for
+		{
+			&SQL(FETCH Year)
+			Quit:SQLCODE
+			set valueList = valueList_$s(valueList'="":",",1:"")_i
+			set displayList = displayList_$s(displayList'="":",",1:"")_ObjectName
+			i $i(i)
+		}
+ 		&SQL(CLOSE Year)
+ 	set cmb.valueList = valueList
+ 	set cmb.displayList = displayList
+ 	set cmb.value = $p(valueList,",",1)
+ 	set cmb.text = $p(displayList,",",1)
+
+	// Квартал - инициализация combobox
+	set cmb = ..%GetComponentById("cmbQuarter")
+	set (valueList,displayList) = ""
+	&SQL(
+		DECLARE Quarter CURSOR FOR
+		SELECT  ObjectName
+		Into :ObjectName
+		FROM Common.Quarter
+		WHERE cls='Common.Quarter' AND Status='A' And 	ObjectName is not NULL 
+		ORDER BY ObjectName
+		)
+		set i=0
+		&SQL(OPEN Quarter)
+		for
+		{
+			&SQL(FETCH Quarter)
+			Quit:SQLCODE
+			set valueList = valueList_$s(valueList'="":",",1:"")_i
+			set displayList = displayList_$s(displayList'="":",",1:"")_ObjectName
+			i $i(i)
+ 		}
+ 		&SQL(CLOSE Quarter)
+ 	set cmb.valueList = valueList
+ 	set cmb.displayList = displayList
+
+	// Month - инициализация combobox
+	set cmb = ..%GetComponentById("cmbMonth")
+	set (valueList,displayList) = ""
+	&SQL(
+		DECLARE Month CURSOR FOR 
+		SELECT  ObjectName
+		Into :ObjectName
+		FROM Common.Month
+		WHERE cls='Common.Month' AND Status='A' And 	ObjectName is not NULL 
+		ORDER BY Info
+		)
+		set i=0
+		&SQL(OPEN Month)
+		for
+		{
+			&SQL(FETCH Month)
+			Quit:SQLCODE
+			set valueList = valueList_$s(valueList'="":",",1:"")_i
+			set displayList = displayList_$s(displayList'="":",",1:"")_ObjectName
+			i $i(i)
+		}
+		&SQL(CLOSE Month)
+	set cmb.valueList = valueList
+ 	set cmb.displayList = displayList
+ 	quit
+]]></Implementation>
+</Method>
+
+<Method name="cmbPeriodChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set text = ..%GetComponentById("cmbPeriod").text
+	if text = "" 	
+	{		
+		///Год
+		set ..%GetComponentById("cmbYear").hidden = 1
+ 		///Квартал
+ 		set ..%GetComponentById("cmbQuarter").hidden = 1
+ 		///Месяц
+ 		set ..%GetComponentById("cmbMonth").hidden = 1
+   		///Произвольные даты
+   		set ..%GetComponentById("gdeBeginDate").hidden = 1
+   		set ..%GetComponentById("gdeEndDate").hidden = 1
+		do ..yearChange()
+	}
+	elseif text = "Год"
+	{
+		///Год
+		set ..%GetComponentById("cmbYear").hidden = 0
+ 		///Квартал
+ 		set ..%GetComponentById("cmbQuarter").hidden = 1
+ 		///Месяц
+ 		set ..%GetComponentById("cmbMonth").hidden = 1
+   		///Произвольные даты
+   		set ..%GetComponentById("gdeBeginDate").hidden = 0
+   		set ..%GetComponentById("gdeEndDate").hidden = 0
+   		set ..%GetComponentById("gdeBeginDate").disabled = 1
+   		set ..%GetComponentById("gdeEndDate").disabled = 1
+		do ..yearChange()
+	}
+	elseif text = "Квартал"
+	{
+		///Год
+		set ..%GetComponentById("cmbYear").hidden = 0
+ 		///Квартал
+ 		set ..%GetComponentById("cmbQuarter").hidden = 0
+ 		///Месяц
+ 		set ..%GetComponentById("cmbMonth").hidden = 1
+   		///Произвольные даты
+   		set ..%GetComponentById("gdeBeginDate").hidden = 0
+   		set ..%GetComponentById("gdeEndDate").hidden = 0
+   		set ..%GetComponentById("gdeBeginDate").disabled = 1
+   		set ..%GetComponentById("gdeEndDate").disabled = 1
+   		do ..yearChange()
+	}
+	elseif text = "Месяц"
+	{
+		///Год
+		set ..%GetComponentById("cmbYear").hidden = 0
+ 		///Квартал
+ 		set ..%GetComponentById("cmbQuarter").hidden = 1
+ 		///Месяц
+ 		set ..%GetComponentById("cmbMonth").hidden = 0
+   		///Произвольные даты
+   		set ..%GetComponentById("gdeBeginDate").hidden = 0
+   		set ..%GetComponentById("gdeEndDate").hidden = 0
+   		set ..%GetComponentById("gdeBeginDate").disabled = 1
+   		set ..%GetComponentById("gdeEndDate").disabled = 1
+		do ..yearChange()
+	}elseif text = "Произвольно"
+	{
+		///Год
+		set ..%GetComponentById("cmbYear").hidden = 1
+ 		///Квартал
+ 		set ..%GetComponentById("cmbQuarter").hidden = 1
+ 		///Месяц
+ 		set ..%GetComponentById("cmbMonth").hidden = 1
+   		///Произвольные даты
+   		set ..%GetComponentById("gdeBeginDate").hidden = 0
+   		set ..%GetComponentById("gdeEndDate").hidden = 0
+   		set ..%GetComponentById("gdeBeginDate").disabled = 0
+   		set ..%GetComponentById("gdeEndDate").disabled = 0
+	}
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="yearChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set text = ..%GetComponentById("cmbYear").text
+	&SQL(SELECT   ID, Info
+		INTO     :id,:Info 
+		FROM Common.Year 
+		WHERE cls='Common.Year' AND ObjectName=:text AND Status='A' )
+	if SQLCODE=100
+	{
+		&js<alert("Отсутсвует в базе данных: "+'#(text)#'+"   "+'#($g(id))#');>
+		quit
+	}
+	elseif SQLCODE<0
+	{
+		set Err = $System.SQL.SQLCODE(SQLCODE)
+		&js<alert("Ошибка SQL-запроса. SQLCODE="+'#(Err)#');>
+		quit
+	}
+	set BeginDate = $zdate($zdateH(text_"0101",8),3)
+	set EndDate = $zdate($zdateH(text_"1231",8),3)
+	set ..%GetComponentById("gdeBeginDate").value = BeginDate
+ 	set ..%GetComponentById("gdeEndDate").value = EndDate
+ 	quit
+]]></Implementation>
+</Method>
+
+<Method name="quarterChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set Year = ..%GetComponentById("cmbYear").text
+	if Year = "" &js<alert("Введите год");> quit
+	set text = ..%GetComponentById("cmbQuarter").text
+	&SQL(SELECT   ID, Info
+		INTO     :id,:Info
+		FROM Common.Quarter
+		WHERE cls='Common.Quarter' AND ObjectName=:text AND Status='A' )
+	if SQLCODE=100
+	{
+		&js<alert("Отсутсвует в базе данных: "+'#(text)#'+"   "+'#(id)#');>
+	}
+	elseif SQLCODE<0
+	{
+		set Err = $System.SQL.SQLCODE(SQLCODE)
+		&js<alert("Ошибка SQL-запроса. SQLCODE="+'#(Err)#');>
+	}
+	set StrBegin = $S(+text=1:"0101",+text=2:"0401",+text=3:"0701",+text=4:"1001",1:"")	
+	set StrEnd = $S(+text=1:"0331",+text=2:"0630",+text=3:"0930",+text=4:"1231",1:"")	
+
+	set BeginDate = $zdate($zdateH(Year_StrBegin,8),3)  
+	set EndDate = $zdate($zdateH(Year_StrEnd,8),3)  
+
+	set ..%GetComponentById("gdeBeginDate").value = BeginDate
+	set ..%GetComponentById("gdeEndDate").value = EndDate
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="monthChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set Year = ..%GetComponentById("cmbYear").text
+	if Year = "" &js<alert("Введите год");> quit
+	set text = ..%GetComponentById("cmbMonth").text
+	&SQL(SELECT   ID, Info
+		INTO     :id,:Info
+		FROM Common.Month
+		WHERE cls='Common.Month' AND ObjectName=:text AND Status='A' )
+		if SQLCODE=100
+		{
+			&js<alert("Отсутсвует в базе данных: "+'#(text)#'+"   "+'#(id)#');>
+		}
+		elseif SQLCODE<0
+		{
+			set Err = $System.SQL.SQLCODE(SQLCODE)
+			&js<alert("Ошибка SQL-запроса. SQLCODE="+'#(Err)#');>
+		}
+		//Вычисляем начало месяца и начало следующего месяца. затем вычитаем 1-цу (чтоб получить конец месяца)
+		set Month = Info
+		set StrBegin = Year_Month_"01"
+		set StrEnd = $S(+Month=12:Year+1_"0101",+Month>8:Year_(Month+1)_"01",1:Year_"0"_(Month+1)_"01")
+		
+		set BeginDate = $zdate($zdateH(StrBegin,8),3)
+		set EndDate = $zdate($zdateH(StrEnd,8)-1,3)
+		
+		set ..%GetComponentById("gdeBeginDate").value = BeginDate
+		set ..%GetComponentById("gdeEndDate").value = EndDate
+		quit
+]]></Implementation>
+</Method>
+
+<Method name="btnExecClick">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set Mode = %session.Data("Mode")
+	set Array = ##class(%ArrayOfDataTypes).%New()
+	set text = ..%GetComponentById("cmbYear").value
+	set Array.Data("Year") = text
+	set text = ..%GetComponentById("geFirmName").value
+	set Array.Data("FirmName") = text
+	set text = ..%GetComponentById("geOKPO").value 
+	set Array.Data("OKPO") = text
+	set text = ..%GetComponentById("gdeBeginDate").value
+	set Array.Data("BeginDate") = text
+	set text = ..%GetComponentById("gdeEndDate").value
+	set Array.Data("EndDate") = text
+	set text = ..%GetComponentById("cmbStrPodr").value
+	set Array.Data("StrPodr") = text
+	if text'="" 
+	{
+		if 'Mode
+		{
+			set id=""
+			&SQL(Select ID into :id from Subj.office where cls='Subj.office' AND ObjectName=:text AND Status='A' )
+		 	if SQLCODE=100
+			{
+				&js<alert("Отсутсвует в базе данных офис: "+'#(text)#'+'#(id)#');>
+				quit
+			}
+			elseif SQLCODE<0
+			{
+				set Err = $System.SQL.SQLCODE(SQLCODE)
+				&js<alert("Ошибка SQL-запроса. SQLCODE="+'#(Err)#');>
+				quit
+			}
+			set Array.Data("StrPodrID")=id
+		}
+		else
+		{
+			set Array.Data("StrPodrID")=""
+		}
+	}
+	else 
+	{
+		set Array.Data("StrPodrID")=""
+		if 'Mode
+		{
+			&js<alert("Не введено подразделение.");>
+			quit
+		}
+	}
+
+	set text = ..%GetComponentById("cmbPeriod").text
+	if text="" &js<alert("Введите значение периода");> quit 
+	set Array.Data("PrtHeader") = 0
+	set Array.Data("PrtFooter") = 0
+	set text = ..%GetComponentById("geDirectoryFIO").value
+ 	set Array.Data("DirectoryFIO") = text
+ 	set text = ..%GetComponentById("geChiefAccountantFIO").value
+ 	set Array.Data("ChiefAccountantFIO")=text
+
+	set Parameters = ##class(%ArrayOfDataTypes).%New()		
+	set Data = ##class(%ArrayOfDataTypes).%New()
+	set Parameters("StrPodr") = "Структурное подразделение"
+	
+	&js<zenPage.gotoPage(zenLink('GUI.WEB.RPT.CachKO3List.cls?'+
+		'FirmName=#(Array.Data("FirmName"))#&OKPO=#(Array.Data("OKPO"))#&'+
+		'BeginDate=#(Array.Data("BeginDate"))#&EndDate=#(Array.Data("EndDate"))#&'+
+		'Year=#(Array.Data("Year"))#&StrPodr=#(Array.Data("StrPodr"))#&'+
+		'StrPodrID=#(Array.Data("StrPodrID"))#&DirectoryFIO=#(Array.Data("DirectoryFIO"))#'+
+		'&ChiefAccountantFIO=#(Array.Data("ChiefAccountantFIO"))#&'));>
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="gdeBeginDateChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = %page.%GetComponentById("gdeBeginDate").value
+	if (str = "-1") set %page.%GetComponentById("gdeBeginDate").value = "" quit
+]]></Implementation>
+</Method>
+
+<Method name="gdeEndDateChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = %page.%GetComponentById("gdeEndDate").value
+	if (str = "-1") set %page.%GetComponentById("gdeEndDate").value = "" quit
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

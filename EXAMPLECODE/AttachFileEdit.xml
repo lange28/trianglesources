@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.AttachFileEdit">
+<Description>
+Форма для подгрузки документов</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62761,50313.62124</TimeCreated>
+
+<Parameter name="PAGENAME">
+<Default>AttachFileEdit</Default>
+</Parameter>
+
+<Property name="LoanID">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="LoanID"/>
+</Property>
+
+<Property name="DocID">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="DocID"/>
+</Property>
+
+<Parameter name="JSINCLUDES">
+<Type>STRING</Type>
+<Default>jquery.js,jquery.maskedinput-1.2.2.js,MainPortal/js/g_escape.js</Default>
+</Parameter>
+
+<XData name="Style">
+<Data><![CDATA[
+<style type="text/css">
+
+#userControls {
+	height: 200px;
+	overflow: auto;
+}
+
+.required {
+}
+.required:after {
+	color: red;
+	content: " *";
+}
+/*перебиваем дефолтное межстрочное растояние между контролами*/
+.zendiv {
+	padding-bottom: 5px;
+}
+/*в группе платежного калькулятора изменем дефолт по межстрочному отступу*/
+#frmCalc .zendiv {
+	padding-bottom: 1px;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page title="Прикрепленный документ" xmlns="http://www.intersystems.com/zen">
+<form name="Form" enctype="multipart/form-data" method="post" action="">
+<titleBox id="titlePageHeader" title="" subtitle=""/>
+<fieldSet legend=" Сведенья о займе ">
+<hgroup labelPosition="left" align="right">
+<combobox id="edtTypeList" unrestricted="true" label="Тип документа" size="60"  labelClass="required" labelStyle="font-weight:bold" onchange="zenPage.edtTypeListChange();"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<dateText id="edtDate" controlClass="dateMask" label="Дата актуальности"  labelClass="required" labelStyle="font-weight:bold" onchange="zenPage.edtDateChange();"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<fileUpload id="scanDocs" size="50" name="FileStream" label="Документ" labelClass="required" labelStyle="font-weight:bold" onchange="zenPage.scanDocsChange();"/>
+</hgroup>
+<hgroup labelPosition="top" align="right">
+<textarea id="comment" label="Комментарий" cols="47" rows="7" onchange="zenPage.commentChange();"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<submit id="btnExec" caption=" ОК " align="center" onclick="zenPage.btnExecClick();"/>
+<button id="btnCancel" caption="Выход" align="right" onclick="zenPage.cancelPopup();"/>
+</hgroup>
+</fieldSet>
+</form>
+</page>
+]]></Data>
+</XData>
+
+<Method name="%DrawJSStrings">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pVisited:%String]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	d ##super()
+	&js<$(function()
+		{
+			$.mask.definitions['~']='[+-]';
+			$('.dateMask').mask('99-99-9999');
+		})
+		>
+		//&html<<csp:if condition='($data(%request.MimeData("FileStream",1)))'>>
+	q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.AttachFileEdit","WebForm","OnClick",1,"Форма для подгрузки документов")
+	#define LoanApp "Docs.LoanAppAttachedFiles"
+	#define Employee "Subj.EmployeeAttachedFiles"
+	
+	set ^a= $zdt($h)_" ERROR"
+	set c=..%GetComponentById("titlePageHeader")
+	set c.subtitle=##class(Application.TE.Utils).GetConnStr()
+	
+	kill %session.Data("DealId")
+	kill %session.Data("DocName")
+	kill %session.Data("DocType")
+	kill %session.Data("Date")
+	kill %session.Data("Comment")
+
+	//типы файлов
+	&sql(declare DAttachTypeList CURSOR FOR select ID,SysCode,ObjectName into :TypeID,:SysCode,:ObjectName
+		from Docs.AttachFileType ORDER BY SortPriority,ObjectName)
+	set ReadOnly=0
+
+	set AttachFileClass=$$$LoanApp
+	set AttachedDocsID = ..DocID
+	
+	if AttachFileClass=$$$LoanApp
+	{
+		if AttachedDocsID'=""
+		{
+			&sql(SELECT Status into :Status FROM Docs.LoanAppAttachedFiles where ID=:AttachedDocsID)
+			if SQLCODE<0
+			{
+				set Err = $system.SQL.SQLCODE(SQLCODE)
+				//&js<alert("Ошибка выполнения SQL-запроса "+'#(Err)#');>
+				quit $$$OK
+			}
+			if SQLCODE>0
+			{
+				//&js<alert("Не найден прикрепленный документ ID="+'#(AttachedDocsID)#');>
+				quit $$$OK
+			}
+			if Status'=$$$scActive
+			{
+				//&js<alert("Запись удалена.\nРедактирование запрещено.");>
+				set ReadOnly=1
+			}
+		}
+		if AttachedDocsID'="" set Ref=##class(Docs.LoanAppAttachedFiles).%OpenId(AttachedDocsID)
+	}
+	if AttachFileClass=$$$Employee
+	{
+		if AttachedDocsID'=""
+		{
+			&sql(SELECT Status into :Status FROM Subj.EmployeeAttachedFiles where ID=:AttachedDocsID)
+			if SQLCODE<0
+			{
+				set Err = $system.SQL.SQLCODE(SQLCODE)
+				//&js<alert("Ошибка выполнения SQL-запроса "+'#(Err)#');>
+				quit $$$OK
+			}
+			if SQLCODE>0
+			{
+				//&js<alert("Не найден прикрепленный документ ID="+'#(AttachedDocsID)#');>
+				quit $$$OK
+			}
+			if Status'=$$$scActive
+			{
+				//&js<alert("Запись удалена.\nРедактирование запрещено. ");>
+				set ReadOnly=1
+			}
+		}
+	if AttachedDocsID'="" set Ref=##class(Subj.EmployeeAttachedFiles).%OpenId(AttachedDocsID)
+	} 
+	set %session.Data("ID")     = ..DocID
+	set %session.Data("DealId") = ..LoanID
+	set %session.Data("AttachFileClass")=AttachFileClass
+
+	set (valueList,displayList) = ""
+	&SQL(OPEN DAttachTypeList)
+	for 
+	{
+		&SQL(FETCH DAttachTypeList)
+		Quit:SQLCODE
+		set valueList = valueList_$s(valueList'="":",",1:"")_TypeID
+		set displayList = displayList_$s(displayList'="":",",1:"")_ObjectName
+	}
+	&SQL(CLOSE DAttachTypeList)
+	set tCombo = ..%GetComponentById("edtTypeList")
+	set tCombo.valueList = valueList
+	set tCombo.displayList = displayList
+
+	if ReadOnly set caption = "Прикрепление документа (только просмотр)" 
+	else  set caption = "Прикрепление документа"
+
+	//$$$SetProp(%W,"Caption",caption)
+
+	if AttachedDocsID'=""
+	{
+		set ..%GetComponentById("edtTypeList").disabled = 1
+		set ..%GetComponentById("scanDocs").disabled = 1
+		set ..%GetComponentById("edtDate").value = $zd(Ref.AFxDate,3)
+		set ..%GetComponentById("scanDocs").value = Ref.AFxFile.FileNameExternal
+		set ..%GetComponentById("comment").value = Ref.Info
+
+		if Ref.%ClassName(1)=$$$LoanApp
+		{
+			if $zObjState(Ref.AFxTypeID) set ..%GetComponentById("edtTypeList").value = Ref.AFxTypeID.%Id()
+		}
+		if Ref.%ClassName(1)=$$$Employee
+		{
+			if $zObjState(Ref.AFxEmpTypeID) set ..%GetComponentById("edtTypeList").value = Ref.AFxEmpTypeID.%Id()
+		}
+	}
+	else
+	{
+		set ..%GetComponentById("edtDate").value = $zd(+$H,3)
+		set ..%GetComponentById("scanDocs").value = ""
+		set ..%GetComponentById("comment").value = ""
+		set %session.Data("Date") = ..%GetComponentById("edtDate").value
+	}
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="btnExecClick">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	/*&js<zenPage.firePopupAction("OK","",true);>
+	q $$$OK*/
+	#define LoanApp "Docs.LoanAppAttachedFiles"
+	#define Employee "Subj.EmployeeAttachedFiles"
+	//&js<alert(#($data(%request.MimeData("FileStream",1)))#);>
+	set ID = %session.Data("ID")
+	set DealId = %session.Data("DealId")
+	set AttachFileClass = %session.Data("AttachFileClass")
+
+	set ErrorText="", Focus=""
+	set str = ..%GetComponentById("edtTypeList").selectedIndex
+	set edtTypeList = $p(..%GetComponentById("edtTypeList").valueList,",",str+1)
+	set Date = ..%GetComponentById("edtDate").value
+	set ScanDocs = ..%GetComponentById("scanDocs").value
+	set Comment = ..%GetComponentById("comment").value
+	//set Comment=$REPLACE(Comment,$$$myGlobalCollectionDelimiter,$$$my1310)
+	set Comment=$zstrip(Comment,"<>"," ")
+	set Comment=$zstrip(Comment,"<>",$c(13,10))
+	if edtTypeList=""
+	{
+		if Focus="",ID="" set Focus="edtTypeList"
+		set ErrorText=ErrorText_"\nНе указан тип документа"
+	}
+	set Date=$zdh($tr(Date,".","/"),3,,,,,,,"")
+	if Date=""
+	{
+		if Focus="" set Focus="edtDate"
+		set ErrorText=ErrorText_"\nНекорректно указана дата актуальности"
+	}
+	if ScanDocs=""
+	{
+		if Focus="",ID="" set Focus="ScanDocs"
+		set ErrorText=ErrorText_"\nНе указан прикрепляемый документ"
+	}
+	set FileID=""
+	if ErrorText="",ID=""
+	{
+		if ScanDocs]""
+		{
+			set internalCode="DealId"_$g(DealId)
+			//set res=##class(Application.UpLoadFile).UpLoadFileFromGUI(ScanDocs,internalCode,.FileID)
+			/*if $$$ERROR(res)
+			{
+				if Focus="",ID="" set Focus="ScanDocs"
+				set ErrorText=ErrorText_"\nОшибка загрузки файла "_$system.Status.GetErrorText(res)
+			}*/
+		}
+	}
+	if ErrorText'=""
+	{
+		&js<alert("Ошибки при вводе:\n"+'#(ErrorText)#');>
+		&js<window.location.reload();>
+		quit
+	}
+	#;----- Запись данных в таблицу
+	set res=$$$OK
+	set Array=##class(%ArrayOfDataTypes).%New()
+	set user=##class(System.TAccount).GetSessionAccount()
+	
+	if ID=""
+	{
+		set Array.Data("AFxFile","_ID") = FileID
+		set Array.Data("Info","_TEXT") = Comment
+		set Array.Data("AFxDate") = Date
+	}
+	else
+	{
+		set Array.Data("Info","_TEXT") = Comment
+		set Array.Data("AFxDate") = Date
+	}
+	//заявки
+	if AttachFileClass=$$$LoanApp
+	{
+		if ID=""
+		{
+			set Array.Data("AFxTypeID","_ID") = edtTypeList
+			set Array.Data("AFxLoanAppID","_ID") = DealId
+			//set res = user.Exec(.doc,"Docs.createLoanAppAttachedFiles",Array)
+			}
+			else
+			{
+				//set res = user.Exec(.doc,"Docs.modifyLoanAppAttachedFiles",ID,Array)
+			}
+		//if $$$ISOK(res) set %session.ModalResult=res
+		&js<alert("Подождите пожалуйста, идет загрузка документа.\nЭто займет несколько секунд.")>
+	}
+	//сотрудники
+	if AttachFileClass=$$$Employee
+	{
+		if ID=""
+		{
+			set Array.Data("AFxEmpTypeID","_ID")=edtTypeList
+			set Array.Data("AFxEmpID","_ID")=DealId
+			//set res = user.Exec(.doc,"Subj.createEmployeeAttachedFiles",Array)
+		}
+		else
+		{
+			//set res = user.Exec(.doc,"Subj.modifyEmployeeAttachedFiles",ID,Array)
+		}
+		//if $$$ISOK(res) set %session.ModalResult=res
+	}
+
+	/*if $$$ISERR(res)
+	{
+		set Err = $System.Status.GetErrorText(res)
+		&js<alert('#(Err)#')>
+		quit
+	}*/
+	&js<zenPage.firePopupAction("OK","",true);>
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="edtDateChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = %page.%GetComponentById("edtDate").value
+	if (str = "-1") set %page.%GetComponentById("edtDate").value = "" quit
+	set %session.Data("Date") = ..%GetComponentById("edtDate").value
+]]></Implementation>
+</Method>
+
+<Method name="edtTypeListChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[	set %session.Data("DocType") = ..%GetComponentById("edtTypeList").value
+]]></Implementation>
+</Method>
+
+<Method name="commentChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[	set %session.Data("Comment") = ..%GetComponentById("comment").value
+]]></Implementation>
+</Method>
+
+<Method name="scanDocsChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[	set %session.Data("DocName") = ..%GetComponentById("scanDocs").value
+]]></Implementation>
+</Method>
+
+<Method name="%OnSubmit">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pSubmit:%ZEN.Submit</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	#; this is overridden by subclasses
+	//set ^rnu = $data(%request.MimeData("$V_FileStream",1))_" / "_$o(%request.MimeData("$V_FileStream",""))
+	//set ^rnu("f")=%request.MimeData("$V_FileStream",1).Read(200)
+	set LoanID = $g(%session.Data("DealId"))
+	set DocName = $g(%session.Data("DocName"))
+	set Date = $zdh($g(%session.Data("Date")),7)
+	set DocType = $g(%session.Data("DocType"))
+	set Comment = $g(%session.Data("Comment"))
+	//if (LoanID=0)||(DocName=0)||(Date=0)||(DocType=0) quit $$$OK
+	//
+	 if $d(%request.MimeData("$V_FileStream",1)) && $isObject(%request.MimeData("$V_FileStream",1)) {
+		s internalCode="DealId"_$g(LoanID)
+	 	s res=##class(Application.UpLoadFile).UpLoadFileFromWEB(%request.MimeData("$V_FileStream",1),DocName,internalCode,.FileID)
+	 	s ^bda("Att")=$s($$$ISERR(res):$system.Status.GetErrorText(res),1:res)
+	 	if $$$ISERR(res) {
+	 	set ErrorText="^Ошибка загрузки файла "_$system.Status.GetErrorText(res)
+		 //&js<alert("Ошибки при вводе:\n"+'#(ErrorText)#');> 
+  		quit $$$OK
+ 
+		}
+	  }
+	  else {
+		 //&js<alert("Ошибка файла");> 
+ 
+  		quit $$$OK
+  
+		  }
+ 
+
+ 
+  
+ #;----- Запись данных в таблицу
+ s res=$$$OK
+ if '##class(System.TFile).%ExistsId($g(FileID)) {
+	//&js<zenPage.firePopupAction("OK","",true);>	 
+	quit $$$OK
+ }
+ set Array=##class(%ArrayOfDataTypes).%New()
+ set user=##class(System.TAccount).GetSessionAccount()
+ s ^bda("Att","user")=user
+ if $g(ID)="" {
+	 set Array.Data("AFxFile","_ID")=FileID
+	 set Array.Data("Info","_TEXT")=Comment
+	 set Array.Data("AFxDate")=Date
+ } else {
+	 set Array.Data("Info","_TEXT")=Comment
+	 set Array.Data("AFxDate")=Date
+ }
+ //заявки
+ if FileID'="" { //AttachFileClass=$$$LoanApp {
+	 if $g(ID)="" {
+		 s Array.Data("AFxTypeID","_ID")=DocType
+		 s Array.Data("AFxLoanAppID","_ID")=LoanID
+		 s res=user.Exec(.doc,"Docs.createLoanAppAttachedFiles",Array)
+	 }  else {
+		 s res=user.Exec(.doc,"Docs.modifyLoanAppAttachedFiles",ID,Array)
+	 }
+	 s ^bda("Att","LA")=$s($$$ISERR(res):$system.Status.GetErrorText(res),1:res)
+ }
+ //&sql(DELETE from Docs.LoanAppAttachedFiles WHERE  	AFxLoanAppID = :LoanID and AFxFile is Null)
+ if $$$ISERR(res) {
+	 s ErrorText=$System.Status.GetErrorText(res)
+	 //&js<alert("Ошибки при вводе:\n"+'#(ErrorText)#');>
+	//&js<zenPage.firePopupAction("OK","",true);> 
+	 quit
+ } 
+	//&js<zenPage.firePopupAction("OK","",true);>
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

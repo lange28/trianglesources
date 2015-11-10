@@ -1,0 +1,1033 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.RPT.LoanAppQuestionnaire">
+<Description>
+Печатная форма: анкета клиента</Description>
+<IncludeCode>EMCConst,EMCReport,ApplicationSettingsConst</IncludeCode>
+<Super>%CSP.SessionEvents,%CSP.Page</Super>
+<TimeCreated>62509,50155.030969</TimeCreated>
+
+<Method name="OnPage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.RPT.LoanAppQuestionnaire","WebForm","OnClick",1,"Печатная форма: анкета клиента")
+	// Подготовка данных для вывода на печать
+	s TextMessage=..GetData(.Parameters)
+	// В случае проблем подготовки данных
+	i TextMessage'="" {
+	&html<
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+	<html><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+	<title></title>
+	<body>#(TextMessage)#</body></html>
+	</html>>
+	q $$$OK
+	}
+	// Вывод отчета
+	&html<
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+<title></title>
+<style type="text/css"><!-- 
+.page_break {page-break-before: always;}
+.s0 {
+ font-family: Times New Roman;
+ font-size: 15px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+.s1 {
+ font-family: Times New Roman;
+ font-size: 16px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Top;
+}
+.s2 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Middle;
+}
+.s3 {
+ font-family: Arial;
+ font-size: 11px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Right; vertical-align: Top;
+}
+.s4 {
+ font-family: Times New Roman;
+ font-size: 15px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+.s5 {
+ font-family: Times New Roman;
+ font-size: 15px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+.s6 {
+ font-family: Arial;
+ font-size: 1px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 1;
+ border-bottom-width: 0px;
+ text-align: Left; vertical-align: Top;
+}
+.s6_bottom {
+ font-family: Arial;
+ font-size: 1px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 0;
+ border-bottom-width: 1px;
+ text-align: Left; vertical-align: Top;
+}
+.s7 {
+ font-family: Times New Roman;
+ font-size: 15px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Middle;
+}
+.s8 {
+ font-family: Times New Roman;
+ font-size: 15px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Justify; vertical-align: Top;
+}
+.s9 {
+ font-family: Times New Roman;
+ font-size: 15px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Right; vertical-align: Top;
+}
+.s10 {
+ font-family: Times New Roman;
+ font-size: 15px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 1;
+ border-bottom-width: 0px;
+ text-align: Left; vertical-align: Top;
+}
+.s11 {
+ font-family: Times New Roman;
+ font-size: 15px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Left; vertical-align: Top;
+}
+--></style>
+</head>
+<body onload="printpage()"
+ bgcolor="#FFFFFF" text="#000000">
+ <script language="Javascript1.2">
+	function printpage()
+	{
+		window.print();
+	}
+	</script>
+<a name="PageN1"></a>
+<table width="1063" border="0" cellspacing="0" cellpadding="0">
+<tr style="height: 1px"><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="2"/><td width="38"/><td width="1"/><td width="17"/><td width="1"/><td width="2"/><td width="1"/><td width="3"/><td width="4"/><td width="1"/><td width="4"/><td width="1"/><td width="1"/><td width="8"/><td width="1"/><td width="5"/><td width="1"/><td width="9"/><td width="2"/><td width="5"/><td width="1"/><td width="1"/><td width="1"/><td width="13"/><td width="5"/><td width="1"/><td width="1"/><td width="2"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="2"/><td width="1"/><td width="2"/><td width="1"/><td width="1"/><td width="4"/><td width="2"/><td width="32"/><td width="1"/><td width="3"/><td width="1"/><td width="2"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="2"/><td width="2"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="5"/><td width="1"/><td width="1"/><td width="5"/><td width="1"/><td width="1"/><td width="12"/><td width="1"/><td width="16"/><td width="1"/><td width="1"/><td width="4"/><td width="35"/><td width="4"/><td width="1"/><td width="16"/><td width="1"/><td width="5"/><td width="2"/><td width="1"/><td width="4"/><td width="7"/><td width="4"/><td width="1"/><td width="2"/><td width="5"/><td width="1"/><td width="6"/><td width="2"/><td width="3"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="3"/><td width="3"/><td width="11"/><td width="1"/><td width="1"/><td width="2"/><td width="3"/><td width="4"/><td width="10"/><td width="1"/><td width="1"/><td width="4"/><td width="1"/><td width="24"/><td width="1"/><td width="8"/><td width="1"/><td width="2"/><td width="3"/><td width="1"/><td width="3"/><td width="5"/><td width="2"/><td width="1"/><td width="2"/><td width="3"/><td width="7"/><td width="6"/><td width="1"/><td width="9"/><td width="2"/><td width="2"/><td width="4"/><td width="3"/><td width="1"/><td width="2"/><td width="4"/><td width="1"/><td width="6"/><td width="7"/><td width="1"/><td width="1"/><td width="1"/><td width="22"/><td width="3"/><td width="8"/><td width="1"/><td width="4"/><td width="1"/><td width="1"/><td width="1"/><td width="3"/><td width="1"/><td width="2"/><td width="2"/><td width="1"/><td width="4"/><td width="2"/><td width="9"/><td width="8"/><td width="3"/><td width="3"/><td width="23"/><td width="4"/><td width="11"/><td width="6"/><td width="7"/><td width="13"/><td width="10"/><td width="31"/><td width="4"/><td width="7"/><td width="1"/><td width="2"/><td width="1"/><td width="1"/><td width="2"/><td width="1"/><td width="2"/><td width="1"/><td width="1"/><td width="2"/><td width="2"/><td width="2"/><td width="2"/><td width="12"/><td width="3"/><td width="1"/><td width="1"/></tr>
+<tr style="height:2px">
+<td/><td/><td/><td colspan="113" rowspan="3"class="s0">#(Parameters("Value","FirmName"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:15px">
+<td/><td/><td/><td/><td/><td/><td colspan="52" class="s3">  </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td colspan="176" class="s1">Заявление-Анкета на получение микрозайма № #(Parameters("Value","laSysCode"))# от  #(Parameters("Value","laDateReg"))#</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:15px">
+<td/><td/><td/><td colspan="176" class="s2">Займы для физических лиц</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:26px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td colspan="33" class="s5">Желаемый продукт</td><td/><td colspan="43" class="s4">#(Parameters("Value","laProductType"))#</td><td/><td/><td colspan="18" class="s5">Сумма</td><td/><td colspan="26" class="s4">#(Parameters("Value","laSumm"))# руб.</td><td/><td/><td/><td/><td colspan="12" class="s5">Срок</td><td/><td colspan="39" class="s4">#(Parameters("Value","laPeriod"))#</td><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td colspan="33" class="s5">Заем</td><td/><td colspan="42" class="s4">#(Parameters("Value","laRepeat"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td colspan="176" class="s4">1. Личные данные заемщика</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:7px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td colspan="18" class="s5">Фамилия</td><td/><td colspan="146" class="s4">#(Parameters("Value","laLastName"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td colspan="18" class="s5">Имя</td><td colspan="146" class="s4">#(Parameters("Value","laFirstName"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:16px">
+<td/><td/><td/><td/><td/><td colspan="18" rowspan="2" class="s5">Отчество</td><td colspan="146" class="s4">#(Parameters("Value","laMiddleName"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td colspan="75" class="s4" style="font-size:1px"> </td><td colspan="33" rowspan="3" class="s5">Полных лет</td><td rowspan="2" class="s4" style="font-size:1px"> </td><td colspan="30" rowspan="3" class="s4">#(Parameters("Value","laAge"))#</td><td colspan="7" rowspan="2" class="s4" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="28" rowspan="3" class="s5">Дата рождения</td><td colspan="9" class="s4" style="font-size:1px"> </td><td colspan="33" rowspan="3" class="s4">#(Parameters("Value","laBirthDay"))#</td><td colspan="23" class="s4" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:16px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="38" rowspan="2" class="s5">Место рождения</td><td colspan="127" rowspan="2" class="s4">#(Parameters("Value","laPlaceOfBirth"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="28" rowspan="2" class="s5">Гражданство</td><td colspan="9" class="s5" style="font-size:1px"> </td><td colspan="33" rowspan="2" class="s4">#(Parameters("Value","laResident"))#</td><td colspan="23" class="s4" style="font-size:1px"> </td><td colspan="33" rowspan="2" class="s5">Пол</td><td class="s4" style="font-size:1px"> </td><td colspan="39" rowspan="2" class="s4">#(Parameters("Value","laGender"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="37" rowspan="2" class="s5">Контактный телефон</td><td colspan="38" rowspan="2" class="s4">#(Parameters("Value","laContactPhone"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="33" rowspan="2" class="s5">e-mail</td><td/><td colspan="39" rowspan="2" class="s4" style="font-size:13px">#(Parameters("Value","laEmail"))# </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td colspan="176" class="s6" style="font-size:1px">. </td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:11px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td colspan="176" class="s4">2. Документ, удостоверяющий личность (паспорт)</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td colspan="18" class="s5">Серия</td><td/><td colspan="50" class="s4">#(Parameters("Value","laPassportSeries"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="15" class="s5">Номер</td><td/><td colspan="51" class="s4">#(Parameters("Value","laPassportNumber"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td colspan="18" class="s5">Кем выдан</td><td/><td colspan="155" rowspan="2" class="s4">#(Parameters("Value","laPassportIssue"))#</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td colspan="18" class="s5">Когда выдан</td><td/><td colspan="49" class="s4">#(Parameters("Value","laPassportDateIssue"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="39" class="s5">Код подразделения</td><td/><td/><td colspan="24" class="s4">#(Parameters("Value","laPassportDepCode"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="175" class="s6" style="font-size:1px">. </td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:13px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td colspan="176" class="s4">3. Дополнительные документы</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td colspan="80" class="s5">Водительское удостоверение</td><td/><td colspan="28" rowspan="2" class="s4">#(Parameters("Value","laIsDriversLicense"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="24" rowspan="2" class="s5">Серия</td><td class="s4" style="font-size:13px">#(Parameters("Value","laDriversLicenseSeries"))# </td><td colspan="53" rowspan="2" class="s4" style="font-size:1px"> </td><td colspan="2" class="s5" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="21" rowspan="3" class="s5">Номер</td><td/><td colspan="30" rowspan="3" class="s4" style="font-size:13px">#(Parameters("Value","laDriversLicenseNumber"))#</td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="24" rowspan="2" class="s5">Кем выдан</td><td class="s4" style="font-size:13px">#(Parameters("Value","laDriversLicenseIssue"))#</td><td colspan="98" rowspan="2" ></td><td rowspan="2" class="s5" style="font-size:1px"> </td><td colspan="4" rowspan="2" class="s4" style="font-size:1px"> </td><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td colspan="21" class="s5">Когда выдан</td><td colspan="8" class="s4" style="font-size:13px">#(Parameters("Value","laDriversLicenseDateIssue"))#</td><td/><td colspan="21" class="s4" style="font-size:1px"> </td><td/><td/>
+</tr>
+<tr style="height:3px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td colspan="80" class="s5">Заграничный паспорт</td><td/><td/><td colspan="28" rowspan="2" class="s4">#(Parameters("Value","laIsForeignPassport"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="24" rowspan="2" class="s5">Серия</td><td class="s4" style="font-size:13px">#(Parameters("Value","laForeignPassportSeries"))#</td><td colspan="53" rowspan="2" class="s4" style="font-size:1px"> </td><td colspan="2" class="s5" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="21" rowspan="3" class="s5">Номер</td><td/><td colspan="30" rowspan="3" class="s4" style="font-size:13px">#(Parameters("Value","laForeignPassportNumber"))#</td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="24" rowspan="2" class="s5">Кем выдан</td><td class="s4" style="font-size:13px">#(Parameters("Value","laForeignPassportIssue"))#</td><td colspan="98" rowspan="2"><td rowspan="2" class="s5" style="font-size:1px"> </td><td colspan="4" rowspan="2" class="s4" style="font-size:1px"> </td><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td colspan="21" class="s5">Когда выдан</td><td colspan="8" class="s4" style="font-size:13px">#(Parameters("Value","laForeignPassportDateIssue"))# </td><td/><td colspan="21" class="s4" style="font-size:13px"></td><td/><td/>
+</tr>
+<tr style="height:5px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td colspan="80" class="s5">Военный билет</td><td/><td/><td colspan="28" rowspan="2" class="s4">#(Parameters("Value","laIsMilitaryPassport"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="24" rowspan="2" class="s5">Серия</td><td class="s4" style="font-size:13px">#(Parameters("Value","laMilitaryPassportSeries"))#</td><td colspan="53" rowspan="2" class="s4" style="font-size:1px"> </td><td colspan="2" class="s5" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="21" rowspan="3" class="s5">Номер</td><td/><td colspan="30" rowspan="3" class="s4" style="font-size:13px">#(Parameters("Value","laMilitaryPassportNumber"))#</td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="24" rowspan="2" class="s5">Кем выдан</td><td colspan="98" rowspan="2" class="s4" style="font-size:13px">#(Parameters("Value","laMilitaryPassportIssue"))#</td><td rowspan="2" class="s5" style="font-size:1px"> </td><td/><td colspan="4" rowspan="2" class="s4" style="font-size:13px"> </td><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td colspan="21" class="s5">Когда выдан</td><td colspan="8" class="s4" style="font-size:13px">#(Parameters("Value","laMilitaryPassportDateIssue"))#</td><td/><td colspan="21" class="s4" style="font-size:13px"> </td><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td colspan="80" class="s5">Стаховое свидетельство ПФ</td><td/><td/><td colspan="28" rowspan="2" class="s4">#(Parameters("Value","laIsPFR"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="13" rowspan="2" class="s5">Номер</td><td colspan="53" rowspan="2" class="s4" style="font-size:13px">#(Parameters("Value","laPFRNumber"))#</td><td colspan="14" class="s5" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="174" class="s6" style="font-size:1px">. </td><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:5px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td colspan="176" class="s4">4. Адрес регистрации</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td colspan="24" class="s5">Область</td><td/><td colspan="74" class="s4">#(Parameters("Value","laRegArea"))#</td><td colspan="18" class="s5">Район</td><td/><td colspan="58" class="s4">#(Parameters("Value","laRegRegion"))#</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td colspan="24" rowspan="2" class="s5">Нас.пункт</td><td/><td colspan="74" rowspan="2" class="s4">#(Parameters("Value","laRegCity"))#</td><td colspan="18" rowspan="2" class="s5">Улица</td><td/><td colspan="58" rowspan="2" class="s4">#(Parameters("Value","laRegStreet"))#</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td colspan="6" rowspan="2" class="s5">Дом</td><td colspan="22" rowspan="2" class="s4">#(Parameters("Value","laRegHouse"))#</td><td colspan="35" rowspan="2" class="s5">Строение</td><td colspan="18" rowspan="2" class="s4" style="font-size:13px">#(Parameters("Value","laRegBuilding2"))# </td><td colspan="22" rowspan="2" class="s5">Корпус</td><td colspan="19" rowspan="3" class="s4" style="font-size:13px">#(Parameters("Value","laRegBuilding"))#</td><td colspan="27" rowspan="3" class="s5">Квартира</td><td colspan="27" rowspan="3" class="s4">#(Parameters("Value","laRegApartment"))#</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td colspan="40" rowspan="2" class="s5">Домашний телефон</td><td colspan="7" class="s4" style="font-size:13px">#(Parameters("Value","laRegPhone"))#</td><td colspan="37" rowspan="2" class="s4" style="font-size:1px"> </td><td colspan="12" class="s5" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td colspan="176" class="s6" style="font-size:1px">.</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:5px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:24px">
+<td/><td/><td/><td colspan="176" class="s4">5.Адрес фактического места проживания</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td colspan="24" class="s5">Область</td><td/><td colspan="74" class="s4">#(Parameters("Value","laFactArea"))#</td><td colspan="18" class="s5">Район</td><td/><td colspan="58" class="s4">#(Parameters("Value","laFactRegion"))#</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td colspan="24" rowspan="2" class="s5">Нас.пункт</td><td/><td colspan="74" rowspan="2" class="s4">#(Parameters("Value","laFactCity"))#</td><td colspan="18" rowspan="2" class="s5">Улица</td><td/><td colspan="58" rowspan="2" class="s4">#(Parameters("Value","laFactStreet"))#</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td colspan="6" rowspan="2" class="s5">Дом</td><td colspan="22" rowspan="2" class="s4">#(Parameters("Value","laFactHouse"))#</td><td colspan="35" rowspan="2" class="s5">Строение</td><td colspan="18" rowspan="2" class="s4" style="font-size:13px">#(Parameters("Value","laFactBuilding2"))# </td><td colspan="22" rowspan="2" class="s5">Корпус</td><td colspan="19" rowspan="3" class="s4" style="font-size:13px">#(Parameters("Value","laFactBuilding"))#</td><td colspan="27" rowspan="3" class="s5">Квартира</td><td colspan="27" rowspan="3" class="s4">#(Parameters("Value","laFactApartment"))#</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td colspan="40" rowspan="1" class="s5">Домашний телефон</td><td colspan="7" class="s4" style="font-size:13px">#(Parameters("Value","laFactPhone"))#</td><td colspan="37" rowspan="2" class="s4" style="font-size:1px"> </td><td colspan="12" class="s5" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+
+<tr style="height:18px">
+<td/><td/><td/><td colspan="135" class="s5">Адрес постоянной регистрации совпадает с адресом фактического проживания</td><td/><td colspan="27" class="s4">#(Parameters("Value","laIsFactRegAddress"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="171" class="s6" style="font-size:1px">. </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:5px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td colspan="47" class="s5">Ф.И.О. заемщика</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:23px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="39" rowspan="2" class="s5"> #(Parameters("Value","CurrentDate"))# </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:16px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="9" rowspan="3" class="s5">Подпись:</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td class="s6_bottom" style="font-size:1px">.</td>            <td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="41" class="s6" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+</table>
+<br style="page-break-before: always">
+<a name="PageN2"></a>
+<table width="1063" border="0" cellspacing="0" cellpadding="0">
+<tr style="height: 1px"><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="2"/><td width="38"/><td width="1"/><td width="17"/><td width="1"/><td width="2"/><td width="1"/><td width="3"/><td width="4"/><td width="1"/><td width="4"/><td width="1"/><td width="1"/><td width="8"/><td width="1"/><td width="5"/><td width="1"/><td width="9"/><td width="2"/><td width="5"/><td width="1"/><td width="1"/><td width="1"/><td width="13"/><td width="5"/><td width="1"/><td width="1"/><td width="2"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="2"/><td width="1"/><td width="2"/><td width="1"/><td width="1"/><td width="4"/><td width="2"/><td width="32"/><td width="1"/><td width="3"/><td width="1"/><td width="2"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="2"/><td width="2"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="5"/><td width="1"/><td width="1"/><td width="5"/><td width="1"/><td width="1"/><td width="12"/><td width="1"/><td width="16"/><td width="1"/><td width="1"/><td width="4"/><td width="35"/><td width="4"/><td width="1"/><td width="16"/><td width="1"/><td width="5"/><td width="2"/><td width="1"/><td width="4"/><td width="7"/><td width="4"/><td width="1"/><td width="2"/><td width="5"/><td width="1"/><td width="6"/><td width="2"/><td width="3"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="3"/><td width="3"/><td width="11"/><td width="1"/><td width="1"/><td width="2"/><td width="3"/><td width="4"/><td width="10"/><td width="1"/><td width="1"/><td width="4"/><td width="1"/><td width="24"/><td width="1"/><td width="8"/><td width="1"/><td width="2"/><td width="3"/><td width="1"/><td width="3"/><td width="5"/><td width="2"/><td width="1"/><td width="2"/><td width="3"/><td width="7"/><td width="6"/><td width="1"/><td width="9"/><td width="2"/><td width="2"/><td width="4"/><td width="3"/><td width="1"/><td width="2"/><td width="4"/><td width="1"/><td width="6"/><td width="7"/><td width="1"/><td width="1"/><td width="1"/><td width="22"/><td width="3"/><td width="8"/><td width="1"/><td width="4"/><td width="1"/><td width="1"/><td width="1"/><td width="3"/><td width="1"/><td width="2"/><td width="2"/><td width="1"/><td width="4"/><td width="2"/><td width="9"/><td width="8"/><td width="3"/><td width="3"/><td width="23"/><td width="4"/><td width="11"/><td width="6"/><td width="7"/><td width="13"/><td width="10"/><td width="31"/><td width="4"/><td width="7"/><td width="1"/><td width="2"/><td width="1"/><td width="1"/><td width="2"/><td width="1"/><td width="2"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="25"/><td width="1"/></tr>
+<tr style="height:38px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td colspan="113" rowspan="3" class="s0">#(Parameters("Value","FirmName"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:15px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="53" class="s3"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:28px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:24px">
+<td/><td/><td/><td colspan="176" class="s4">6. Сведения о составе семьи</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td colspan="43" class="s5">Состоите ли Вы в браке</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="61" rowspan="2" class="s4">#(Parameters("Value","laIsMarried"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="50" rowspan="3" class="s5">Ф.И.О. супруги/га заемщика</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="112" rowspan="2" class="s4" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="28" rowspan="2" class="s5">Дата рождения</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="27" rowspan="2" class="s4" style="font-size:13px">#(Parameters("Value","laMarrtalBirthDay"))#</td><td colspan="7" class="s4" style="font-size:1px"> </td><td colspan="47" rowspan="3" class="s5">Контактный тел.супруги/га</td><td class="s4" colspan="39" style="font-size:13px">#(Parameters("Value","laMarriedPersonPhone"))#</td><td  rowspan="3" class="s4" style="font-size:1px"> </td>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="88" rowspan="2" class="s5">Сведения о занятости супруги/га заемщика</td><td/><td colspan="5" rowspan="2" class="s4">#(Parameters("Value","laMarrtalEmployment"))#</td><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td colspan="34" class="s4" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="35" rowspan="2" class="s5">Детей на иждивении</td><td class="s5" style="font-size:13px"></td><td colspan="6" rowspan="2" class="s4">#(Parameters("Value","laChildrenCount"))#</td><td colspan="41" rowspan="2" class="s5">Детей не на иждивении</td><td class="s5" style="font-size:13px">#(Parameters("Value","laNoChildrenCount"))#</td><td colspan="15" rowspan="2" class="s4" style="font-size:1px"> </td><td colspan="4" class="s4" style="font-size:1px"> </td><td colspan="33" rowspan="2" class="s5">Других иждивенцев</td><td/><td colspan="14" rowspan="2" class="s4" style="font-size:13px">#(Parameters("Value","laOtherCount"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:5px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td colspan="200" class="s6" style="font-size:1px">.</td>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:24px">
+<td/><td/><td/><td colspan="176" class="s4">7.Дополнительные сведения</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td colspan="20" class="s5">Образование</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="134" class="s4">#(Parameters("Value","laEducation"))#</td><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td colspan="45" rowspan="2" class="s5">Тип занятости</td><td colspan="129" class="s4">Специалист</td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td colspan="3" class="s5" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td colspan="45" rowspan="2" class="s5">Отраслевая принадлежность</td><td colspan="129" class="s4">Другое</td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td class="s5" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td colspan="200" class="s6" style="font-size:1px">.</td>
+</tr>
+<tr style="height:24px">
+<td/><td/><td/><td colspan="176" class="s7">8. Сведения о работе </td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="46" class="s5">Название организации</td><td colspan="127" class="s4">#(Parameters("Value","laWorkArea"))#</td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="46" class="s5">ФИО руководителя</td><td colspan="129" class="s4">#(Parameters("Value","laParennameJob"))#</td><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="46" class="s5">Адрес фактический</td><td colspan="127" rowspan="2" class="s4">#(Parameters("Value","laJobAddress"))#</td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="62" class="s5">Стаж на последнем месте работы</td><td/><td/><td/><td/><td/><td/><td colspan="20" class="s4">#(Parameters("Value","laLastStage1"))#</td><td colspan="39" class="s5">Раб. телефон (гор/моб)</td><td colspan="4" class="s4" style="font-size:1px"> </td><td colspan="20" class="s4"></td><td class="s4" style="font-size:1px"> </td><td colspan="18" class="s4">#(Parameters("Value","laJobPhoneCity"))#</td><td colspan="4" class="s4" style="font-size:1px"> </td><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td colspan="200" class="s6" style="font-size:1px">.</td>
+</tr>
+<tr style="height:24px">
+<td/><td/><td/><td colspan="176" class="s7">9.Контактное лицо для подтверждения данных заемщика (кроме супруга/и)</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:8px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td colspan="50" class="s5">Ф.И.О. контактного лица</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="112" class="s4">#(Parameters("Value","laContactPersonFIO"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td colspan="28" rowspan="2" class="s5">Дата рождения</td><td colspan="22" class="s5" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="27" rowspan="2" class="s4">#(Parameters("Value","laContactPersonBirthDay"))#</td><td colspan="85" class="s4" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td colspan="21" rowspan="3" class="s5">Статус</td><td colspan="7" class="s5" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="114" rowspan="3" class="s4">#(Parameters("Value","laContactPersonStatus"))#</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td colspan="39" rowspan="2" class="s5">Домашний телефон</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td colspan="21" class="s5" style="font-size:1px"> </td><td/><td colspan="114" class="s4" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td colspan="60" rowspan="2" class="s5">Мобильный телефон</td><td/><td colspan="114" rowspan="2" class="s4">#(Parameters("Value","laContactPersonMobilePhone"))#</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:3px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td colspan="200" class="s6" style="font-size:1px">.</td>
+</tr>
+<tr style="height:3px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:24px">
+<td/><td/><td/><td colspan="176" class="s4">10.Данные о собственности</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td colspan="50" class="s5">Личный автотраспрорт </td><td colspan="123" class="s4" style="font-size:13px"> #(Parameters("Value","laVehicle"))#</td><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+
+<tr style="height:6px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td colspan="200" class="s6" style="font-size:1px">.</td>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:24px">
+<td/><td/><td/><td colspan="176" class="s7">11. Данные о займе</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td colspan="9" class="s5">Сумма</td><td/><td colspan="56" class="s4">#(Parameters("Value","laSumm"))#  </td><td/><td colspan="7" class="s5">Срок</td><td/><td colspan="40" class="s4">#(Parameters("Value","laPeriod"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+
+<tr style="height:3px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td colspan="200" class="s6" style="font-size:1px">.</td>
+</tr>
+
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:21px">
+<td/><td/><td/><td colspan="176" class="s7">12. Сведения о ежемесячных доходах и расходах заемщика</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td colspan="57" class="s5">Сумма ежемесячных доходов </td><td/><td/><td colspan="27" class="s4">#(Parameters("Value","laIncome"))#  </td><td/><td colspan="60" class="s5">Сумма ежемесячных расходов</td><td/><td/><td/><td/><td colspan="24" class="s4">#(Parameters("Value","laAmountSpending"))#  </td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+
+<tr style="height:2px">
+<td/><td/><td/><td/><td colspan="175" rowspan="2" class="s4" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+
+<tr style="height:1px">
+<td/><td/><td/><td colspan="200" class="s6" style="font-size:1px">.</td>
+</tr>
+<tr style="height:20px">
+<td/><td/><td/><td colspan="176" class="s7">13. Кредитная история</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td colspan="2" class="s5" style="font-size:1px"> </td><td colspan="43" rowspan="3" class="s5">Наименование организации</td><td class="s5" style="font-size:13px"> </td><td colspan="54" rowspan="3" class="s4">#(Parameters("Value","laBorrowCompany"))#</td><td colspan="2" class="s5" style="font-size:1px"> </td><td colspan="6" rowspan="2" class="s5"> Вид</td><td colspan="64" rowspan="2" class="s4">#(Parameters("Value","laBorrowType"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:16px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:16px">
+<td/><td/><td/><td/><td/><td colspan="8" rowspan="2" class="s5">Cумма</td><td/><td colspan="48" rowspan="2" class="s4">#(Parameters("Value","laBorrowSumm"))#  </td><td/><td/><td colspan="14" class="s5">Остаток долга</td><td/><td colspan="45" class="s4" style="font-size:13px">#(Parameters("Value","laBorrowDebt"))#</td><td/><td/><td/><td/><td/><td/><td colspan="24" class="s5">Платеж</td><td/><td/><td/><td colspan="18" class="s4">#(Parameters("Value","laBorrowPay"))#  </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td colspan="200" class="s6" style="font-size:1px">.</td>
+</tr>
+<tr style="height:10px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td colspan="176" class="s4">14.Откуда вы о нас узнали</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:3px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td colspan="57" class="s5">Откуда вы о нас узнали</td><td/><td/><td/><td/><td colspan="112" class="s4">#(Parameters("Value","laLoanAppSource"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:30px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td colspan="172" class="s6" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:5px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td colspan="46" class="s5">Ф.И.О. заемщика</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:23px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="40" rowspan="2" class="s5">#(Parameters("Value","CurrentDate"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:16px">
+<td/><td/><td/><td colspan="12" rowspan="3" class="s5">Подпись:</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td class="s6_bottom" style="font-size:1px">.</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="39" class="s6" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+</table>
+</body></html>
+
+>
+        Quit $$$OK
+]]></Implementation>
+</Method>
+
+<UDLText name="T">
+<Content><![CDATA[
+// Подготовка данных для вывода в отчете
+
+]]></Content>
+</UDLText>
+
+<Method name="GetData">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&Parameters]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	s res=""
+	// Проверка входных параметров
+	// ID
+	// Инициализация данных
+	s Parameters("Value","laDriversLicenseSeries")=" "
+	s Parameters("Value","laDriversLicenseNumber")=" "
+	s Parameters("Value","laDriversLicenseIssue")=" "
+	s Parameters("Value","laDriversLicenseDateIssue")=" "
+	s Parameters("Value","laForeignPassportSeries")=" "
+	s Parameters("Value","laForeignPassportNumber")=" "
+	s Parameters("Value","laForeignPassportIssue")=" "
+	s Parameters("Value","laForeignPassportDateIssue")=" "
+	s Parameters("Value","laMilitaryPassportSeries")=" "
+	s Parameters("Value","laMilitaryPassportNumber")=" "
+	s Parameters("Value","laMilitaryPassportIssue")=" "
+	s Parameters("Value","laMilitaryPassportDateIssue")=" "
+	s Parameters("Value","laRegPhone")=" "
+	s Parameters("Value","laFactPhone")=" "
+	s Parameters("Value","laMarrtalBirthDay")=" "
+	s Parameters("Value","laJobPhoneCity")=" "
+	s Parameters("Value","laPFRNumber")=" "
+	//для теста ID=27525420
+	s ID=$g(%request.Data("ID",1))
+	i ID="" q "Не задан ID класса Docs.LoanApp."
+ 	s obj=##class(Docs.LoanApp).%OpenId(ID)
+	i '$IsObject(obj) q "Не найдена заявка с ID="_ID_"."
+	try {
+		s res=..InitData(ID,.Parameters)
+	} catch ex {
+		s res="Параметры заявки не соответствуют ожидаемым в печатной форме."
+	}
+	q res
+]]></Implementation>
+</Method>
+
+<Method name="InitData">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[id="",&Parameters]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+ i id="" q "Не задан ID заявки."
+ s obj=##class(Docs.LoanApp).%OpenId(id)
+ i '$IsObject(obj) q "Не найдена заявки с ID="_id_"."
+ set obj=##class(System.TInfoObject).%New()
+ set res=##class(System.Options).GetOptions(obj,$$$ApplicationSettingsFirmName,.lOrganisation)
+ s Parameters("Value","FirmName")=lOrganisation
+ 
+ s loanapp=##class(Docs.LoanApp).%OpenId(id)
+ If '$IsObject(loanapp) {s ErrText="Не найдена заявка ID="_id $$$SysLogError($$$EMCSysErr,ErrText) d OK^%WMUTIL(ErrText) }
+ Else 
+ {
+   s Parameters("Value","ID")			=id
+   s Parameters("Value","loanapp")		=loanapp
+   s Parameters("Value","laSysCode")		=loanapp.SysCode
+   i $IsObject(loanapp.laClientID) {
+	   s Parameters("Value","laFirstName")		=loanapp.laClientID.PersonID.FirstName
+	   s Parameters("Value","laLastName")		=loanapp.laClientID.PersonID.LastName
+	   s Parameters("Value","laMiddleName")		=loanapp.laClientID.PersonID.MiddleName
+	   s Parameters("Value","laBirthDay")		=$$$HorologToDateEdit(loanapp.laClientID.PersonID.DateOfBirth)
+	   s Parameters("Value","laAge")		=$h-loanapp.laClientID.PersonID.DateOfBirth\365
+   }
+   i $IsObject(loanapp.laPlaceOfBirth) {
+	   s Parameters("Value","laPlaceOfBirth")=loanapp.laPlaceOfBirth.GetAddressForLoanAppInfo()
+   }
+   s Parameters("Value","laResident")		="РФ"
+   s Parameters("Value","laGender")		=loanapp.laSexLogicalToDisplay(loanapp.laSex)
+   i $IsObject(loanapp.laLoanAppAddID) {
+	   s Parameters("Value","laReservist")=loanapp.laLoanAppAddID.laaReservistLogicalToDisplay(loanapp.laLoanAppAddID.laaReservist)
+       s Parameters("Value","laConviction")=loanapp.laLoanAppAddID.laaConvictionLogicalToDisplay(loanapp.laLoanAppAddID.laaConviction)
+       s Parameters("Value","laQIWIPay")=loanapp.laLoanAppAddID.laaQIWIPayLogicalToDisplay(loanapp.laLoanAppAddID.laaQIWIPay)
+  	   s Parameters("Value","laEducation")=loanapp.laLoanAppAddID.laaEducationLogicalToDisplay(loanapp.laLoanAppAddID.laaEducation)
+       s Parameters("Value","laEmployment")=loanapp.laLoanAppAddID.laaEmploymentLogicalToDisplay(loanapp.laLoanAppAddID.laaEmployment)
+       s Parameters("Value","laEnterprise")=loanapp.laLoanAppAddID.laaEnterpriseLogicalToDisplay(loanapp.laLoanAppAddID.laaEnterprise)
+       s DCMinPeriod=loanapp.laLoanAppAddID.laaLastStage
+       s Parameters("Value","laLastStage1")=DCMinPeriod
+       i (loanapp.laLoanAppAddID.laaLastStageEdIzm'=1) {
+       	s EdCode=loanapp.laLoanAppAddID.laaLastStageEdIzm
+       	i EdCode=2 {s EdCode=4 } elseIf EdCode=4 {s EdCode=1}
+		if DCMinPeriod {
+		      s DCMinPeriodPrp=##class(System.TUtil).NumberToString(DCMinPeriod,$s(EdCode=2:2,1:1),2)
+		      s Ed1=##class(BL.Docs.GP).PeriodInUnit(DCMinPeriod,0,EdCode,2)
+	       	s Parameters("Value","laLastStage")=loanapp.laLoanAppAddID.laaLastStage_" "_Ed1
+	      } else {
+	       	s Parameters("Value","laLastStage")=loanapp.laLoanAppAddID.laaLastStage_" ("_loanapp.laLoanAppAddID.laaLastStageEdIzmLogicalToDisplay(loanapp.laLoanAppAddID.laaLastStageEdIzm)
+	      }
+      } else {
+	      s Parameters("Value","laLastStage")=loanapp.laLoanAppAddID.laaLastStageEdIzmLogicalToDisplay(loanapp.laLoanAppAddID.laaLastStageEdIzm)
+      }
+   }
+   i $IsObject(loanapp.laPhoneMobileID) {
+	   s Parameters("Value","laContactPhone")=##class(BL.Common.Phone).SetFormatPhone(loanapp.laPhoneMobileID.phNumber)
+   }
+   s Parameters("Value","laEmail")=loanapp.laEMail
+   i $IsObject(loanapp.laPassportID) {
+	   s Parameters("Value","laPassportSeries")=loanapp.laPassportID.psSeries
+       s Parameters("Value","laPassportNumber")=loanapp.laPassportID.psNumber
+       s Parameters("Value","laPassportIssue")=loanapp.laPassportID.psIssueDep
+       s Parameters("Value","laPassportDateIssue")=$s(loanapp.laPassportID.psDateIssue>0:$$$HorologToDateEdit(loanapp.laPassportID.psDateIssue),1:"")
+       s Parameters("Value","laPassportDepCode")=loanapp.laPassportID.psIssueDepCode
+   }
+   s IsDriversLicense=$IsObject(loanapp.laLoanAppAddID.laaDriversLicenseID)
+   if IsDriversLicense {
+   	s Parameters("Value","laIsDriversLicense")="Да"
+   	s Parameters("Value","laDriversLicenseSeries")=loanapp.laLoanAppAddID.laaDriversLicenseID.dlSeries
+   	s Parameters("Value","laDriversLicenseNumber")=loanapp.laLoanAppAddID.laaDriversLicenseID.dlNumber
+   	s Parameters("Value","laDriversLicenseIssue")=loanapp.laLoanAppAddID.laaDriversLicenseID.dlIssueDep
+   	s Parameters("Value","laDriversLicenseDateIssue")=$s(loanapp.laLoanAppAddID.laaDriversLicenseID.dlDateIssue>0:$$$HorologToDateEdit(loanapp.laLoanAppAddID.laaDriversLicenseID.dlDateIssue),1:"")
+   }
+   else {s Parameters("Value","laIsDriversLicense")="Нет"}
+   s IsForeignPassport=($IsObject(loanapp.laLoanAppAddID.laaForeignPassportID) && (loanapp.laLoanAppAddID.laaForeignPassportID.fpNumber'="") && (loanapp.laLoanAppAddID.laaForeignPassportID.fpDateIssue>0))
+   if IsForeignPassport {
+   	s Parameters("Value","laIsForeignPassport")="Да"
+   	s Parameters("Value","laForeignPassportSeries")=loanapp.laLoanAppAddID.laaForeignPassportID.fpSeries
+   	s Parameters("Value","laForeignPassportNumber")=loanapp.laLoanAppAddID.laaForeignPassportID.fpNumber
+   	s Parameters("Value","laForeignPassportIssue")=loanapp.laLoanAppAddID.laaForeignPassportID.fpIssueDep
+   	s Parameters("Value","laForeignPassportDateIssue")=$s(loanapp.laLoanAppAddID.laaForeignPassportID.fpDateIssue>0:$$$HorologToDateEdit(loanapp.laLoanAppAddID.laaForeignPassportID.fpDateIssue),1:"")
+   }
+   else {s Parameters("Value","laIsForeignPassport")="Нет"} 
+   s IsMilitaryPassport=$IsObject(loanapp.laLoanAppAddID.laaMilitaryPassportID)
+   if IsMilitaryPassport {
+   	s Parameters("Value","laIsMilitaryPassport")="Да"
+   	s Parameters("Value","laMilitaryPassportSeries")=loanapp.laLoanAppAddID.laaMilitaryPassportID.mpSeries
+   	s Parameters("Value","laMilitaryPassportNumber")=loanapp.laLoanAppAddID.laaMilitaryPassportID.mpNumber
+   	s Parameters("Value","laMilitaryPassportIssue")=loanapp.laLoanAppAddID.laaMilitaryPassportID.mpIssueDep
+   	s Parameters("Value","laMilitaryPassportDateIssue")=$s(loanapp.laLoanAppAddID.laaMilitaryPassportID.mpDateIssue>0:$$$HorologToDateEdit(loanapp.laLoanAppAddID.laaMilitaryPassportID.mpDateIssue),1:"")
+   }
+   else {s Parameters("Value","laIsMilitaryPassport")="Нет"}  
+   // 24.08.2011 Червяков 
+   // Выводим то, что ввели
+    //s IsINN=($IsObject(loanapp.laLoanAppAddID.laaINNID) && (loanapp.laLoanAppAddID.laaINNID.innDate>0))
+   s IsINN=($IsObject(loanapp.laLoanAppAddID.laaINNID) && (loanapp.laLoanAppAddID.laaINNID.innNumber'="            "))
+   if IsINN {
+   	s Parameters("Value","laIsINN")="Да"
+   	s Parameters("Value","laINNNumber")=loanapp.laLoanAppAddID.laaINNID.innNumber
+   }
+   else {s Parameters("Value","laIsINN")="Нет"}     
+   // 24.08.2011 Червяков 
+   // Выводим то, что ввели
+   // s IsPFR=($IsObject(loanapp.laLoanAppAddID.laaPFRID) && (loanapp.laLoanAppAddID.laaPFRID.pfrDate>0))
+   s IsPFR=($IsObject(loanapp.laLoanAppAddID.laaPFRID) && (loanapp.laLoanAppAddID.laaPFRID.pfrNumber'="   -   -      "))
+   if IsPFR {
+   	s Parameters("Value","laIsPFR")="Да"
+   	s Parameters("Value","laPFRNumber")=loanapp.laLoanAppAddID.laaPFRID.pfrNumber
+   }
+   else {s Parameters("Value","laIsPFR")="Нет"}     
+   i $IsObject(loanapp.laRegAddrID) {
+	   s Parameters("Value","laRegArea")=loanapp.laRegAddrID.AREA
+   	   s Parameters("Value","laRegRegion")=loanapp.laRegAddrID.REGION
+   	   s Parameters("Value","laRegCity")=loanapp.laRegAddrID.CITY_loanapp.laRegAddrID.PLACE
+   	   s Parameters("Value","laRegStreet")=loanapp.laRegAddrID.STREET
+   	   s Parameters("Value","laRegHouse")=loanapp.laRegAddrID.HOUSE
+   	   s Parameters("Value","laRegBuilding")=loanapp.laRegAddrID.BUILDING
+   	   s Parameters("Value","laRegApartment")=loanapp.laRegAddrID.APARTMENT
+   }
+  
+   s Parameters("Value","laRegBuilding2")=""
+   i $IsObject(loanapp.laPhoneRegID) {
+	   s Parameters("Value","laRegPhone")=##class(BL.Common.Phone).SetFormatPhone(loanapp.laPhoneRegID.phNumber)
+   }
+   i $IsObject(loanapp.laLiveAddrID) {
+	   s Parameters("Value","laFactArea")=loanapp.laLiveAddrID.AREA
+	   s Parameters("Value","laFactRegion")=loanapp.laLiveAddrID.REGION
+	   s Parameters("Value","laFactCity")=loanapp.laLiveAddrID.CITY_loanapp.laLiveAddrID.PLACE
+	   s Parameters("Value","laFactStreet")=loanapp.laLiveAddrID.STREET
+	   s Parameters("Value","laFactHouse")=loanapp.laLiveAddrID.HOUSE
+	   s Parameters("Value","laFactBuilding")=loanapp.laLiveAddrID.BUILDING
+	   s Parameters("Value","laFactApartment")=loanapp.laLiveAddrID.APARTMENT
+   }
+   s Parameters("Value","laFactBuilding2")=""
+   i $IsObject(loanapp.laPhoneLiveID) {
+	   s Parameters("Value","laFactPhone")=##class(BL.Common.Phone).SetFormatPhone(loanapp.laPhoneLiveID.phNumber)
+   }
+   s Parameters("Value","laIsFactRegAddress")=$s($IsObject(loanapp.laRegAddrID) && $IsObject(loanapp.laLiveAddrID) &&(loanapp.laRegAddrID.%Id()=loanapp.laLiveAddrID.%Id()):"Да",1:"Нет") 
+   s Parameters("Value","laIsMarried")=loanapp.laMaritalStatusLogicalToDisplay(loanapp.laMaritalStatus)
+   i $IsObject(loanapp.laMarriedPersonID) {
+	   s Parameters("Value","laMarritalFIO")=loanapp.laMarriedPersonID.FullName
+	   s Parameters("Value","laMarrtalBirthDay")=$s(loanapp.laMarriedPersonID.DateOfBirth>0:$$$HorologToDateEdit(loanapp.laMarriedPersonID.DateOfBirth),1:"")
+   }
+   s Parameters("Value","laMarrtalEmployment")=loanapp.laMarriedEmploymentLogicalToDisplay(loanapp.laMarriedEmployment)
+   s Parameters("Value","laMarriedPersonPhone")=##class(BL.Common.Phone).SetFormatPhone(loanapp.laMarriedPersonPhone.phNumber)
+   s Parameters("Value","laChildrenCount")=$s(loanapp.laChildrenCount>0:loanapp.laChildrenCount,1:"")
+   s Parameters("Value","laNoChildrenCount")=$s(loanapp.laNoChildrenCount>0:loanapp.laNoChildrenCount,1:"")
+   s Parameters("Value","laOtherCount")=$s(loanapp.laOtherCount>0:loanapp.laOtherCount,1:"")
+   
+   s Parameters("Value","laWorkArea")=loanapp.laWorkArea
+   s Parameters("Value","laParennameJob")=loanapp.laParentNameJob
+   s Parameters("Value","laJobAddress")=$s($IsObject(loanapp.laJobAddressID):loanapp.laJobAddressID.GetAddressForLoanAppInfo(),1:"")
+  
+   i $IsObject(loanapp.laJobPhoneCityID) {
+	   s Parameters("Value","laJobPhoneCity")=##class(BL.Common.Phone).SetFormatPhone(loanapp.laJobPhoneCityID.phNumber)
+   }
+   i $IsObject(loanapp.laJobParentPhoneCityID) {
+	   s Parameters("Value","laJobParentPhoneCity")=##class(BL.Common.Phone).SetFormatPhone(loanapp.laJobParentPhoneCityID.phNumber)
+   }
+   s Parameters("Value","laContactPersonFIO")=loanapp.laLastNameContactPerson_" "_loanapp.laFirstNameContactPerson_" "_loanapp.laMiddleNameContactPerson
+   s Parameters("Value","laContactPersonBirthDay")=$s(loanapp.laContactPersonBirthday>0:$$$HorologToDateEdit(loanapp.laContactPersonBirthday),1:"")
+   s Parameters("Value","laContactPersonStatus")=loanapp.laContactPersonStatusLogicalToDisplay(loanapp.laContactPersonStatus)
+   s Parameters("Value","laContactPersonPhone")=##class(BL.Common.Phone).SetFormatPhone(loanapp.laContactPersonPhoneID.phNumber)
+   s Parameters("Value","laContactPersonMobilePhone")=##class(BL.Common.Phone).SetFormatPhone(loanapp.laContactPersonMobilePhone)
+   
+   s Parameters("Value","laVehicle")=loanapp.laLoanAppAddID.laaVehicleBrand_" "_loanapp.laLoanAppAddID.laaVehicleModel_" "_loanapp.laLoanAppAddID.laaVehicleNumber_" "_loanapp.laLoanAppAddID.laaVehicleYear
+   
+   if $isObject(loanapp.laLoanAppAddID.laaRealtyCollectID) {
+	    s card=loanapp.laLoanAppAddID.laaRealtyCollectID
+		s lb=$lb("Квартира/доля","Дом","Дача","Гараж","Земельный участок","Другое")
+		for ii="01","02","03","04","05","06" {
+			 	s propname="cbRealty"_ii
+ 				s str=$s($zObjProperty(card,"reaP"_ii)=1:$lg(lb,+ii),1:"")
+ 				if str'="" {s Parameters("Value","laRealty")=$g(%W("Obj").Data("laRealty"))_" "_str}
+
+		}   
+   }
+   else  {
+	   s Parameters("Value","laRealty")=""
+   }
+   //s Parameters("Value","laRealty")=$tr(%W("Obj").Data("laRealty")," ",",")	   
+   s res=##class(BL.Docs.LoanApp).SecondLoanAppCheck(loanapp.laClientID.PersonID)
+   if res {   s Parameters("Value","laRepeat")="Повторный"}
+   else {s Parameters("Value","laRepeat")="Первичный"}
+   s Parameters("Value","laPeriod")=loanapp.laPeriod_" "_$s(loanapp.laProductTypeID.PTEd=1:"дн.",loanapp.laProductTypeID.PTEd=2:"нед.",loanapp.laProductTypeID.PTEd=3:"мес.",loanapp.laProductTypeID.PTEd=4:"г.",loanapp.laProductTypeID.PTEd=$$$ptedOther:"Периоды по "_loanapp.laProductTypeID.PTDaysNumber_" дн.",1:"")
+   s Parameters("Value","laSumm")=loanapp.laSum
+   s Parameters("Value","laProductType")=loanapp.laProductTypeID.ObjectName
+   s Parameters("Value","laObjective")=loanapp.laLoanAppAddID.laaObjectiveLogicalToDisplay(loanapp.laLoanAppAddID.laaObjective)
+   
+   s Parameters("Value","laIncome")=loanapp.laIncome_$s(loanapp.laIncome>0:" руб.",1:"")
+   s Parameters("Value","laAmountSpending")=loanapp.laAmountSpending_$s(loanapp.laAmountSpending>0:" руб.",1:"")
+   
+    if $isObject(loanapp.laLoanAppAddID.laaIncomeCollectID) {
+	    s card=loanapp.laLoanAppAddID.laaIncomeCollectID
+		s lb=$lb("Основная зарплата, премии","Предпринимательство","Работа по совместительству","Пенсия и пособия","Сдача в аренду","Проценты по вкладам","Дивиденты","Субсидии","Стипендия","Прочие")
+		for ii="01","02","03","04","05","06","07","08","09","10" {
+ 			s propname="cbIncome"_ii
+ 			s str=$s($zObjProperty(card,"incP"_ii)=1:$lg(lb,+ii),1:"")
+ 			if str'="" {s Parameters("Value","laIncomeSource")=$g(%W("Obj").Data("laIncomeSource"))_" "_str}
+
+		}   
+   }
+   else  {
+	   s Parameters("Value","laIncomeSource")=""
+   }
+   if $isObject(loanapp.laLoanAppAddID.laaExpenseCollectID) {
+	    s card=loanapp.laLoanAppAddID.laaExpenseCollectID
+		s lb=$lb("Текущие расходы","Комм.платежи","Алименты","Обслуживание автомобиля","Расходы на образование","Прочие")
+		for ii="01","02","03","04","05","06" {
+ 			;s propname="cbIncome"_ii
+ 			s str=$s($zObjProperty(card,"expP"_ii)=1:$lg(lb,+ii),1:"")
+ 			if str'="" {s Parameters("Value","laaExpenseCollect")=$g(%W("Obj").Data("laaExpenseCollect"))_" "_str}
+
+		}   
+   }
+   else  {
+	   s Parameters("Value","laaExpenseCollect")=""
+   }
+   s Parameters("Value","laBorrowed")=loanapp.laLoanAppAddID.laaBorrowedLogicalToDisplay(loanapp.laLoanAppAddID.laaBorrowed)
+   s Parameters("Value","laHaveBorrowed")=loanapp.laLoanAppAddID.laaHaveBorrowedLogicalToDisplay(loanapp.laLoanAppAddID.laaHaveBorrowed)
+   i $IsObject(loanapp.laLoanAppAddID.laaCreditOrganization) {
+   	s Parameters("Value","laBorrowCompany")=loanapp.laLoanAppAddID.laaCreditOrganization.NAME
+   } else {s Parameters("Value","laBorrowCompany")=""}
+   s Parameters("Value","laBorrowType")=loanapp.laLoanAppAddID.laaBorrowType
+   s Parameters("Value","laBorrowSumm")=loanapp.laLoanAppAddID.laaBorrowSumm_$s(loanapp.laLoanAppAddID.laaBorrowSumm>0:" руб.",1:"")
+   s Parameters("Value","laBorrowDebt")=loanapp.laLoanAppAddID.laaBorrowDebt_$s(loanapp.laLoanAppAddID.laaBorrowDebt>0:" руб.",1:"")
+   s Parameters("Value","laBorrowPay")=loanapp.laLoanAppAddID.laaBorrowPay_$s(loanapp.laLoanAppAddID.laaBorrowPay>0:" руб.",1:"")
+   
+   s Parameters("Value","laLoanAppSource")=loanapp.laLoanAppSourceID.ObjectName
+   s Parameters("Value","laDateReg")			=$$D^%FD(loanapp.laDateReg,"""d"" $m Y г.")	
+
+}
+ set Parameters("Value","CurrentDate")=$$D^%FD(+$h,""" d ""  $m  Yг.")
+  s user=##class(System.TAccount).GetSessionAccount()
+ set Parameters("Value","UserName")=user.ShortName
+ 	q ""
+]]></Implementation>
+</Method>
+</Class>
+</Export>

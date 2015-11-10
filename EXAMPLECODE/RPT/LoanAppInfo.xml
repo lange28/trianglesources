@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.RPT.LoanAppInfo">
+<Description>
+Печатная форма: информационный лист</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62784,35732.775378</TimeCreated>
+
+<Method name="OnPage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.RPT.LoanAppInfo","WebForm","OnClick",1,"Печатная форма: информационный лист")
+	// Подготовка данных для вывода на печать
+	s TextMessage=..GetData(.Parameters)
+	// В случае проблем подготовки данных
+	i TextMessage'="" {
+	&html<
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+	<html><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+	<title></title>
+	<body>#(TextMessage)#</body>
+	</html>
+	</html>>
+	q $$$OK
+	}
+	// Вывод отчета
+	&html<<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+<title></title>
+<style type="text/css"><!-- 
+.page_break {page-break-before: always;}
+.s0 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Bottom;
+}
+.s1 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Left; vertical-align: Top;
+}
+.s2 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Top;
+}
+.s3 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Bottom;
+}
+.s4 {
+ font-family: Times New Roman;
+ font-size: 11px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Left; vertical-align: Top;
+}
+.s5 {
+ font-family: Times New Roman;
+ font-size: 19px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Top;
+}
+.s6 {
+ font-family: Times New Roman;
+ font-size: 16px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Left; vertical-align: Middle;
+}
+.s7 {
+ font-family: Times New Roman;
+ font-size: 16px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Bottom;
+}
+.s8 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+.s9 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Middle;
+}
+.s10 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Left; vertical-align: Top;
+}
+.s11 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Left; vertical-align: Top;
+}
+.s12 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: italic;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+.s13 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Left; vertical-align: Top;
+}
+.s14 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Left; vertical-align: Top;
+}
+.s15 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 0px;
+ text-align: Left; vertical-align: Top;
+}
+--></style>
+</head>
+<body onload="printpage()"
+ bgcolor="#FFFFFF" text="#000000">
+<script language="Javascript1.2">
+	function printpage()
+	{
+		window.print();
+	}
+	</script>
+<a name="PageN1"></a>
+<table width="645" border="0" cellspacing="0" cellpadding="0">
+<tr style="height: 1px"><td width="1"/><td width="1"/><td width="6"/><td width="18"/><td width="1"/><td width="184"/><td width="1"/><td width="46"/><td width="1"/><td width="10"/><td width="21"/><td width="1"/><td width="15"/><td width="2"/><td width="1"/><td width="13"/><td width="1"/><td width="1"/><td width="3"/><td width="73"/><td width="4"/><td width="2"/><td width="2"/><td width="58"/><td width="3"/><td width="25"/><td width="2"/><td width="15"/><td width="13"/><td width="3"/><td width="22"/><td width="82"/><td width="3"/><td width="6"/><td width="2"/><td width="2"/><td width="1"/></tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="3" class="s0">Заёмщик</td><td colspan="26" class="s1">#(Parameters("Value","ClientName"))#</td><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="28" class="s1" style="font-size:1px"> </td><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="12" class="s0">Адрес регистрации</td><td colspan="15" class="s1">#(Parameters("Value","ClientRegAddr1"))#</td><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="28" class="s1">#(Parameters("Value","ClientRegAddr2"))#</td><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="7" class="s0">Паспорт: серия</td><td/><td colspan="6" class="s2">#(Parameters("Value","ClientPassportSeries"))#</td><td/><td/><td class="s3"> номер </td><td/><td colspan="10" class="s2">#(Parameters("Value","ClientPassportNumber"))#</td><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td class="s0">Выдан</td><td/><td colspan="27" class="s4">#(Parameters("Value","ClientPassportIssueDep"))#</td><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="28" class="s4">#(Parameters("Value","ClientPassportIssueDep1"))#</td><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="4" class="s0">Дата выдачи  </td><td/><td colspan="10" class="s2">#(Parameters("Value","ClientPassportIssuepsDate"))#</td><td colspan="7" class="s3">Код подразделения</td><td colspan="6" class="s2">#(Parameters("Value","ClientPassportIssueCode"))#</td><td/><td/>
+</tr>
+<tr style="height:6px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:26px">
+<td colspan="35" class="s5">#(Parameters("Value","HeadLine"))#</td><td/><td/>
+</tr>
+<tr style="height:3px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td colspan="3" class="s7">Я,</td><td/><td colspan="27" rowspan="2" class="s6">#(Parameters("Value","ClientName"))#</td><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:3px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:6px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:29px">
+<td colspan="16" class="s14"> Продукт</td><td colspan="20" class="s13"> #(Parameters("Value","Product"))#</td><td/>
+</tr>
+<tr style="height:29px">
+<td colspan="16" class="s11"> Сумма</td><td colspan="20" class="s10"> #(Parameters("Value","Summa"))#</td><td/>
+</tr>
+<tr style="height:28px">
+<td colspan="16" class="s15"> Валюта</td><td colspan="20" class="s8"> Рубль РФ</td><td/>
+</tr>
+<tr style="height:1px">
+<td colspan="16" rowspan="2" class="s11"> Срок</td><td colspan="20" rowspan="2" class="s10"> #(Parameters("Value","Period"))#</td><td/>
+</tr>
+<tr style="height:28px">
+<td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:29px">
+<td colspan="16" class="s11"> Проценты</td><td colspan="20" class="s10"> #(Parameters("Value","ProcTek"))#</td><td/>
+</tr>
+<tr style="height:29px">
+<td colspan="16" class="s11"> Штрафные санкции (пени, неустойка)</td><td colspan="20" class="s10"> #(Parameters("Value","ProcPros"))#</td><td/>
+</tr>
+<tr style="height:29px">
+<td colspan="16" class="s11"> Срок рассмотрения заявки</td><td colspan="20" class="s10"> 15 минут</td><td/>
+</tr>
+<tr style="height:33px">
+<td colspan="16" class="s11"> Способ передачи</td><td colspan="20" class="s10"> Наличными, безналичным платежом по реквизитам, предоставленным заемщиком</td><td/>
+</tr>
+<tr style="height:29px">
+<td colspan="16" class="s11"> Способ погашения</td><td colspan="20" class="s10">  #(Parameters("Value","VidGr"))#</td><td/>
+</tr>
+<tr style="height:33px">
+<td colspan="16" class="s11"> Возможность досрочного погашения</td><td colspan="20" class="s10" style="font-size:1px">#(Parameters("Value","DCMinPeriod"))#</td><td/>
+</tr>
+<tr style="height:29px">
+<td colspan="16" class="s11"> Обеспечение</td><td colspan="20" class="s10"> Нет</td><td/>
+</tr>
+<tr style="height:29px">
+<td colspan="16" class="s11"> Вид займа</td><td colspan="20" class="s10"> Не целевой</td><td/>
+</tr>
+<tr style="height:29px">
+<td colspan="16" class="s11"> Документы, обязательные к предоставлению</td><td colspan="20" class="s10"> Паспорт РФ</td><td/>
+</tr>
+<tr style="height:29px">
+<td colspan="16" class="s11"> Комиссия за выдачу займа</td><td colspan="20" class="s10"> Не предусмотрены</td><td/>
+</tr>
+<tr style="height:29px">
+<td colspan="16" class="s11"> Пролонгация договора</td><td colspan="20" class="s10"> #(Parameters("Value","Prolongation"))#</td><td/>
+</tr>
+<tr style="height:15px">
+<td colspan="16" rowspan="17" class="s11">Способы оплаты</td><td colspan="2" rowspan="13" class="s8" style="font-size:1px"> </td><td colspan="16" class="s12">-Наличными в Точке выдачи займа</td><td colspan="2" class="s8" style="font-size:1px"> </td><td/>
+</tr>
+<tr style="height:29px">
+<td colspan="17" class="s12">- Безналичным платежом на р/c организации по следующим  реквизитам:</td><td class="s8" style="font-size:1px"> </td><td/>
+</tr>
+<tr style="height:15px">
+<td colspan="19" class="s8">#(Parameters("Value","lOrganisation"))#</td>
+</tr>
+<tr style="height:14px">
+<td colspan="19" class="s8">Юридический адрес: #(Parameters("Value","lOrgAddress1"))#</td>
+</tr>
+<tr style="height:1px">
+<td colspan="19" rowspan="2" class="s8"> #(Parameters("Value","lOrgAddress2"))#</td>
+</tr>
+<tr style="height:14px">
+</tr>
+<tr style="height:1px">
+<td colspan="18" class="s8" style="font-size:1px"> </td><td/>
+</tr>
+<tr style="height:15px">
+<td colspan="19" class="s8">ИНН/КПП #(Parameters("Value","lINNKPP"))#</td>
+</tr>
+<tr style="height:15px">
+<td colspan="19" class="s8">ОГРН #(Parameters("Value","lOGRN"))#</td>
+</tr>
+<tr style="height:15px">
+<td colspan="19" class="s8">Расчетный счет #(Parameters("Value","lRS"))#</td>
+</tr>
+<tr style="height:15px">
+<td colspan="19" class="s8">#(Parameters("Value","lBank"))#</td>
+</tr>
+<tr style="height:15px">
+<td colspan="19" class="s8">Корреспондентский счет #(Parameters("Value","lKS"))#</td>
+</tr>
+<tr style="height:15px">
+<td colspan="19" class="s8">БИК #(Parameters("Value","lBIK"))#</td>
+</tr>
+<tr style="height:29px">
+<td rowspan="4" class="s1" style="font-size:1px"> </td><td colspan="18" class="s8">Комиссия взимается в соответствии с тарифами Банка Плательщика</td><td rowspan="4" class="s1" style="font-size:1px"> </td><td/>
+</tr>
+<tr style="height:15px">
+<td rowspan="3" class="s1" style="font-size:1px"> </td><td colspan="13" class="s12">- Платежные терминалы QIWI</td><td colspan="4" class="s8" style="font-size:1px"> </td><td/>
+</tr>
+<tr style="height:15px">
+<td colspan="15" class="s8">Платеж, через QIWI кошелек, без комиссии</td><td colspan="2" rowspan="2" class="s1" style="font-size:1px"> </td><td/>
+</tr>
+<tr style="height:13px">
+<td colspan="15" class="s1" style="font-size:1px"> </td><td/>
+</tr>
+<tr style="height:3px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td colspan="34" class="s8"> С условиями договора, правилами предоставления и способами возврата займа ознакомлен и согласен.</td><td/>
+</tr>
+<tr style="height:22px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td colspan="3" class="s8">#(Parameters("Value","prtDate"))#</td><td/><td/><td/><td/><td/><td/><td/><td colspan="13" class="s1" style="font-size:1px"> </td><td/><td class="s9">/</td><td colspan="8" class="s1" style="font-size:1px"> </td><td/>
+</tr>
+</table>
+</body></html>>
+	q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="GetData">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&Parameters]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	// Проверка входных параметров
+	// id
+	// Для теста
+	//set Id = 27534046
+	// Инициализация данных
+	set Id = $g(%request.Data("ID",1))
+	
+	if Id'="" && ('$IsObject(##class(Docs.LoanApp).%OpenId(Id)))
+	{
+		quit $$$ERROR($$$GeneralError,"Не найдена заявка Id="_Id)
+	}
+	
+	// Вывод на печать 
+	if Id'=""
+	{
+		set obj=##class(Docs.LoanApp).%OpenId(Id)
+		if '$IsObject(obj)  quit $$$ERROR($$$GeneralError,"Ошибка открытия объекта Docs.LoanApp ID="_Id)
+		set Parameters("Value","HeadLine") = "Информационный лист № "_obj.SysCode_" от "_$$$HorologToDateEdit(obj.laDateReg)_"г."
+		set Parameters("Value","Summa") = obj.laSum
+		;тип продукта
+		if $IsObject(obj.laProductTypeID)
+		{
+			set EdCode = obj.laProductTypeID.PTEd
+			set Period = obj.laPeriod
+			if EdCode = $$$ptedOther
+			{
+				set Ed = "(Периоды по "_obj.laProductTypeID.PTDaysNumber_" дн.)"
+			}
+			else
+			{
+				set Ed = ##class(BL.Docs.GP).PeriodInUnit(Period,,EdCode)
+			}
+			set Parameters("Value","Period") = Period_" "_Ed
+			set Parameters("Value","Product") = obj.laProductTypeID.ObjectName
+			; Период % ставки
+			set text = " % годовых, % в день"
+			set ProcEd = $p(text,",",obj.laProductTypeID.PTPercentRatePeriod+1)
+			set Parameters("Value","ProcTek") = "Из расчета "_$$$PrtProcForm(obj.laProc)_ProcEd
+			set Parameters("Value","ProcPros") = $$$PrtProcForm(obj.laProductTypeID.PTProcPros)_ProcEd_ " на общую сумму задолженности"
+			; Вид графика
+			set text=" Аннуитетные платежи, Единовременно, Равномерное погашение, Дискретное погашение"
+			set Parameters("Value","VidGr")=$p(text,",",obj.laProductTypeID.PTVidGr+1)
+			;s Parameters("Value","VidGr")="Единовременно"
+			;min период досрочного погашения
+			set DCMinPeriod=obj.laProductTypeID.PTDCMinPeriod
+			if DCMinPeriod
+			{
+				set DCMinPeriodPrp = ##class(System.TUtil).NumberToString(DCMinPeriod,$s(EdCode=2:2,1:1),2)
+				if EdCode = $$$ptedOther,EdCode = 5 s EdCode = 1
+				set Ed1 = ##class(BL.Docs.GP).PeriodInUnit(DCMinPeriod,1,EdCode,2)
+				set Parameters("Value","DCMinPeriod") = "Возможно. Минимальный срок займа составляет "_DCMinPeriod_" ("_DCMinPeriodPrp_") "_Ed1_"."
+			}
+			else
+			{
+				set Parameters("Value","DCMinPeriod") = ""
+			}
+		}
+		;клиент
+		if $IsObject(obj.laClientID.PersonID)
+		{
+			set Parameters("Value","ClientName") = obj.laClientID.PersonID.ObjectName
+			set Parameters("Value","ClientShortName") = obj.laClientID.PersonID.ShortName
+		}
+		;Паспорт
+		if $IsObject(obj.laPassportID)
+		{
+			set Parameters("Value","ClientPassportSeries") = obj.laPassportID.psSeries
+			set Parameters("Value","ClientPassportNumber") = obj.laPassportID.psNumber
+			set strI = $zstrip(obj.laPassportID.psIssueDep,"<>W")
+			set strO = ""
+			set strO1 = ""
+			set lim = 60
+			set count = $L(strI)
+			set fl = 1
+			set i = 1
+			for
+			{ 
+				if $L($P(strI," ",i)) = 0 q 
+				if ($L(strO)+$L($P(strI," ",i))+i<=lim) && (fl) {s strO=strO_$P(strI," ",i)_" "}  else { s fl=0 s strO1=strO1_$P(strI," ",i)_" " } 
+				set i = i+1
+			}
+			set Parameters("Value","ClientPassportIssueDep") = strO
+			set Parameters("Value","ClientPassportIssueDep1") = strO1
+			set Parameters("Value","ClientPassportIssueCode") = obj.laPassportID.psIssueDepCode
+			set Parameters("Value","ClientPassportIssuepsDate") = $$$HorologToDateEdit(obj.laPassportID.psDateIssue)
+		}
+		;Адрес регистрации
+		if $IsObject(obj.laRegAddrID)
+		{
+			set addres = obj.laRegAddrID
+			set str = addres.GetAddressForLoanAppInfo()
+			set Parameters("Value","ClientRegAddr") = str    //obj.laRegAddrID.daKLADRAddress
+			set Parameters("Value","ClientRegAddr1") = $e(Parameters("Value","ClientRegAddr"),1,16)
+			set Parameters("Value","ClientRegAddr2") = $e(Parameters("Value","ClientRegAddr"),17,255)
+		}
+		if $IsObject(obj.laProductTypeID)
+		{
+			if obj.laProductTypeID.PTDAllowManualProlong
+			{
+				set Parameters("Value","Prolongation") = "Возможна"
+			}
+			else
+			{
+				set Parameters("Value","Prolongation") = "Не предусмотрена"
+			}
+		}
+		else
+		{
+			set Parameters("Value","Prolongation") = "Не предусмотрена"
+		}
+	kill obj
+	}
+	else
+	{
+		set Parameters("Value","HeadLine")="Информационный лист № __________ от "_$$$HorologToDateEdit(+$H)_"г."
+		set Parameters("Value","Summa")=""
+		set Parameters("Value","Period")=""
+		set Parameters("Value","Product")=""
+		set Parameters("Value","ProcTek")=""
+		set Parameters("Value","ProcPros")=""
+		set Parameters("Value","VidGr")=""
+		set Parameters("Value","DCMinPeriod")=""
+		set Parameters("Value","ClientName")=""
+		set Parameters("Value","ClientShortName")=""
+		set Parameters("Value","ClientPassportSeries")=""
+		set Parameters("Value","ClientPassportNumber")=""
+		set Parameters("Value","ClientPassportIssueDep")=""
+		set Parameters("Value","ClientPassportIssueDep1")=""
+		set Parameters("Value","ClientPassportIssueCode")=""
+		set Parameters("Value","ClientPassportIssuepsDate")=""
+		set Parameters("Value","ClientRegAddr")=""
+		set Parameters("Value","Prolongation")=""
+	}
+	set Parameters("Value","prtDate") = $$D^%FD($H,"""d"" $m Y г.")
+	do ##class(GUI.PRT.LoanCollateralAgreement).Organization(.Parameters)
+	
+	quit ""
+]]></Implementation>
+</Method>
+</Class>
+</Export>

@@ -1,0 +1,644 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.RPT.CashPaysOrder">
+<Description>
+Печатная форма: приходный кассовый ордер</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>%CSP.SessionEvents,%CSP.Page</Super>
+<TimeCreated>62509,50155.030969</TimeCreated>
+
+<Method name="OnPage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.RPT.CachPaysOrder","WebForm","OnClick",1,"Печатная форма: приходный кассовый ордер")
+	// Подготовка данных для вывода на печать
+	s TextMessage=..GetData(.Parameters)
+	// В случае проблем подготовки данных
+	i TextMessage'="" {
+	&html<
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+	<html><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+	<title></title>
+	<body>#(TextMessage)#</body></html>
+	</html>>
+	q $$$OK
+	}
+	// Вывод отчета
+	&html<
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+<title></title>
+<style type="text/css"><!-- 
+textarea{
+border:0px solid #fff;
+height:18px;
+width: 97%;
+}
+.page_break {page-break-before: always;}
+.s0 {
+ font-family: Times New Roman;
+ font-size: 9px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 2;
+ border-right-width: 2;
+ border-top-width: 2;
+ border-bottom-width: 2;
+ text-align: Center; vertical-align: Middle;
+}
+.s1 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 2;
+ border-right-width: 2;
+ border-top-width: 2;
+ border-bottom-width: 2;
+ text-align: Center; vertical-align: Middle;
+}
+.s2 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: italic;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+.s3 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Middle;
+}
+.s4 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Right; vertical-align: Middle;
+}
+.s5 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Middle;
+}
+.s6 {
+ font-family: Times New Roman;
+ font-size: 8px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Bottom;
+}
+.s7 {
+ font-family: Arial;
+ font-size: 1px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 0px;
+ border-top-width: 0px;
+ border-bottom-width: 0px;
+ text-align: Left; vertical-align: Top;
+}
+.s8 {
+ font-family: Times New Roman;
+ font-size: 11px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+.s9 {
+ font-family: Times New Roman;
+ font-size: 9px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Middle;
+}
+.s10 {
+ font-family: Times New Roman;
+ font-size: 11px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Middle;
+}
+.s11 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Left; vertical-align: Middle;
+}
+.s12 {
+ font-family: Times New Roman;
+ font-size: 11px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Middle;
+}
+.s13 {
+ font-family: Times New Roman;
+ font-size: 8px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Top;
+}
+.s14 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Middle;
+}
+.s15 {
+ font-family: Times New Roman;
+ font-size: 11px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Left; vertical-align: Bottom;
+}
+.s16 {
+ font-family: Times New Roman;
+ font-size: 11px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Bottom;
+}
+.s17 {
+ font-family: Times New Roman;
+ font-size: 11px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Left; vertical-align: Middle;
+}
+.s18 {
+ font-family: Times New Roman;
+ font-size: 11px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Left; vertical-align: Top;
+}
+.s19 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 2;
+ border-right-width: 2;
+ border-top-width: 1px;
+ border-bottom-width: 0;
+ text-align: Center; vertical-align: Middle;
+}
+.s119 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 2;
+ border-right-width: 2;
+ border-top-width: 1px;
+ border-bottom-width: 2;
+ text-align: Center; vertical-align: Middle;
+}
+.s19_l {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 2;
+ border-right-width: 1;
+ border-top-width: 1px;
+ border-bottom-width: 2;
+ text-align: Center; vertical-align: Middle;
+}
+.s19_r{
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width:0;
+ border-right-width: 2;
+ border-top-width: 1px;
+ border-bottom-width: 2;
+ text-align: Center; vertical-align: Middle;
+}
+.s20 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Middle;
+}
+.s21 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Middle;
+}
+.s22 {
+ font-family: Times New Roman;
+ font-size: 9px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Middle;
+}
+.s23 {
+ font-family: Times New Roman;
+ font-size: 9px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Middle;
+}
+.s23_2 {
+ font-family: Times New Roman;
+ font-size: 9px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 1px;
+ border-bottom-width: 2;
+ text-align: Center; vertical-align: Middle;
+}
+.s24 {
+ font-family: Times New Roman;
+ font-size: 9px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width:2;
+ border-right-width: 1;
+ border-top-width: 1px;
+ border-bottom-width: 2;
+ text-align: Center; vertical-align: Middle;
+}
+.s25 {
+ font-family: Times New Roman;
+ font-size: 9px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width:0;
+ border-right-width:2px;
+ border-top-width: 1px;
+ border-bottom-width: 2;
+ text-align: Center; vertical-align: Middle;
+}
+--></style>
+</head>
+<body onload="printpage()"
+ bgcolor="#FFFFFF" text="#000000">
+  <script language="Javascript1.2">
+	function printpage()
+	{
+		window.print();
+	}
+	</script>
+<a name="PageN1"></a>
+<table width="874" border="0" cellspacing="0" cellpadding="0">
+<tr style="height: 1px"><td width="22"/><td width="45"/><td width="9"/><td width="27"/><td width="9"/><td width="5"/><td width="67"/><td width="40"/><td width="27"/><td width="35"/><td width="5"/><td width="9"/><td width="5"/><td width="53"/><td width="18"/><td width="9"/><td width="5"/><td width="13"/><td width="22"/><td width="31"/><td width="22"/><td width="22"/><td width="49"/><td width="18"/><td width="27"/><td width="5"/><td width="13"/><td width="9"/><td width="1"/><td width="12"/><td width="1"/><td width="1"/><td width="2"/><td width="1"/><td width="1"/><td width="10"/><td width="12"/><td width="3"/><td width="3"/><td width="1"/><td width="2"/><td width="9"/><td width="1"/><td width="2"/><td width="3"/><td width="2"/><td width="9"/><td width="13"/><td width="3"/><td width="25"/><td width="1"/><td width="2"/><td width="4"/><td width="17"/><td width="7"/><td width="2"/><td width="15"/><td width="2"/><td width="15"/><td width="1"/><td width="2"/><td width="2"/><td width="2"/><td width="1"/><td width="1"/></tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="12" rowspan="2" class="s2" style="text-align:right">Унифицированная форма № КО-1</td><td/><td colspan="2" rowspan="66" class="s8" style="font-size:1px; border-style:dotted; border-width:0px 1px 0px 1px; border-color:#000;"><img src="images/pko.jpg" width="10" height="594" alt=""></td><td rowspan="66" class="s7" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:15px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="28" rowspan="2" class="s12">#(Parameters("Value","Org"))#</td><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="14" class="s2"  style="text-align:right">Утверждена постановлением Госкомстата</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:11px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="8" rowspan="2" class="s2"  style="text-align:right">России от 18.08.98 г. № 88</td><td/><td/><td/><td colspan="28" class="s13">организация</td><td/><td/><td/><td/>
+</tr>
+<tr style="height:7px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="28" rowspan="2" class="s14">КВИТАНЦИЯ</td><td/><td/><td/><td/>
+</tr>
+<tr style="height:15px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="6" rowspan="2" class="s3">Код</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="20" rowspan="2" class="s10">к приходному кассовому ордеру № <span style="text-decoration:underline;">#(Parameters("Value","NomDoc"))#</span></td><td/><td colspan="5" rowspan="2" class="s5"></td><td/><td/><td/><td/>
+</tr>
+<tr style="height:15px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="7" rowspan="2" class="s4">Форма по ОКУД</td><td colspan="6" rowspan="3" class="s19">0310001</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="25" rowspan="4" class="s10">от  #(Parameters("Value","DataP"))#</td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:7px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="6" rowspan="4" class="s19">#(Parameters("Value","KodOKPO"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td colspan="18" rowspan="2" class="s5">#(Parameters("Value","Org"))#</td><td colspan="3" rowspan="2" class="s4">по ОКПО</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:15px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td colspan="18" rowspan="2" class="s6">организация</td><td/><td/><td/><td/><td/>
+
+<td colspan="28" rowspan="3" class="s16">
+	Принято от 
+	<span style="text-decoration: underline; line-height: 15px ">
+	#(Parameters("Value","FioOt"))#
+	</span>
+</td>
+
+</tr>
+<tr style="height:7px">
+<td/><td/><td/><td colspan="6" rowspan="4" class="s119">#(Parameters("Value","KodStrPodr"))#</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:7px">
+<td colspan="21" rowspan="3" class="s5">#(Parameters("Value","StrPodr"))#</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:3px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:8px">
+<td/><td/><td/><td/><td colspan="26" rowspan="2" class="s18"><span style="font-size:1px">.</span></td><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:10px">
+<td colspan="21" rowspan="2" class="s6">структурное подразделение</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+
+<td colspan="28" class="s16">
+	Основание:
+	<span style="text-decoration: underline; line-height: 15px ">
+	#(Parameters("Value","Osnovanie2"))##(Parameters("Value","Osnovanie3"))#
+	</span>
+</td>
+</tr>
+
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="5" rowspan="3" class="s3">Номер документа</td><td colspan="5" rowspan="3" class="s20">Дата составления</td><td/><td/><td/><td/><td/><td/><td/><td colspan="28" class="s11"><span style="font-size:1px">.</span></td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="28" class="s14"></td>
+<td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:15px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="27" class="s14" style="font-size:1px; border-width:0px 0px 1px 0px; border-style:solid; border-color:#000">.jhk </td>
+</tr>
+<tr style="height:4px">
+<td/><td colspan="9" rowspan="2" class="s4">ПРИХОДНЫЙ КАССОВЫЙ ОРДЕР</td><td/><td colspan="5" rowspan="2" class="s19_l">#(Parameters("Value","NomDoc"))#</td><td colspan="5" rowspan="2" class="s19_r">#(Parameters("Value","DataDoc"))#</td><td/><td/><td/><td/><td/><td/><td/><td colspan="6" rowspan="2" class="s10">Сумма</td><td/><td colspan="15" rowspan="2" class="s5">#(Parameters("Value","SumRub"))#</td><td rowspan="2" class="s10">руб</td><td colspan="3" rowspan="2" class="s5">#(Parameters("Value","SumKop"))#</td><td/><td colspan="3" rowspan="2" class="s10">коп</td><td/>
+</tr>
+<tr style="height:15px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:11px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="15" class="s6">цифрами</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td colspan="3" rowspan="4" class="s9">Дебет</td><td colspan="14" class="s22">Кредит</td><td colspan="4" rowspan="4" class="s22">Сумма, руб. коп.</td><td colspan="3" rowspan="4" class="s22">Код целевого<br> назначения</td><td rowspan="4" class="s22" style="font-size:1px"><span style="font-size:1px">.</span> </td><td/><td/><td/><td colspan="28" class="s17">#(Parameters("Value","SumProp"))#</td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:11px">
+<td rowspan="3" class="s23" style="font-size:1px">. </td><td colspan="3" rowspan="3" class="s23">код<br> структурного<br> подразделения</td><td colspan="5" rowspan="3" class="s23">корреспондирующий<br> счет,  субсчет</td><td colspan="5" rowspan="3" class="s23">код<br> аналитического<br> учета</td><td/><td/><td/><td colspan="28" class="s6">прописью</td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td colspan="28" class="s11" style="font-size:1px">.</td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:7px">
+<td/><td/><td/><td colspan="28" rowspan="2" class="s11" style="font-size:1px"><span style="font-size:1px">.</span></td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:11px">
+<td colspan="3" rowspan="2" class="s24">#(Parameters("Value","Debet"))#<span style="font-size:1px">.</span></td><td rowspan="2" class="s23_2" style="font-size:1px">. </td><td colspan="3" rowspan="2" class="s23_2">#(Parameters("Value","KodStrPodr"))#<span style="font-size:1px">.</span></td><td colspan="5" rowspan="2" class="s23_2">#(Parameters("Value","KorSchet"))#<span style="font-size:1px">.</span></td><td colspan="5" rowspan="2" class="s23_2">#(Parameters("Value","KorAnalUch"))#<span style="font-size:1px">.</span></td><td colspan="4" rowspan="2" class="s23_2">#(Parameters("Value","Summa"))#<span style="font-size:1px">.</span></td><td colspan="3" rowspan="2" class="s23_2" style="font-size:13px">#(Parameters("Value","KodTselNum"))# <span style="font-size:1px">.</span></td><td rowspan="2" class="s25" style="font-size:1px"><span style="font-size:1px">.</span> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:7px">
+<td/><td/><td/>
+<td colspan="22" rowspan="2" class="s11" style="font-size:1px"><span style="font-size:1px">.</span></td><td rowspan="2" class="s10">руб</td><td colspan="3" rowspan="2" class="s5">00</td><td colspan="2" rowspan="2" class="s10">коп</td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:11px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:5px">
+<td colspan="2" rowspan="2" class="s10">Принято от</td><td colspan="23" rowspan="2" class="s11">#(Parameters("Value","FioOt"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:13px">
+<td/><td/><td/><td colspan="14" rowspan="2" class="s16">В том числе</td><td colspan="17" rowspan="2" class="s15">#(Parameters("Value","VTomChisle"))#</td><td/><td/><td/>
+</tr>
+<tr style="height:5px">
+<td colspan="2" rowspan="3" class="s10">Основание</td><td colspan="23" rowspan="3" class="s11">#(Parameters("Value","Osnovanie"))#</td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:3px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:10px">
+<td/><td/><td/><td colspan="28" rowspan="2" class="s5" style="font-size:1px">.</td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:8px">
+<td colspan="25" rowspan="2" class="s5" style="font-size:13px; text-align:left" >#(Parameters("Value","Osnovanie1"))#<span style="font-size:1px">.</span></td><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:10px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td colspan="2" class="s10">Сумма</td><td colspan="23" class="s11">#(Parameters("Value","SumProp"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:11px">
+<td/><td/><td colspan="23" class="s6">прописью</td><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="5" rowspan="2" class="s10">М.П.</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:7px">
+<td colspan="20" rowspan="2" class="s11" style="font-size:1px">. </td><td colspan="2" rowspan="2" class="s10">рублей</td><td rowspan="2" class="s5">00</td><td colspan="2" rowspan="2" class="s10">копеек</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:11px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:7px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="8" rowspan="5" class="s10">Главный бухгалтер</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:5px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="8" rowspan="2" class="s5" style="font-size:1px">. <td/><td colspan="11" rowspan="2" class="s12" style="font-size:13px">#(Parameters("Value","GlBuh"))#<span style="font-size:1px">.</span></td>
+</tr>
+<tr style="height:13px">
+<td colspan="3" rowspan="2" class="s10">В том числе</td><td colspan="22" rowspan="2" class="s11">#(Parameters("Value","VTomChisle"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td rowspan="2" class="s5" style="font-size:1px"> </td>
+</tr>
+<tr style="height:5px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="4" rowspan="3" class="s6">подпись</td><td/><td colspan="12" rowspan="3" class="s6">расшифровка подписи</td>
+</tr>
+<tr style="height:4px">
+<td colspan="3" rowspan="6" class="s10">Приложение</td><td colspan="22" rowspan="6" class="s11">#(Parameters("Value","Prilozhenie"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td rowspan="4" class="s6"> </td>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:3px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="8" rowspan="4" class="s5" style="font-size:1px">.</td><td/><td colspan="14" rowspan="4" class="s12">#(Parameters("Value","Kassir"))#<span style="font-size:1px">.</span></td>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td colspan="5" rowspan="3" class="s10">Кассир</td><td/><td/><td/><td/>
+</tr>
+<tr style="height:9px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:6px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="8" rowspan="2" class="s6">подпись</td><td/><td colspan="14" rowspan="2" class="s6">расшифровка подписи</td><td/><td/>
+</tr>
+<tr style="height:5px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:6px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td colspan="5" class="s10">Главный бухгалтер</td><td/><td colspan="2" class="s5" style="font-size:1px">. </td><td/><td colspan="17" class="s5" style="font-size:13px">#(Parameters("Value","GlBuh"))# <span style="font-size:1px">.</span></td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:11px">
+<td/><td/><td/><td/><td/><td/><td colspan="2" class="s6">подпись</td><td/><td colspan="17" class="s6">расшифровка подписи</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td colspan="5" class="s10">Получил кассир</td><td/><td colspan="2" class="s5" style="font-size:1px">. </td><td/><td colspan="17" class="s5">#(Parameters("Value","Kassir"))#<span style="font-size:1px">.</span></td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:11px">
+<td/><td/><td/><td/><td/><td/><td colspan="2" class="s6">подпись</td><td/><td colspan="17" class="s6">расшифровка подписи</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+</table>
+</body></html>
+
+
+>
+        Quit $$$OK
+]]></Implementation>
+</Method>
+
+<UDLText name="T">
+<Content><![CDATA[
+// Подготовка данных для вывода в отчете
+
+]]></Content>
+</UDLText>
+
+<Method name="GetData">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&Parameters]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	// Проверка входных параметров
+	// ID
+	//для теста ID=27538178
+	// Инициализация данных
+	s Parameters("Value","KodTselNazn")=" "
+	s Parameters("Value","SummaProp1")=" "
+	s Parameters("Value","RukDolzh")="Генеральный директор"
+	s Parameters("Value","Director")=" "
+	s Parameters("Value","GlBuh")=" "
+	s Parameters("Value","PoDoc")=" "
+	s Parameters("Value","PoDoc1")=" "
+	s Parameters("Value","Prilozhenie1")=" "
+	s Parameters("Value","Prilozhenie2")=" "
+	s Parameters("Value","Osnovanie")=" "
+	s Parameters("Value","Osnovanie1")=" "
+	s Parameters("Value","Osnovanie2")=" "
+	s Parameters("Value","Osnovanie3")=" "
+	s Parameters("Value","Nom")=" "
+	s Parameters("Value","KorAnalUch")="----"
+	s Parameters("Value","KodTselNum")=" "
+	
+	s ID=$g(%request.Data("ID",1))
+	//s ID=27538178
+	i ID="" q "Не задан ID класса Docs.CashOrder."
+ 	s obj=##class(Docs.CashOrder).%OpenId(ID)
+ 	if '$IsObject(obj) q "ID класса Docs.CashOrder не найден."
+	d ##class(GUI.PRT.CashPaysOrder).OnGetVariables(.Parameters,1,,,ID)	
+	q ""
+]]></Implementation>
+</Method>
+</Class>
+</Export>

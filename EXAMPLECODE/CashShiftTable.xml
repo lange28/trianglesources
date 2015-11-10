@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.CashShiftTable">
+<Description>
+Таблица приемов/сдач смены кассиром</Description>
+<IncludeCode>%Guiconst,EMCConst</IncludeCode>
+<Super>GUI.WEB.TablePageTemplate</Super>
+<TimeCreated>62045,52083.563548</TimeCreated>
+
+<XData name="mainTablePane">
+<Description>
+This XML block defines the contents of the table pane</Description>
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<pane id="tPane" xmlns="http://www.intersystems.com/zen">
+
+<tableNavigatorBar id="navBar" showPageSize="true" tablePaneId="mainTable" />
+  <csMenuBar id="mainTableMenu" width="100%">
+  <csMenuBarItem caption="Редактировать">
+    <contextMenu id="fileMenu" >
+      <csMenuItem icon="images/file.png" caption="Добавить" onclick="zenPage.BNewClick(zenThis);"  />
+      <csMenuItem icon="images/open.png" caption="Изменить" onclick="zenPage.BEditClick(zenThis);"  />
+      <!--csMenuItem icon="images/cut.png" caption="Удалить" onclick="alert('Не доступно');"  /-->
+    </contextMenu>
+  </csMenuBarItem>
+  <csMenuBarItem caption="Действия" hidden="true">
+    <contextMenu id="actionMenu" >
+      <csMenuItem icon="images/buildall.png" caption="Вернуть на редактирование" onclick="zenPage.ToStateEdit(zenThis);" />
+    </contextMenu>
+  </csMenuBarItem>
+  <csMenuBarItem caption="Печать">
+    <contextMenu id="printMenu" >
+      <csMenuItem icon="images/print.png" caption="Акт приема-передачи" onclick="zenPage.printAct(zenThis);" />
+    </contextMenu>
+  </csMenuBarItem>
+</csMenuBar>
+<tablePane id="mainTable"
+	width="100%"
+	useSnapshot="true"
+	maxRows="1000"
+	pageSize="20"
+	tableName="Docs.CashShift"
+	valueColumn="ID"
+	ondblclick="zenPage.BEditClick(zenThis);"
+	showQuery="false"
+	showZebra="true"
+	useKeys="false"
+	fixedHeaders="true"
+	bodyHeight="30em"
+	headerLayout="headersOnTop"
+	OnCreateResultSet="CreateSQL"
+	orderByClause="id desc"
+	>
+<column colName="ID" 
+width="50"
+hidden="true"
+ />
+<column colName="csDate"
+header="Дата"
+width="90"
+id="filtercoDate"
+colExpression="csDate" 
+filterType="date"
+filterOp="BETWEEN"
+ />
+<column colName="Office"
+header="Подразделение"
+colExpression="csOffice->ObjectName" 
+width="200"
+filterType="text"
+filterOp="%STARTSWITH"
+ />
+<column colName="Cashier" 
+header="Кассир"
+colExpression="csCashier->ObjectName"
+width="230"
+filterType="text"
+filterOp="%STARTSWITH"
+ />
+<column colName="csSumm"
+header="Сумма на начало смены"
+id="filtercsSumm"
+colExpression="csSumm"
+width="90"
+filterType="text"
+filterOp=">="
+ />
+<column colName="csSummDb"
+header="Получено"
+id="filtercsSummDb"
+colExpression="csSummDb"
+width="90"
+filterType="text"
+filterOp=">="
+ />
+<column colName="csSummCr"
+header="Выдано"
+id="filtercsSummCr"
+colExpression="csSummCr"
+width="90"
+filterType="text"
+filterOp=">="
+ />
+<column colName="csSummRP"
+header="Сумма на конец смены"
+width="90"
+id="filtercsSummRP"
+colExpression="csSummRP"
+filterType="text"
+filterOp=">="
+ />
+ <column colName="CashierRP" 
+header="Принимающий кассир"
+colExpression="csCashierRP->ObjectName"
+width="230"
+filterType="text"
+filterOp="%STARTSWITH"
+ />
+</tablePane>
+<spacer height="10"/>
+</pane>
+]]></Data>
+</XData>
+
+<Method name="CreateSQL">
+<FormalSpec>*tSC:%Status,pInfo:%ZEN.Auxiliary.QueryInfo</FormalSpec>
+<ReturnType>%ResultSet</ReturnType>
+<Implementation><![CDATA[
+   s cond="cls='Docs.CashShift' and Status='"_$$$scActive_"'"
+   s myOfficeID=%session.Data("CurrentOffice","ID")
+   s tSELECT = "select ID,csDate,csOffice->ObjectName As Office,csCashier->ObjectName As Cashier,csSumm,csSummDb,csSummCr,csSummRP,csCashierRP->ObjectName As CashierRP"
+   s tSELECT = tSELECT_" from Docs.CashShift where "_cond
+   s tSELECT = tSELECT_" ORDER BY ID desc" 
+   s tRS = ##class(%ResultSet).%New()
+   s tSC = tRS.Prepare(tSELECT)
+   s pInfo.queryText = tSELECT
+   q tRS
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.CashShiftTable","WebForm","OnClick",1,"Таблица приемов/сдач смены кассиром")
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="BNewClick">
+<Description>
+обработчик кнопки "Создать новый"</Description>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+ var parms = new Object();
+ zenPage.launchPopupWindow(zenLink('GUI.WEB.CashShiftEdit.cls'),
+ 'A True Dialogue',
+ 'status,scrollbars,resizable,width=720,height=650',
+ parms);
+]]></Implementation>
+</Method>
+
+<Method name="BEditClick">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+ var table = this.getComponentById('mainTable');
+ var id = table.getProperty('value');
+ if (id=="") {
+ 	alert("Ничего не выбрано");
+	return
+ }
+ var parms = new Object();
+ parms.CashShiftID = id;
+ parms.ReadOnly = 1;
+
+ zenPage.launchPopupWindow(zenLink('GUI.WEB.CashShiftEdit.cls'),
+ 'A True Dialogue',
+ 'status,scrollbars,resizable,width=720,height=650',
+ parms);
+]]></Implementation>
+</Method>
+
+<Method name="ToStateEdit">
+<Description>
+редактировать, только с правами администратора</Description>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+ //???проверка почему-то не работает
+ //res = this.EnableEdit();
+ //if (res != 1) return;
+  
+ if (confirm("Вернуть на редактирование запись?")) {
+	 var table = this.getComponentById('mainTable');
+	 var id = table.getProperty('value');
+ 	if (id=="") {
+ 		alert("Ничего не выбрано");
+		return;
+ 	}
+ 	var parms = new Object();
+ 	parms.CashShiftID = id;
+
+	 zenPage.launchPopupWindow(zenLink('GUI.WEB.CashShiftEdit.cls'),
+ 	'A True Dialogue',
+ 	'status,scrollbars,resizable,width=720,height=650',
+	 parms);
+ }
+]]></Implementation>
+</Method>
+
+<Method name="EnableEdit">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ s user=%session.Data("UserId")
+ s scGroup=$$$emcAdmin
+ i $IsObject(##class(System.TAccountGroup).OpenSysCode(scGroup)) {
+ 	 s IDGroup=##class(System.TAccountGroup).OpenSysCode(scGroup)
+ 	 i '##class(System.TAccount).%OpenId(user).inGroup(IDGroup.%Id()) q $$$OK
+ }
+ q '$$$OK
+]]></Implementation>
+</Method>
+
+<Method name="printAct">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	zenPage.gotoPage(zenLink('GUI.WEB.RPT.CashActShift.cls?ID='+id));
+]]></Implementation>
+</Method>
+
+<Method name="onPopupAction">
+<FormalSpec>popupName,action,value</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[ zenPage.getComponentById('mainTable').executeQuery();
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

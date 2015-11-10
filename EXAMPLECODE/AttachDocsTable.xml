@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.AttachDocsTable">
+<Description>
+Таблица с прикрепленными документами</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62724,59191.546488</TimeCreated>
+
+<XData name="Style">
+<Description>
+This Style block contains page-specific CSS style definitions.</Description>
+<Data><![CDATA[
+<style type="text/css">
+
+/* style for message box */
+#msgBox {
+	height: 8.0em;
+	width: 10.0em;
+	overflow: auto;
+	border: 1px solid darkblue;
+	background: white;
+}
+/* шрифт главной таблицы реестра */
+#mainTable table {
+	font-size: 0.7em;
+	font-family: verdana;
+	width: 800px;
+}
+/* шрифт фильтра главной таблицы реестра */
+#mainTable .tpFilter {
+	font-size: 1.4em;
+}
+/* шрифт фильтра по дате главной таблицы реестра */
+#mainTable .tpFilterDate {
+	font-size: 1.2em;
+}
+/* стиль меню */
+.csActiveMenuItem {
+	color: red;
+	background: gray;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+#rightAutoExpand {
+	padding: 5px;
+	background: #CBE6EB;
+	background-position: right;
+	background-image: url(images/docindexgradient.png);
+	background-repeat: repeat-y;
+	height: 100%;
+}
+body
+{
+	NObackground-image: url(images/mbg_winter.jpg);
+}
+
+</style>
+]]></Data>
+</XData>
+
+<Property name="LoanID">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="LoanID"/>
+</Property>
+
+<XData name="Contents">
+<Description>
+This XML block defines the contents of this page.</Description>
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page xmlns="http://www.intersystems.com/zen" title="">
+<tableNavigatorBar id="navBar" showPageSize="true" tablePaneId="mainTable"/>
+<csMenuBar id="mainTableMenu" width="100%">
+<csMenuBarItem caption="Редактировать">
+<contextMenu id="fileMenu">
+<csMenuItem icon="images/file.png" caption="Добавить" onclick="zenPage.addDoc(zenThis);"/>
+<!--<csMenuItem icon="images/open.png" caption="Изменить" onclick="zenPage.attachFileEdit(zenThis);"/>-->
+<csMenuItem icon="" caption="Выход" onclick="zenPage.cancelPopup();"/>
+</contextMenu>
+</csMenuBarItem>
+<!--<csMenuBarItem caption="Действия">
+<contextMenu id="actionMenu">
+<csMenuItem icon="" caption="История изменений" onclick="alert('В разработке');"/>
+<csMenuItem icon="" caption="Просмотр скан. копии документа" onclick="zenPage.viewDoc(zenThis);"/>
+</contextMenu>
+</csMenuBarItem>-->
+</csMenuBar>
+<tablePane id="mainTable"
+	width="100%"
+	useSnapshot="true"
+	maxRows="1000"
+	pageSize="20"
+	tableName="Docs.LoanApp"
+	valueColumn="ID"
+	ondblclick=""
+	showQuery="false"
+	showZebra="true"
+	useKeys="false"
+	fixedHeaders="true"
+	bodyHeight="100em"
+	headerLayout="headersOnTop"
+	OnCreateResultSet="CrtSQL"
+	orderByClause="id desc"
+	>
+<column colName="ID" 
+		width="50"
+		hidden="true"
+		/>
+<column colName="DateCreate"
+header="Дата ввода в систему"
+		width="140"
+		id="filterDateCreate"
+		colExpression="DateCreate"
+		filterType="date"
+		filterOp="BETWEEN"
+		 />
+<column colName="AFxDate"
+header="Дата актуальности"
+		width="140"
+		id="filterAFxDate"
+		colExpression="AFxDate"
+		filterType="date"
+		filterOp="BETWEEN"
+		 />
+<column colName="Account"
+header=""
+		width="140"
+		id="filterAccount"
+		colExpression="Account"
+		filterType="text"
+		filterOp="="
+		 />
+<column colName="FileType"
+header=""
+		width="140"
+		id="filterFileType"
+		colExpression="FileType"
+		filterType="text"
+		filterOp="="
+		 />
+<column colName="Info"
+header=""
+		width="140"
+		id="filterInfo"
+		colExpression="Info"
+		filterType="text"
+		filterOp="="
+		 />
+</tablePane>
+</page>
+]]></Data>
+</XData>
+
+<Method name="CrtSQL">
+<FormalSpec>*tSC:%Status,pInfo:%ZEN.Auxiliary.QueryInfo</FormalSpec>
+<ReturnType>%ResultSet</ReturnType>
+<Implementation><![CDATA[
+	set myOfficeID = %session.Data("CurrentOffice","ID")
+	set lid = ..LoanID
+	&SQL(select Syscode INTO :sc from Docs.LoanApp where id = :lid)
+	set tSELECT = "select ID, DateCreate, AfxDate, UserCreate->ObjectName as Account, AFxTypeID->ObjectName as FileType, Info"
+	set tSELECT = tSELECT_" from Docs.LoanAppAttachedFiles where cls='Docs.LoanAppAttachedFiles' and AFxLoanAppID->SysCode = "_sc_" and Status='A' and ((AFxLoanAppID->laLocationOfficeID = "_myOfficeID_" or AFxLoanAppID->laLocationOfficeID->Parent = "_myOfficeID_"  or AFxLoanAppID->laLocationOfficeID->Parent->Parent = "_myOfficeID_") or(AFxLoanAppID->laServiceOfficeID = "_myOfficeID_" or AFxLoanAppID->laServiceOfficeID->Parent = "_myOfficeID_"  or AFxLoanAppID->laServiceOfficeID->Parent->Parent = "_myOfficeID_"))"
+	
+	Set tWHERE = ""
+	If ($G(pInfo.filters("DateCreate"))'="")
+	{
+		Set date1 = $$$HorologToDateEdit($zdh($p(pInfo.filters("DateCreate"),",",1),3))
+		Set date2 = $$$HorologToDateEdit($zdh($p(pInfo.filters("DateCreate"),",",2),3))
+		Set tWHERE = tWHERE _ " AND " _ "(DateCreate BETWEEN '" _ date1 _ "' AND '" _ date2 _ "')"
+	}
+	If ($G(pInfo.filters("AfxDate"))'="")
+	{
+		Set date1 = $$$HorologToDateEdit($zdh($p(pInfo.filters("AfxDate"),",",1),3))
+		Set date2 = $$$HorologToDateEdit($zdh($p(pInfo.filters("AfxDate"),",",2),3))
+		Set tWHERE = tWHERE _ " AND " _ "(AfxDate BETWEEN '" _ date1 _ "' AND '" _ date2 _ "')"
+	}
+	If ($G(pInfo.filters("Account"))'="") Set tWHERE = tWHERE _ " AND " _ "UserCreate->ObjectName %STARTSWITH '" _ pInfo.filters("Account") _ "'"
+	If ($G(pInfo.filters("FileType"))'="") Set tWHERE = tWHERE _ " AND " _ "AFxTypeID->ObjectName %STARTSWITH '" _ pInfo.filters("FileType") _ "'"
+	If ($G(pInfo.filters("Info"))'="") Set tWHERE = tWHERE _ " AND " _ "Info %STARTSWITH '" _ pInfo.filters("Info") _ "'"
+	Set:tWHERE'="" tSELECT = tSELECT _tWHERE
+	
+	set tSELECT = tSELECT_" ORDER BY ID desc"
+ 	set tRS = ##class(%ResultSet).%New()
+	set tSC = tRS.Prepare(tSELECT)
+	set pInfo.queryText = tSELECT
+	quit tRS
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.AttachDocsTable","WebForm","OnClick",1,"Таблица с прикрепленными документами")
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="viewDoc">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	var parms = new Object();
+  	parms.LoanID = zenPage.LoanID;
+  	parms.DocID = id;
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.viewDoc.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=600,height=400',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="addDoc">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var parms = new Object();
+	parms.LoanID = zenPage.LoanID;
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.AttachFileEdit.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=600,height=400',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="attachFileEdit">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	var parms = new Object();
+  	parms.LoanID = zenPage.LoanID;
+  	parms.DocID = id;
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.AttachFileEdit.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=600,height=400',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="onPopupAction">
+<FormalSpec>popupName,action,value</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	zenPage.getComponentById('mainTable').executeQuery();
+	//window.location.reload()
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

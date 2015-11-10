@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.CashLoanOut">
+<Description>
+Форма выдачи займа</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62686,43047.788829</TimeCreated>
+
+<Parameter name="PAGENAME">
+<Default>CashLoanOut</Default>
+</Parameter>
+
+<Property name="CashLoanOutID">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="CashLoanOutID"/>
+</Property>
+
+<Parameter name="JSINCLUDES">
+<Type>STRING</Type>
+<Default>jquery.js,jquery.maskedinput-1.2.2.js</Default>
+</Parameter>
+
+<XData name="Style">
+<Data><![CDATA[
+<style type="text/css">
+
+#userControls {
+	height: 200px;
+	overflow: auto;
+}
+
+.required {
+}
+.required:after {
+	color: red;
+	content: " *";
+}
+/*перебиваем дефолтное межстрочное растояние между контролами*/
+.zendiv {
+	padding-bottom: 5px;
+}
+/*в группе платежного калькулятора изменем дефолт по межстрочному отступу*/
+#frmCalc .zendiv {
+	padding-bottom: 1px;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page title="Договор займа" xmlns="http://www.intersystems.com/zen">
+<titleBox id="titlePageHeader" title="" subtitle=""/>
+<fieldSet legend=" Сведенья о займе ">
+<hgroup labelPosition="left" align="right">
+<text id="edtDealNumb" label="№ договора" size="12" readOnly="true"/>
+<spacer width="20"/>
+<dateText id="edtDateReg" label="Дата подписания" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="edtClient" label="ФИО заёмщика" size="60" readOnly="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="edtPassport" label="Пасспорт заёмщика" size="60" readOnly="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="edtProductType" label="Вид займа" size="60" readOnly="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="edtGiveOutEmployeeID" label="Кассир" size="60" required="true" labelStyle="font-weight:bold" readOnly="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="edtOffice" label="Точка выдачи (касса)" size="60" readOnly="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<dateText id="edtOperDate" controlClass="dateMask" label="Дата подписания" labelStyle="font-weight:bold" required="true" onchange="zenPage.dedtDateChange();"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<textarea id="edtOperComment" label="Комментарий" cols="47" rows="3"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<label id="GLabelTrInfo" hidden="true"/>
+<button id="btnOk" caption="Выдать заём" onclick="zenPage.btnOKClick();"/>
+<button id="btnCancel" caption="Закрыть" onclick="zenPage.cancelPopup();"/>
+</hgroup>
+</fieldSet>
+</page>
+]]></Data>
+</XData>
+
+<Method name="%DrawJSStrings">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pVisited:%String]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	d ##super()
+	&js<$(function()
+		{
+			$.mask.definitions['~']='[+-]';
+			$('.dateMask').mask('99-99-9999');
+		})
+		>
+	q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.CashLoanOut","WebForm","OnClick",1,"Форма выдачи займа")
+	set c=..%GetComponentById("titlePageHeader")
+	set c.subtitle=##class(Application.TE.Utils).GetConnStr()
+	set id = ..CashLoanOutID
+	set ReadOnly = 0
+	set %session.Data("goSave") = 1
+	if id
+	{
+		set LoanObj=##class(Docs.Loan).%OpenId(id)
+		if 'ReadOnly,$IsObject(LoanObj.lStateItemID.lsiStateID)&&(LoanObj.lStateItemID.lsiStateID.SysCode'=$$$scLSRegistered)
+		{
+			set ErrText="Заём уже выдан"
+			&js<alert('#(ErrText)#')>
+			quit $$$OK
+		}
+	}
+	else
+	{
+		quit $$$OK
+	}
+	if ReadOnly
+	{
+		set ..%GetComponentById("BtnOk").hidden = 1
+	}
+	set %session.Data("ReadOnly") = ReadOnly
+	; запомнинамем в памяти формы id записи, он будет нужен в алгоритме сохранения записи
+	set %session.Data("CashLoanOut","ID") = id
+	set ..%GetComponentById("edtOperDate").value = $zd(+$H,3)
+	
+	do ..fillForm()
+	
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="fillForm">
+<Implementation><![CDATA[
+	#dim obj As Docs.Loan
+	if %session.Data("CashLoanOut","ID") set obj = ##class(Docs.Loan).%OpenId(%session.Data("CashLoanOut","ID"))
+	else  set obj = ##class(Docs.Loan).%New()
+	set ..%GetComponentById("edtClient").value = obj.lLoanAppID.laClientID.PersonID.ObjectName
+	set ..%GetComponentById("edtDateReg").value = $zd(obj.lDateReg,3)
+	/*set Caption="Договор займа №"_obj.SysCode
+	i %session.Data("ReadOnly") s Caption=Caption_" (только просмотр)"
+	$$$SetProp(%W,"Caption",Caption)*/
+	set size=obj.lConditions.ptcProductTypeID.PTEdLogicalToDisplay(obj.lConditions.ptcProductTypeID.PTEd)
+	set str="Сумма: "_$fn(obj.lConditions.ptcAmount,"",2)_" руб. на период: "_obj.lConditions.ptcPeriod_" "_size_", ставка: "_obj.lLoanAppID.laProc_"%"
+	set ..%GetComponentById("edtProductType").value = str
+	set ..%GetComponentById("edtDealNumb").value = obj.SysCode
+	if $IsObject(obj.lLoanAppID.laPassportID) set ..%GetComponentById("edtPassport").value = obj.lLoanAppID.laPassportID.BL.ToString()
+	if obj.lDateValutation>0 set ..%GetComponentById("edtOperDate").value = $zd(obj.lDateValutation,3)
+	set ..%GetComponentById("edtOperComment").value = obj.Info
+	if $IsObject(obj.lGiveOutEmployeeID.sePersonID)
+	{
+		set ..%GetComponentById("edtGiveOutEmployeeID").value = obj.lGiveOutEmployeeID.sePersonID.ObjectName
+		set ..%GetComponentById("edtOffice").value = obj.lGiveOutEmployeeID.seOfficeID.ObjectName
+	}
+	else
+	{
+		set scActive=$$$scActive
+		set user=##class(System.TAccount).GetSessionAccount()
+		set UserId=user.%Id()
+		set UserName=user.ObjectName
+		&SQL(select ID,seOfficeID->ObjectName into:pid,:office FROM Subj.Employee where sePersonID->AccountID=:UserId and Status=:scActive)
+		if SQLCODE=0
+		{
+			set ..%GetComponentById("edtGiveOutEmployeeID").value = UserName
+			set %session.Data("CashOut","edtGiveOutEmployeeIDTag") = pid
+			set ..%GetComponentById("edtOffice").value = office
+		} 
+	}
+	set OperObj = ##class(BL.Docs.Loan).sGetLastOper(obj,$$$teOTCashLoanOut)
+	if $IsObject(OperObj)
+	{
+		set TrQnt=##class(BL.TE.Oper).sGetTrQnt(OperObj)
+		set str="Проводок: "_+TrQnt_"шт."
+		set ..%GetComponentById("GLabelTrInfo").value = str
+		set ..%GetComponentById("GLabelTrInfo").hidden = 0
+	}
+	else
+	{
+		set ..%GetComponentById("GLabelTrInfo").hidden = 1
+	}
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="btnOKClick">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	if +$g(%session.Data("goSave")) = 0 quit
+	else  set %session.Data("goSave") = 0
+	
+	set id=%session.Data("CashLoanOut","ID")
+	//quit:'id
+	set obj=##class(Docs.Loan).%OpenId(id)
+	if '$IsObject(obj)
+	{
+		set ErrText="Ошибка открытия объекта Docs.Loan ID="_id
+		&js<alert('#(ErrText)#')>
+		$$$SysLogError($$$EMCSysErr,ErrText)  ; штатное протоколирование ошибок Cache (см. докуматик на %Library.SysLog)
+		set %session.Data("goSave") = 1
+		quit
+	}
+	set (ErrText,ControlList)=""
+	set str = %session.Data("CashOut","edtGiveOutEmployeeIDTag")
+	set operGiveOutEmployeeID=str
+
+	set str = ..%GetComponentById("edtOperDate").value
+	set operDate=$zdh(str,3)
+
+	if operDate<obj.lDateReg
+	{
+		&js<alert("Дата проведения операции не может быть раньше даты подписания договора")>
+		set %session.Data("goSave") = 1
+		quit
+	}
+	set operComment = ..%GetComponentById("edtOperComment").value
+	set user = ##class(System.TAccount).GetSessionAccount()
+	set res = user.Exec(.doc,"TE.ExecCashLoanOut",operDate,obj,operComment,operGiveOutEmployeeID)
+	//set ^mtempBDA("cashOut")=$s($$$ISERR(res):$system.Status.GetErrorText(res),1:1)
+	//печать РКО
+	kill %session.Data("goSave")
+	&js<if (confirm("Операция по выдаче займа прошла успешно. Распечатать расходный кассовый ордер?"))
+	{
+		zenPage.SRVprintOrder(#(id)#);
+	}
+	else
+	{
+		zenPage.firePopupAction("OK","",true);
+	}>
+	//все ОК - закрытие формы и возрват id "наружу"*/
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="SRVprintOrder">
+<FormalSpec>ID:%String</FormalSpec>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set cashOrder=##class(Docs.CashOrder).OpenBy(ID)
+	if '$IsObject(cashOrder)
+	{
+		set ErrText="Договор не имеет печатного документа"
+		&js<alert('#(ErrText)#');>
+		quit
+	}
+	&js<zenPage.gotoPage(zenLink('GUI.WEB.RPT.CashOutOrder.cls?ID=#(ID)#'));>
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="dedtDateChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = %page.%GetComponentById("edtOperDate").value
+	if (str = "-1") set %page.%GetComponentById("edtOperDate").value = "" quit
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

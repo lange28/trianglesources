@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.AdvRepayment">
+<Description>
+Форма для досрочного погашения</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62692,51688.81078</TimeCreated>
+
+<Parameter name="PAGENAME">
+<Default>AdvRepayment</Default>
+</Parameter>
+
+<Property name="LoanID">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="LoanID"/>
+</Property>
+
+<Parameter name="JSINCLUDES">
+<Type>STRING</Type>
+<Default>jquery.js,jquery.maskedinput-1.2.2.js</Default>
+</Parameter>
+
+<XData name="Style">
+<Data><![CDATA[
+<style type="text/css">
+
+#userControls {
+	height: 200px;
+	overflow: auto;
+}
+
+.required {
+}
+.required:after {
+	color: red;
+	content: " *";
+}
+/*перебиваем дефолтное межстрочное растояние между контролами*/
+.zendiv {
+	padding-bottom: 5px;
+}
+/*в группе платежного калькулятора изменем дефолт по межстрочному отступу*/
+#frmCalc .zendiv {
+	padding-bottom: 1px;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page title="Досрочное погашение" xmlns="http://www.intersystems.com/zen">
+<titleBox id="titlePageHeader" title="" subtitle=""/>
+<fieldSet legend=" Сведенья о займе ">
+<hgroup labelPosition="left" align="right">
+<text id="edtDeal" label="Договор" size="60" readOnly="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="clientFIO" label="ФИО клиента" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="edtDealType" label="Тип займа" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<dateText id="dedtARDate" controlClass="dateMask" label="Дата досрочного погашения" onchange="zenPage.dedtARDateChange();"/>
+<spacer width="20"/>
+<dateText id="dedtDate" controlClass="dateMask" label="Дата операции" onchange="zenPage.dedtDateChange();"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="edtComment" label="Комментарий к операции" size="60"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<textarea id="memoInfo" label="Отчет о выполнении операции" cols="47" rows="7"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<button id="btnExec" caption="Выполнить операцию"  align="center" onclick="zenPage.btnExecClick();"/>
+<button id="btnCancel" caption="Выход" align="right" onclick="zenPage.cancelPopup();"/>
+</hgroup>
+</fieldSet>
+</page>
+]]></Data>
+</XData>
+
+<Method name="%DrawJSStrings">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pVisited:%String]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	d ##super()
+	&js<$(function()
+		{
+			$.mask.definitions['~']='[+-]';
+			$('.dateMask').mask('99-99-9999');
+		})
+		>
+	q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.AdvRepayment","WebForm","OnClick",1,"Форма для досрочного погашения")
+	set ^a= $zdt($h)_" ERROR"
+	set c=..%GetComponentById("titlePageHeader")
+	set c.subtitle=##class(Application.TE.Utils).GetConnStr()
+
+	set obj=##class(Docs.Loan).%OpenId(..LoanID)
+	if '$IsObject(obj)
+	{
+		s Err="Ошибка открытия объекта Docs.Loan ID="_..LoanID
+		//&js<alert("#(Err)#")>
+		quit $$$OK
+	}
+	set res=##class(Actions.Execs.TE.ExecAdvRepayment).CheckLoanState(obj)
+	if $$$ISERR(res) &js<alert("#(Err)#")> quit $$$OK
+	if 'obj.lProductTypeID.PTDAllowAdvRep
+	{
+		set ErrText="Досрочное погашение по договору займа №"_obj.SysCode_" не предусмотрено"
+		set ErrText=ErrText_"\n(продукт '"_obj.lProductTypeID.ObjectName_"')"
+		//&js<alert("#(Err)#")>
+		quit $$$OK
+	}
+	set %session.Data("Deal","ID")=..LoanID
+	set ..%GetComponentById("dedtDate").value = $zd(+$H,3)
+	do ..fillForm()	
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="fillForm">
+<Implementation><![CDATA[
+	set dealID=%session.Data("Deal","ID")
+	quit:'dealID
+ 	set deal=##class(Docs.Loan).%OpenId(dealID)
+	if '$IsObject(deal)
+	{
+		set ErrText="Ошибка открытия объекта Docs.Loan ID="_dealID
+		//&js<alert("#(ErrText)#")>
+		quit ""
+	}
+	set str = "№"_deal.SysCode_" от "_$zd(deal.lDateReg,3)
+	set ..%GetComponentById("edtDeal").value = str
+	set str = deal.lLoanAppID.laClientID.PersonID.ObjectName
+	set ..%GetComponentById("clientFIO").value = str
+	set str = deal.lConditions.ptcProductTypeID.ObjectName_", "_deal.lConditions.ObjectName
+	set ..%GetComponentById("edtDealType").value = str
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="checkForm">
+<Implementation><![CDATA[
+	set Err = ""
+	;--
+	set Cntrl = "edtDeal"
+	set Text = ..%GetComponentById(Cntrl).value
+	if Text=""
+	{
+		set Err = Err_"\nНе указан договор"
+	}
+	set Cntrl = "dedtDate"
+	set Text = ..%GetComponentById(Cntrl).value
+	if Text=""
+	{
+		set Err = Err_"\nНе указана дата операции"
+ 	}
+	set Cntrl = "dedtARDate"
+	set Text = ..%GetComponentById(Cntrl).value
+	if Text=""
+	{
+		set Err = Err_"\nНе указана дата досрочного погашения"
+	}
+	if Err'=""
+	{
+		&js<alert('#(Err)#')>
+		quit 1
+	}
+	quit ""
+]]></Implementation>
+</Method>
+
+<Method name="btnExecClick">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	quit:..checkForm()
+	set deal = %session.Data("Deal","ID")
+	if 'deal quit
+	set deal = ##class(Docs.Loan).%OpenId(deal)
+	if '$IsObject(deal) &js<alert("Невозможно открыть объект Docs.Loan id="+'#(deal)#');> quit
+	do deal.%Reload()
+	set date = $zdh(..%GetComponentById("dedtDate").value,3)
+	set comment = ..%GetComponentById("edtComment").value
+	set ardate = $zdh(..%GetComponentById("dedtARDate").value,3)
+	set DPCount = deal.BL.sIsDPAllow(deal, ardate)
+	if 'DPCount
+	{
+		set ErrText="Досрочное погашение для типа продукта """_deal.lConditions.ptcProductTypeID.SysCode_""" за "_$zd(ardate,3)_" не разрешено."
+		set ErrText=ErrText_"\nПроверьте настройки продукта в справочнике ""Количество дней для ДП"""
+		&js<alert('#(ErrText)#');>
+		quit
+	}
+	set user=##class(System.TAccount).GetSessionAccount()
+	set res=user.Exec(.doc,"TE.ExecAdvRepayment",ardate,date,deal,comment)
+	if $$$ISERR(res)
+	{
+		set ErrText="Ошибка исполнения операции:"
+		set ErrText=ErrText_"\n"_$System.Status.GetErrorText(res)
+		&js<alert('#(ErrText)#');>
+		quit
+	}
+	set oper = ##class(Data.TE.Oper).%OpenId(res)
+	quit:'$IsObject(oper)
+	set Report = oper.BL.GetTrReportbyOper()
+	
+	set ..%GetComponentById("memoInfo").value = Report
+ 
+	// Долги (на дату ДП)
+	set res=deal.BL.GetAllReg(.ExpDebtSumm,.ExpDebtPer,.DebtPer,.DebtSumm,.OverPay,.Pays,,ardate,1,.ExpExpPer)
+	quit:$$$ISERR(res) res
+	// Учесть начисления с даты последней регламентной операции
+	set res=deal.BL.GetChargePerSumm(ardate,.Summ,.ExpSumm)
+	quit:$$$ISERR(res) res
+	set id = ..LoanID
+	if (OverPay+Pays)>=(DebtSumm+ExpDebtSumm+ExpDebtPer+DebtPer+ExpExpPer+Summ+ExpSumm)
+	{
+		// Средств достаточно для полного ДП
+		&js<if (confirm("Договор полностью погашен.Распечатать заявление о полном досрочном погашении?"))
+		{
+			zenPage.SRVprintOrder(#(id)#);
+		}
+		else
+		{
+			zenPage.firePopupAction("OK","",true);
+		}>
+	}
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="SRVprintOrder">
+<FormalSpec>ID:%String</FormalSpec>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	&js<zenPage.gotoPage(zenLink('GUI.WEB.RPT.AdvRepaymentLoan.cls?ID=#(ID)#'));>
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="dedtARDateChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = %page.%GetComponentById("dedtARDate").value
+	if (str = "-1") set %page.%GetComponentById("dedtARDate").value = "" quit
+]]></Implementation>
+</Method>
+
+<Method name="dedtDateChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = %page.%GetComponentById("dedtDate").value
+	if (str = "-1") set %page.%GetComponentById("dedtDate").value = "" quit
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

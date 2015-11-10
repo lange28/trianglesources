@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.RPT.CashActShift">
+<Description>
+Печатная форма: прием-сдача смены</Description>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62762,42757.60658</TimeCreated>
+
+<Method name="OnPage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.RPT.CachActShift","WebForm","OnClick",1,"Печатная форма: прием-сдача смены")
+	// Подготовка данных для вывода на печать
+	s TextMessage=..GetData(.Parameters)
+	i TextMessage'="" {
+	&html<
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+	<html><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+	<title></title>
+	<body>#(TextMessage)#</body>
+	</html>
+	</html>>
+	q $$$OK
+	}
+	// Вывод отчета
+	&html<
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+<title></title>
+<style type="text/css"><!-- 
+.page_break {page-break-before: always;}
+.s0 {
+ font-family: Arial;
+ font-size: 11px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Right; vertical-align: Top;
+}
+.s1 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Right; vertical-align: Top;
+}
+.s2 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Justify; vertical-align: Top;
+}
+.s3 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+.s4 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Top;
+}
+.s5 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: italic;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 0px;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Middle;
+}
+.s6 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: italic;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 0px;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Middle;
+}
+.s7 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: italic;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Middle;
+}
+.s8 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 0px;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Left; vertical-align: Middle;
+}
+.s9 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 0px;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Middle;
+}
+.s10 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Middle;
+}
+.s11 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Middle;
+}
+.s12 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+--></style>
+</head>
+<body
+ bgcolor="#FFFFFF" text="#000000">
+<a name="PageN1"></a>
+<table width="661" border="0" cellspacing="0" cellpadding="0">
+<tr style="height: 1px"><td width="1"/><td width="1"/><td width="1"/><td width="189"/><td width="63"/><td width="48"/><td width="56"/><td width="1"/><td width="45"/><td width="10"/><td width="4"/><td width="15"/><td width="40"/><td width="1"/><td width="73"/><td width="14"/><td width="5"/><td width="1"/><td width="78"/><td width="12"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/></tr>
+<tr style="height:15px">
+<td/><td/><td/><td/><td/><td colspan="18" class="s0"> Отпечатано: #($zdt($h,4))#</td><td/>
+</tr>
+<tr style="height:25px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:72px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="13" class="s1">Приложение<br>к Инструкции о порядке приема-передачи<br>денежных средств на объектах МФО</td><td/><td/>
+</tr>
+<tr style="height:108px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:39px">
+<td colspan="24" class="s11">АКТ<br>ПРИЕМА-ПЕРЕДАЧИ ДЕНЕЖНЫХ СРЕДСТВ</td>
+</tr>
+<tr style="height:19px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td colspan="4" rowspan="3" class="s3">#(Parameters("Value","csDate"))#</td><td/><td/><td/><td/><td/><td/><td colspan="9" class="s3">#(Parameters("Value","lCity"))#</td><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:13px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td colspan="7" rowspan="2" class="s3">#(Parameters("Value","lAddress"))#</td><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:46px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:48px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:72px">
+<td colspan="24" class="s2">Настоящий акт составлен о том, что кассир #(Parameters("Value","csCashier"))# сдал,<br>а кассир #(Parameters("Value","csCashierRP"))# принял<br>нижеперечисленные материальные ценности:</td>
+</tr>
+<tr style="height:37px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td colspan="24" class="s4">ОПИСЬ МАТЕРИАЛЬНЫХ ЦЕННОСТЕЙ</td>
+</tr>
+<tr style="height:31px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:61px">
+<td/><td/><td/><td class="s5">Наименование ТМЦ</td><td colspan="3" class="s5">Сумма  по  учетным<br>данным на момент<br>передачи смены</td><td/><td colspan="5" class="s5">Недостача</td><td/><td colspan="3" class="s6">Излишек</td><td/><td colspan="2" class="s7">Всего:</td><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:42px">
+<td/><td/><td/><td class="s8">  Денежные средства</td><td colspan="3" class="s9"> #(Parameters("Value","csSummRP"))# </td><td/><td colspan="5" class="s9"> #(Parameters("Value","csSummDEFC"))# </td><td/><td colspan="3" class="s9"> #(Parameters("Value","csSummPLS") )#</td><td/><td colspan="2" class="s10"> #(Parameters("Value","csSummTTL"))# </td><td/><td/><td/><td/>
+</tr>
+<tr style="height:61px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td colspan="11" class="s12">Сдал: #(Parameters("Value","csCashier"))#</td><td colspan="4" class="s12">/……………………./</td><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:5px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:95px">
+<td colspan="24" class="s3"><br>в присутствии…………………………………………………………………./……………………./<br><br>Особые отметки:……………………………………………………………………………………...<br><br>…………………………………………………………………………………………………………………………</td>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="5" rowspan="3" class="s12">/……………………./</td><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td colspan="9" class="s12">Принял: #(Parameters("Value","csCashierRP"))# </td><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:6px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:103px">
+<td colspan="24" class="s3"><br>в присутствии……………………………………………………………….…/……………………./<br><br>Особые отметки:……………………………………………………………………………………...<br><br>…………………………………………………………………………………………………………………………</td>
+</tr>
+</table>
+</body></html>
+</html>
+>
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="GetData">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&Parameters]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	 // Инициализация данных 
+	 s Parameters("Value","lCity")=" "
+ 	 s Parameters("Value","lAddress")=" "
+	 s Parameters("Value","csDate")=""
+	 s Parameters("Value","csCashier")=" "
+	 s Parameters("Value","csCashierRP")=" "
+	 s Parameters("Value","csSummRP")=0
+	 s Parameters("Value","csSummRub")=" "
+     s Parameters("Value","csSummKop")=" "
+	 s Parameters("Value","csSummP")=0
+	 s Parameters("Value","csSummDEFC")=0
+	 s Parameters("Value","csSummPLS")=0
+	 s Parameters("Value","csSummTTL")=0
+
+	 s ID=$g(%request.Data("ID",1))
+	 I $IsObject(##class(Docs.CashShift).%OpenId(ID)) {
+		 d ##class(GUI.PRT.CashActShift).OnGetVariables(.Parameters,1,ID)
+	 }
+	q ""
+]]></Implementation>
+</Method>
+</Class>
+</Export>

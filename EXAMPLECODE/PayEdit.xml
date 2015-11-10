@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.PayEdit">
+<Description>
+Форма для приема платежа</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62509,57376.259234</TimeCreated>
+
+<Parameter name="APPLICATION">
+<Description>
+Class name of application this page belongs to.</Description>
+</Parameter>
+
+<Parameter name="PAGENAME">
+<Description>
+Displayed name of this page.</Description>
+<Default>PayEdit</Default>
+</Parameter>
+
+<Property name="PayID">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="PayID"/>
+</Property>
+
+<XData name="Style">
+<Data><![CDATA[
+<style type="text/css">
+
+#userControls {
+	height: 200px;
+	overflow: auto;
+}
+.required {
+}
+.required:after {
+	color: red;
+	content: " *";
+}
+/*перебиваем дефолтное межстрочное растояние между контролами*/
+.zendiv {
+	padding-bottom: 5px;
+}
+/*в группе платежного калькулятора изменем дефолт по межстрочному отступу*/
+#frmCalc .zendiv {
+	padding-bottom: 1px;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page title="Редактирование платежа" xmlns="http://www.intersystems.com/zen">
+<titleBox id="titlePageHeader" title="" 
+		subtitle=""/>
+<fieldSet id="frmEdit" legend="Редактирование платежа">
+<combobox id="cmbpType" label="Тип" editable="false" labelClass="required" required="true" align="right">
+<option value="1" text="Касса" />
+<option value="2" text="QIWI"/>
+<option value="3" text="Р/С"/>
+</combobox>
+<!--<dataCombo id="pLoan" label="№ договора" labelClass="required"
+	dropdownWidth="60.0em"
+	size="47"
+	editable="true"
+	unrestricted="true"
+	valueColumn="2"
+	columnHeaders="№ договора,Дата,Продукт,Сумма,Срок,Eд.срока,ФИО клиента"
+	displayColumns="2,3,4,5,6,7,8"
+	OnCreateResultSet="CrtSQLLoan"
+	onchange="zenPage.pLoanChange(zenThis);"
+	/>-->
+<hgroup labelPosition="left" align="right">
+<text id="pLoan" label="Договор №" size="50" onchange="zenPage.loanOnChange(zenThis);"/>
+<button id="btnSearchLoan" caption=" ... " onclick="zenPage.pLoanSearch();"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="pClient" label="ФИО заёмщика" value="" size="50" readOnly="true" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="pLoanInfo" label="Вид займа" value="" size="50" readOnly="true"  disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="pCashier" label="Кассир" value="" size="50" labelClass="required" required="true" readOnly="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="pOffice" label="Точка обслуживания" value="" size="50" readOnly="true" disabled="true"/>
+</hgroup>
+<hgroup align="right">
+<dateText id="pDate" label="Дата платежа" format="DMY" labelClass="required" required="true" onchange="zenPage.ShowLabels();"/>
+<spacer width="20"/>
+<text id="pSumm" label="Сумма платежа" labelClass="required" required="true" />
+</hgroup>
+<hgroup align="right">
+<combobox id="cmbpSet" label="Назначение" editable="false" labelClass="required" required="true">
+<option value="1" text="Погашение пени" />
+<option value="2" text="Погашение процентов"/>
+<option value="3" text="Погашение ОД"/>
+<option value="4" text="Оплата госпошлины"/>
+</combobox>
+</hgroup>
+<hgroup align="right">
+<textarea label="Комментарий" id="memoComment" rows="9" cols="20"/>
+<spacer height="25"/>
+<fieldSet id="frmCalc" legend="Калькулятор платежа" labelPosition="left">
+<combobox id="cmbCalc" label="" editable="false" onchange="zenPage.ShowLabels();">
+<option value="1" text="Досрочное погашение" />
+<option value="2" text="Погашение по графику"/>
+</combobox>
+<hgroup id="stas" align="right">
+<label value="Платежей в наличии: "/>
+<spacer width="10"/>
+<label id="lblOverPay" value="0.00" enclosingStyle="color: green; font-weight: bold;" />
+</hgroup>
+<hgroup align="right">
+<label value="Пени: "/>
+<spacer width="10"/>
+<link  id="lblFine" aux="1" caption="0.00"  href="#" onclick="zenPage.lblCalcClick('lblFine');" containerStyle="font-weight: bold;"/>
+</hgroup>
+<hgroup align="right" >
+<label value="Проценты: "/>
+<spacer width="10"/>
+<link id="lblPer" aux="2" caption="0.00" href="#" onclick="zenPage.lblCalcClick('lblPer');" containerStyle="font-weight: bold;"/>
+</hgroup>
+<hgroup align="right">
+<label value="Тело займа: "/>
+<spacer width="10"/>
+<link id="lblDebt" aux="3" caption="0.00" href="#" onclick="zenPage.lblCalcClick('lblDebt');" containerStyle="font-weight: bold;"/>
+</hgroup>
+<hgroup align="right">
+<label value="Итого к оплате: "/>
+<spacer width="10"/>
+<link id="lblAll" aux="0" caption="0.00" href="#" onclick="zenPage.lblCalcClick('lblAll');" containerStyle="font-weight: bold;"/>
+</hgroup>
+</fieldSet>
+</hgroup>
+<hgroup align="right">
+<button id="btnExecute" caption="Провести" onclick="zenPage.btnExecuteclick();"/>
+<button id="btnOK" caption="Сохранить" onclick="zenPage.btnOKclick();"/>
+<button id="btnCancel" caption="Закрыть" onclick="zenPage.cancelPopup();"/>
+</hgroup>
+</fieldSet>
+</page>
+]]></Data>
+</XData>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.PayEdit","WebForm","OnClick",1,"Форма для приема платежа")
+ set %session.Data("goSave") = 1
+ i ..PayID {s card=##class(Docs.Pay).%OpenId(..PayID)}
+ else {  //создание новой записи и установка дефолтов
+	 s card=##class(Docs.Pay).%New()
+	 s card.pCashierID=##class(Application.TE.Utils).GetCurrEmpl() ;!!! пока несделана аутентификация
+	 s card.pOfficeID=card.pCashierID.seOfficeID
+	 s card.pType=$$$pTypeCash
+ }
+ i '$IsObject(card) s ErrText="Ошибка открытия/создания объекта Docs.Pay" q $$$ERROR($$$GeneralError,ErrText)
+ s c=..%GetComponentById("titlePageHeader")
+ s c.subtitle=##class(Application.TE.Utils).GetConnStr()
+ s ..%GetComponentById("cmbCalc").value=2
+ s res=..FillForm(card)
+ q:$$$ISERR(res) res
+ d ..ShowLabels()
+ q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="CrtSQLLoan">
+<FormalSpec>*tSC:%Status,pInfo:%ZEN.Auxiliary.QueryInfo</FormalSpec>
+<ReturnType>%ResultSet</ReturnType>
+<Implementation><![CDATA[
+	//Выбираем заявки в статусе "Одобрено"
+	set myOfficeID=%session.Data("CurrentOffice","ID")
+	set status=$$$scActive
+	set tSELECT = "select ID, SysCode, lLoanAppID->laDateReg, lLoanAppID->laProductTypeID->ObjectName as ProductName, lLoanAppID->laSum, lLoanAppID->laPeriod, lLoanAppID->laProductTypeID->PTEd as PTEd, lLoanAppID->laClientID->PersonID->ObjectName as Client from docs.loan"
+	set tSELECT = tSELECT_" where cls='Docs.Loan' and Status='A' and ((lLoanAppID->laLocationOfficeID = "_myOfficeID_" or lLoanAppID->laLocationOfficeID->Parent = "_myOfficeID_"  or lLoanAppID->laLocationOfficeID->Parent->Parent = "_myOfficeID_") or(lLoanAppID->laServiceOfficeID = "_myOfficeID_" or lLoanAppID->laServiceOfficeID->Parent = "_myOfficeID_"  or lLoanAppID->laServiceOfficeID->Parent->Parent = "_myOfficeID_"))"
+	set tSELECT = tSELECT_" ORDER BY ID desc"
+	set tRS = ##class(%ResultSet).%New()
+	set tSC = tRS.Prepare(tSELECT)
+	set pInfo.queryText = tSELECT
+	quit tRS
+]]></Implementation>
+</Method>
+
+<Method name="onPopupAction">
+<FormalSpec>popupName,action,value</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var txt = zenPage.getComponentById("pLoan");
+	txt.setProperty("value",value);
+	zenPage.loanOnChange();
+]]></Implementation>
+</Method>
+
+<Method name="pLoanSearch">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.LoanSearch.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=1100,height=630','');
+]]></Implementation>
+</Method>
+
+<Method name="FillForm">
+<FormalSpec>Card:Docs.Pay</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+ #dim c as %ZEN.Component.control
+ s c=..%GetComponentById("frmEdit")
+ i Card.%Id() s c.legend="Редактирование платежа"
+ e  s c.legend="Ввод нового платежа"
+ d ..FillLoanInfo(Card.pLoanID)
+ s c=..%GetComponentById("cmbpType")
+ s:Card.pType c.value=Card.pType
+ s c=..%GetComponentById("pCashier")
+ i $IsObject(Card.pCashierID) {
+ 	s c.value=Card.pCashierID.sePersonID.ObjectName
+ 	s c.aux=Card.pCashierID.%Id()
+ }
+ s c=..%GetComponentById("pOffice")
+ i $IsObject(Card.pOfficeID) {
+ 	s c.value=Card.pOfficeID.ObjectName
+ 	s c.aux=Card.pOfficeID.%Id()
+ }
+ s c=..%GetComponentById("cmbpSet")
+ s:Card.pSet c.value=Card.pSet
+ s c=..%GetComponentById("memoComment")
+ s c.value=Card.Info
+ s c=..%GetComponentById("pDate")
+ s c.value=$zdt(Card.pDate,3)
+ s c=..%GetComponentById("pSumm")
+ s c.value=$fn(Card.pSumm,"",2)
+ i Card.pExecuted {
+ 	s c=..%GetComponentById("btnExecute")
+ 	s c.disabled=1
+ 	s c=..%GetComponentById("btnOK")
+ 	s c.disabled=1
+ }
+ q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="FillLoanInfo">
+<FormalSpec>Loan:Docs.Loan</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+ i '$IsObject(Loan) {
+ 	s c=..%GetComponentById("pLoan")
+ 	s c.value=""
+ 	s c.aux=""
+ 	s c=..%GetComponentById("pClient")
+ 	s c.value=""
+ 	s c=..%GetComponentById("pLoanInfo")
+ 	s c.value=""
+ 	q $$$OK
+ }
+ s str=Loan.SysCode_" от "_$$$HorologToDateEdit(Loan.lDateReg)
+ s c=..%GetComponentById("pLoan")
+ s c.value=str
+ s c.aux=Loan.%Id()
+ s c=..%GetComponentById("pClient")
+ s c.value=Loan.lLoanAppID.laClientID.PersonID.ObjectName
+ i $IsObject(Loan.lConditions) {
+	s str=Loan.lConditions.ptcProductTypeID.ObjectName_", "_Loan.lConditions.ObjectName
+ 	s c=..%GetComponentById("pLoanInfo")
+ 	s c.value=str
+ }
+ q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="btnOKclick">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	if +$g(%session.Data("goSave")) = 0 quit
+	else  set %session.Data("goSave") = 0
+ s ErrText=""
+ i ..PayID s card=##class(Docs.Pay).%OpenId(..PayID)
+ e  s card=##class(Docs.Pay).%New()
+ d ..FillCard(card,.ErrText)
+ i ErrText'="" {
+	 s ErrText="Не заполнены следующие поля:\n\r"_$replace(ErrText,"^","\n\r")
+	 &js<alert('#(ErrText)#');
+	 >
+	 set %session.Data("goSave") = 1
+	 q
+ }
+ s ret=card.SaveAction()
+ i $$$ISERR(ret) &js<alert('#($zcvt($System.Status.GetErrorText(ret),"O","JS"))#');> set %session.Data("goSave") = 1 q
+ kill %session.Data("goSave")
+ ; все ОК - закрытие формы и возрват id "наружу"
+ &js<zenPage.firePopupAction("OK",#(ret)#,true);>
+ q
+]]></Implementation>
+</Method>
+
+<Method name="btnExecuteclick">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	if +$g(%session.Data("goSave")) = 0 quit
+	else  set %session.Data("goSave") = 0
+ s ErrText=""
+ i ..PayID s card=##class(Docs.Pay).%OpenId(..PayID)
+ e  s card=##class(Docs.Pay).%New()
+ d ..FillCard(card,.ErrText,1)
+ i ErrText'="" {
+	 s ErrText="Не заполнены следующие поля:\n\r"_$replace(ErrText,"^","\n\r")
+	 &js<alert('#(ErrText)#');>
+	 set %session.Data("goSave") = 1
+	 q
+ }
+ s ret=card.SaveAction()
+ i $$$ISERR(ret) &js<alert('#($zcvt($System.Status.GetErrorText(ret),"O","JS"))#');> set %session.Data("goSave") = 1 q              
+ s user=##class(Application.TE.Utils).GetCurrEmpl().sePersonID.AccountID
+ s ret=user.Exec(.doc,"TE.ExecCashPay",,card)
+ i $$$ISERR(ret) {
+	 s ErrText="Платеж сохранен, но не проведен. Причина:"_$c(13,9)
+	 s ErrText=ErrText_$System.Status.GetErrorText(ret)
+	 &js<alert('#($zcvt(ErrText,"O","JS"))#');>
+	 s ret=0 ; в firePopupAction нельзя сложные структуры ($lb) передавать
+	 kill %session.Data("goSave")
+	 &js<zenPage.firePopupAction("OK",#(ret)#,true);>
+	 q
+ }
+ else
+ {
+	set id = card.%Id()
+	/*&js<if (confirm("Платеж проведен. Распечатать приходный кассовый ордер?"))
+	{
+		zenPage.SRVprintOrder(#(id)#);
+	}
+	else
+	{
+		//все ОК - закрытие формы и возрват id "наружу"
+		zenPage.firePopupAction("OK",#(ret)#,true);
+	}>*/
+ }
+ ; все ОК - закрытие формы и возврат id "наружу"
+ &js<if (alert("Платеж проведен."));>
+ kill %session.Data("goSave")
+ &js<zenPage.firePopupAction("OK",#(ret)#,true);>
+ q
+]]></Implementation>
+</Method>
+
+<Method name="SRVprintOrder">
+<FormalSpec>ID:%String</FormalSpec>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set cashOrder=##class(Docs.CashOrder).OpenBy(ID)
+	if '$IsObject(cashOrder)
+	{
+		set ErrText="Договор не имеет печатного документа"
+		&js<alert('#(ErrText)#');>
+		quit
+	}
+	&js<zenPage.gotoPage(zenLink('GUI.WEB.RPT.CashPaysOrder.cls?ID=#(ID)#'));>
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="FillCard">
+<Description>
+Заполнение данными с формы объекта (card) для последующей записи в БД
+по ссылке возврат сообщения о незаполненных обязательных полях и список контролов по этим полям
+Формат: ControlList=$lb("MobilePhone","FactPhone"...)
+возврат: 1 - есть ошибки, 0 - все ок</Description>
+<FormalSpec><![CDATA[card:Docs.Pay,&ErrText:%String,flagExecute=0]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+#dim c as %ZEN.Component.control
+ s c=..%GetComponentById("cmbpType")
+ i ('c.value)&&flagExecute s ErrText=$g(ErrText)_"Тип платежа^"
+ e  s card.pType=+c.value
+ s c=..%GetComponentById("pLoan")
+ s val=c.aux
+ i 'val s ErrText=$g(ErrText)_"Номер договора^"
+ e  s card.pLoanID=##class(Docs.Loan).%OpenId(val)
+ s c=..%GetComponentById("pCashier")
+ s ref=##class(Subj.Employee).%OpenId(c.aux)
+ i ('$IsObject(ref))&&flagExecute s ErrText=$g(ErrText)_"Кассир^"
+ e  s card.pCashierID=ref,card.pOfficeID=ref.seOfficeID
+ s c=..%GetComponentById("pDate")
+ s val=$zdh(c.value,3,,,,,,,"")
+ i 'val s ErrText=$g(ErrText)_"Дата платежа^"
+ e  s card.pDate=val
+ s c=..%GetComponentById("pSumm")
+ i ('c.value)&&flagExecute s ErrText=$g(ErrText)_"Сумма платежа^"
+ e  s card.pSumm=+c.value
+ s c=..%GetComponentById("cmbpSet")
+ i ('c.value)&&flagExecute s ErrText=$g(ErrText)_"Назначение платежа^"
+ e  s card.pSet=+c.value
+ s c=..%GetComponentById("memoComment")
+ s card.Info=$tr(c.value,$c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20))
+ q $g(ErrText)'=""
+]]></Implementation>
+</Method>
+
+<Method name="loanOnChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ s res=##class(System.Options).GetOptions(##class(System.TInfoObject).%New(),"NumberLength",.NumberLеngth)
+ s NumberLеngth=$g(NumberLеngth,13)
+
+ s c=..%GetComponentById("pLoan")
+ s text1=$zzdsp(c.value,7)
+ s text=$e(text1,1,NumberLеngth)
+
+ s text1=$tr($e(text1,NumberLеngth+1,$l(text1))," ()-_","")
+ if $IsObject(##class(Docs.Loan).OpenSysCode(text)) {
+	 s l=##class(Docs.Loan).OpenSysCode(text)
+	 s lcode=l.SysCode 
+     i '..CheckUpOffice(l) {
+	     i '(##class(GUI.FRM.EMCPayEdit).AddCheckPhone(l,text1)) {
+		     &js<alert('В подразделении недоступен договор займа '+ #(lcode)#);>
+		     s ..%GetComponentById("pLoan").aux=""
+		     s ..%GetComponentById("lblFine").caption=""
+		     s ..%GetComponentById("lblPer").caption=""
+		     s ..%GetComponentById("lblDebt").caption=""
+		     s ..%GetComponentById("lblAll").caption=""
+		     s ..%GetComponentById("lblOverPay").value=""
+		     q
+		 }
+	 }
+	 d ..FillLoanInfo(l)
+	 d ..ShowLabels()
+ } elseif $IsObject(##class(Docs.Loan).OpenPinCode(text)) {
+	 s l=##class(Docs.Loan).OpenPinCode(text)
+	 d ..FillLoanInfo(l)
+	 d ..ShowLabels()
+ } else {
+	 i text'="" {
+		&js<alert("Договор займа отсутствует");>
+		d ..FillLoanInfo("")
+		d ..ShowLabels()
+		s ..%GetComponentById("pLoan").aux=""
+	 }
+ }
+]]></Implementation>
+</Method>
+
+<Method name="lblCalcClick">
+<FormalSpec>lblName</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var lbl=zenPage.getComponentById(lblName);
+	var cmb=zenPage.getComponentById('cmbpSet');
+	cmb.value=lbl.aux;
+	var summ=zenPage.getComponentById('pSumm');
+	summ.setProperty('value',lbl.caption);
+	cmb.refreshContents(true);
+	summ.render();
+]]></Implementation>
+</Method>
+
+<Method name="ShowLabels">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ s woType=..%GetComponentById("cmbCalc").value
+ s pDate=$zdh(..%GetComponentById("pDate").value,3,,,,,,,"")
+ s loanID=..%GetComponentById("pLoan").aux
+ s:loanID loanID=##class(Docs.Loan).%OpenId(loanID)
+ i ('$IsObject(loanID))||('pDate)||('woType) {
+ 	s ..%GetComponentById("lblFine").caption=""
+ 	s ..%GetComponentById("lblPer").caption=""
+ 	s ..%GetComponentById("lblDebt").caption=""
+ 	s ..%GetComponentById("lblAll").caption=""
+ 	s ..%GetComponentById("lblOverPay").value=""
+ 	q
+ }
+ d loanID.BL.PayCalculator(pDate,.PayDetails)
+ ;ДП: woType=1 ; график: woType=2
+ s val=$s(woType=1:$g(PayDetails("AR","ExpExpPer")),woType=2:$g(PayDetails("ExpExpPer")),1:"")
+ s all=val
+ s ..%GetComponentById("lblFine").caption=$fn(val,"",2)
+ s val=$s(woType=1:$g(PayDetails("AR","ExpPer"))+$g(PayDetails("AR","Per")),woType=2:$g(PayDetails("ExpPer"))+$g(PayDetails("PGPer")),1:"")
+ s all=all+val
+ s ..%GetComponentById("lblPer").caption=$fn(val,"",2)
+ s val=$s(woType=1:$g(PayDetails("AR","ExpDebt"))+$g(PayDetails("AR","Debt")),woType=2:$g(PayDetails("ExpDebt"))+$g(PayDetails("PGDebt")),1:"")
+ s all=all+val
+ s ..%GetComponentById("lblDebt").caption=$fn(val,"",2)
+ s val=$g(PayDetails("OverPay"))+$g(PayDetails("Pay"))
+ s all=all-val
+ s ..%GetComponentById("lblOverPay").value=$fn(val,"",2)
+ s ..%GetComponentById("lblAll").caption=$fn(all,"",2)
+ ;актуальность некоторых величин зависит от корректности соблюдения регламента
+ ;регламент считаем нарушенным, если в предыдущую дату по ГП не было выноса на просрочку
+ s oper=loanID.BL.GetLastExpireOper()
+ s lastExpireDt=$s($IsObject(oper):oper.dteoxDate,1:"")
+ s lastPGDate=loanID.BL.GetLastPGDate(pDate)
+ s pg=loanID.BL.GetGP(lastPGDate)
+ i $IsObject(pg)&&(lastExpireDt<lastPGDate)&&(pDate>lastPGDate) {
+	 s ..%GetComponentById("lblFine").caption="???"
+ }
+ s oper=loanID.BL.GetLastChargePerOper()
+ s lastChargeDt=$s($IsObject(oper):oper.dteoxDate,1:"")
+ i lastChargeDt>pDate {
+	 s ..%GetComponentById("lblPer").caption="???"
+ }
+ q
+]]></Implementation>
+</Method>
+
+<Method name="CheckUpOffice">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Oref:Docs.Loan</FormalSpec>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ s res=$$$OK
+ s myOfficeID=%session.Data("CurrentOffice","ID")
+ if ##class(Subj.Office).%ExistsId(myOfficeID) {
+	 i (('$IsObject(Oref.lLoanAppID.laLocationOfficeID))||(Oref.lLoanAppID.laLocationOfficeID.%Id()=myOfficeID)||(Oref.lLoanAppID.laLocationOfficeID.Parent.%Id()=myOfficeID)||('$IsObject(Oref.lLoanAppID.laLocationOfficeID.Parent.Parent))||(Oref.lLoanAppID.laLocationOfficeID.Parent.Parent.%Id()=myOfficeID)||('$IsObject(Oref.lLoanAppID.laServiceOfficeID))||(Oref.lLoanAppID.laServiceOfficeID.%Id()=myOfficeID)||(Oref.lLoanAppID.laServiceOfficeID.Parent.%Id()=myOfficeID)||('$IsObject(Oref.lLoanAppID.laServiceOfficeID.Parent.Parent))||(Oref.lLoanAppID.laServiceOfficeID.Parent.Parent.%Id()=myOfficeID)||(Oref.lOfficeID.%Id()=myOfficeID)) q res
+	 else  q 'res
+ }
+ q res
+]]></Implementation>
+</Method>
+
+<Method name="getGoSave">
+<ReturnType>%Integer</ReturnType>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[	quit %session.Data("goSave")
+]]></Implementation>
+</Method>
+
+<Method name="onunloadHandler">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var res = zenPage.getGoSave();
+	if (res == 1)
+		return "Данные не сохранены. Точно перейти?";
+	else
+		return
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.CashLoanTable">
+<Description>
+Таблица для просмотра одобренных договоров</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>GUI.WEB.TablePageTemplate</Super>
+<TimeCreated>62685,50442.31528</TimeCreated>
+
+<XData name="mainTablePane">
+<Description>
+This XML block defines the contents of the table pane</Description>
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<pane id="tPane" xmlns="http://www.intersystems.com/zen">
+<tableNavigatorBar id="navBar" showPageSize="true" tablePaneId="mainTable" 
+ />
+  <csMenuBar id="mainTableMenu" width="100%">
+  <csMenuBarItem caption="Действия">
+    <contextMenu id="fileMenu">
+      <csMenuItem icon="images/open.png" caption="Открыть" onclick="zenPage.rowDblClick(zenThis);"/>
+      <csMenuItem icon="images/print.png" caption="Печать" onclick="zenPage.jsLoanPrint(zenThis)"/>
+    </contextMenu>
+  </csMenuBarItem>
+  </csMenuBar>
+<tablePane id="mainTable"
+	width="100%"
+	useSnapshot="true"
+	maxRows="1000"
+	pageSize="20"
+	tableName="Docs.Loan"
+	valueColumn="ID"
+	ondblclick="zenPage.rowDblClick(zenThis);"
+	showQuery="false"
+	showZebra="true"
+	useKeys="false"
+	fixedHeaders="true"
+	bodyHeight="100em"
+	headerLayout="headersOnTop"
+	OnCreateResultSet="CrtSQL"
+	orderByClause="id desc"
+	>
+<column colName="ID" 
+		width="50"
+		hidden="true"
+		/>
+<column colName="SysCode"
+		header="№ договора"
+		width="110"
+		id="filterSysCode"
+		colExpression="SysCode" 
+		filterType="text"
+		filterOp="="
+		 />
+<column colName="DateReg"
+		header="Дата подписания"
+		width="110"
+		id="filterDataReg"
+		colExpression="lDataReg" 
+		filterType="text"
+		filterOp="%STARTSWITH"
+		 />
+<column colName="Client"
+		header="ФИО Клиента"
+		width="180"
+		id="filterClient"
+		colExpression="lLoanAppID->laClientID->PersonID->ObjectName"
+		filterType="text"
+		filterOp="%STARTSWITH"
+		 />
+<column colName="pSumm" 
+		header="Сумма"
+		width="80"
+		colExpression="lConditions->ptcAmount"
+		filterType="text"
+		filterOp=">="
+		 />
+<column colName="Period"
+		header="Срок"
+		width="50"
+		id="filterPeriod"
+		colExpression="lPeriod"
+		filterType="text"
+		filterOp="%STARTSWITH"
+		 />
+<column colName="PTEd"
+		header="Ед.изм.срока"
+		width="50"
+		id="filterPTEd"
+		colExpression="ptcProductTypeID->PTEd"
+		filterType="text"
+		filterOp="%STARTSWITH"
+		 />
+<column colName="lDateValutation" 
+		header="Дата выдачи"
+		width="100"
+		id="filterLDateValutation"
+		colExpression="lDateValutation"
+		filterType="date"
+		filterOp="BETWEEN"
+		 />
+</tablePane>
+<spacer height="10"/>
+</pane>
+]]></Data>
+</XData>
+
+<Method name="CrtSQL">
+<FormalSpec>*tSC:%Status,pInfo:%ZEN.Auxiliary.QueryInfo</FormalSpec>
+<ReturnType>%ResultSet</ReturnType>
+<Implementation><![CDATA[
+	set myOfficeID=%session.Data("CurrentOffice","ID")
+	set tSELECT = "select ID,SysCode,lLoanAppID->laClientID->PersonID->ObjectName as Client,lDateReg as DateReg,lConditions->ptcAmount as pSumm,lPeriod as Period,lProductTypeID->PTEd as PTEd,case when lDateConclusion='' then '-' else %external(lDateConclusion) end as lDateValutation"
+	set tSELECT = tSELECT_" from Docs.Loan where cls='Docs.Loan' and Status='A' and laIssueMeans='"_##Class(Docs.Loan).laIssueMeansLogicalToDisplay(1)_"'"_" and lStateItemID->lsiStateID->SysCode='"_$$$scLSRegistered_"'"_
+		" and ((lLoanAppID->laLocationOfficeID = "_myOfficeID_" or lLoanAppID->laLocationOfficeID->Parent = "_myOfficeID_"  or lLoanAppID->laLocationOfficeID->Parent->Parent = "_myOfficeID_") or(lLoanAppID->laServiceOfficeID = "_myOfficeID_" or lLoanAppID->laServiceOfficeID->Parent = "_myOfficeID_"  or lLoanAppID->laServiceOfficeID->Parent->Parent = "_myOfficeID_"))"
+		
+		
+	If ($G(pInfo.filters("SysCode"))'="") Set tWHERE = tWHERE _ " AND " _ "SysCode %STARTSWITH '" _ pInfo.filters("SysCode") _ "'"
+	If ($G(pInfo.filters("Client"))'="") Set tWHERE = tWHERE _ " AND " _ "lLoanAppID->laClientID->PersonID->ObjectName %STARTSWITH '" _ pInfo.filters("Client") _ "'"
+	If ($G(pInfo.filters("DateReg"))'="") Set tWHERE = tWHERE _ " AND " _ "lDateReg %STARTSWITH '" _ pInfo.filters("DateReg") _ "'"
+	If ($G(pInfo.filters("pSumm"))'="") Set tWHERE = tWHERE _ " AND " _ "lConditions->ptcAmount %STARTSWITH '" _ pInfo.filters("pSumm") _ "'"
+	If ($G(pInfo.filters("Period"))'="") Set tWHERE = tWHERE _ " AND " _ "lPeriod %STARTSWITH '" _ pInfo.filters("Period") _ "'"
+	If ($G(pInfo.filters("PTEd"))'="") Set tWHERE = tWHERE _ " AND " _ "ptcProductTypeID->PTEd %STARTSWITH '" _ pInfo.filters("PTEd") _ "'"
+	If ($G(pInfo.filters("lDateValutation"))'="")
+	{
+		Set date1 = $$$HorologToDateEdit($zdh($p(pInfo.filters("lDateValutation"),",",1),3))
+		Set date2 = $$$HorologToDateEdit($zdh($p(pInfo.filters("lDateValutation"),",",2),3))
+		Set tWHERE = tWHERE _ " AND " _ "(lDateValutation BETWEEN '" _ date1 _ "' AND '" _ date2 _ "')"
+	}
+	
+	set tSELECT = tSELECT_" ORDER BY ID desc"
+ 	set tRS = ##class(%ResultSet).%New()
+	set tSC = tRS.Prepare(tSELECT)
+	set pInfo.queryText = tSELECT
+	quit tRS
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.CashLoanTable","WebForm","OnClick",1,"Таблица для просмотра одобренных договоров")
+	set ..PAGENAME = "Реестр одобренных договоров"
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="rowDblClick">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="")
+	{
+		alert("Ничего не выбрано");
+		return
+	}
+	var parms = new Object();
+  	parms.CashLoanOutID = id;
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.CashLoanOut.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=600,height=630',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="onPopupAction">
+<FormalSpec>popupName,action,value</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[	zenPage.getComponentById('mainTable').executeQuery();
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

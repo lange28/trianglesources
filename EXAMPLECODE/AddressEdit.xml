@@ -1,0 +1,868 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.AddressEdit">
+<Description>
+Форма редактирования адреса</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62509,57376.259234</TimeCreated>
+
+<Parameter name="APPLICATION">
+<Description>
+Class name of application this page belongs to.</Description>
+</Parameter>
+
+<Parameter name="PAGENAME">
+<Description>
+Displayed name of this page.</Description>
+<Default>AddressEdit</Default>
+</Parameter>
+
+<Parameter name="JSINCLUDES">
+<Type>STRING</Type>
+<Default>jquery.js</Default>
+</Parameter>
+
+<Property name="AddressID">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="AddressID"/>
+</Property>
+
+<Property name="num">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="num"/>
+</Property>
+
+<Property name="str">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="str"/>
+</Property>
+
+<Property name="KC">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="KC"/>
+</Property>
+
+<XData name="Style">
+<Data><![CDATA[
+<style type="text/css">
+
+#userControls {
+	height: 200px;
+	overflow: auto;
+}
+
+.required {
+}
+.required:after {
+	color: red;
+	content: " *";
+}
+/*перебиваем дефолтное межстрочное растояние между контролами*/
+.zendiv {
+	padding-bottom: 5px;
+}
+/*в группе платежного калькулятора изменем дефолт по межстрочному отступу*/
+#frmCalc .zendiv {
+	padding-bottom: 1px;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page title="Редактирование адреса" xmlns="http://www.intersystems.com/zen">
+<titleBox id="titlePageHeader" title="" subtitle=""/>
+<fieldSet id="frmEdit" legend=" Адрес " labelPosition="left">
+<hgroup labelPosition="left">
+<dataCombo id="geState"
+	label="Страна"
+	editable="true"
+	comboType="timer"
+	size="40"	
+	delay="400"
+	searchKeyLen="10"
+	maxRows="10"
+	unrestricted="true"
+	valueColumn="1"
+	displayColumns="2"
+	columnHeaders="Страна"
+	controlClass="uppertext"
+	sql="SELECT SysCode, ObjectName FROM Common_OKCM.OKCM WHERE ObjectName %STARTSWITH ?"
+	sqlLookup="SELECT ObjectName FROM Common_OKCM.OKCM WHERE ObjectName = ?"
+	onchange="zenPage.getState();">
+</dataCombo>
+</hgroup>
+<hgroup labelPosition="left">
+<dataCombo id="geRegion" 
+	label="Регион"
+	editable="true"
+	comboType="timer"
+	size="40"	
+	delay="400"
+	searchKeyLen="10"
+	maxRows="10"
+	unrestricted="true"
+	valueColumn="1"
+	displayColumns="2,3"
+	columnHeaders="Регион"
+	controlClass="uppertext"
+	sql="SELECT CodeRegion, Name, Socr FROM KLADR.KLADR WHERE Name %STARTSWITH ? and CodeStatus=1"
+	sqlLookup="SELECT Name FROM KLADR.KLADR WHERE Name = ?"
+	onchange="zenPage.getRegion();">
+</dataCombo>
+</hgroup>
+<spacer width="20"/>
+<hgroup labelPosition="left">
+<dataCombo id="geArea"
+	label="Район"
+	editable="true"
+	comboType="timer"
+	size="40"
+	delay="400"
+	searchKeyLen="10"
+	maxRows="10"
+	unrestricted="true"
+	valueColumn="1"
+	displayColumns="2,3"
+	columnHeaders="Район"
+	controlClass="uppertext"
+	OnCreateResultSet="CrtSQLArea"
+	sqlLookup="SELECT Name FROM KLADR.KLADR WHERE Name = ?"
+	onchange="zenPage.getArea();">
+</dataCombo>
+</hgroup>
+<spacer width="20"/>
+<hgroup labelPosition="left">
+<text id="txtCity" label="Город" size="40" hidden="true" onchange="zenPage.txtCityChange();"/>
+<dataCombo id="geCity"
+	label="Город"
+	editable="true"
+	comboType="timer"
+	size="40"
+	delay="400"
+	searchKeyLen="10"
+	maxRows="10"
+	unrestricted="true"
+	displayColumns="2,3"
+	columnHeaders="Город"
+	controlClass="uppertext"
+	OnCreateResultSet="CrtSQLCity"
+	sqlLookup="SELECT Name FROM KLADR.KLADR WHERE Name = ?"
+	onchange="zenPage.getCity();">
+</dataCombo>
+</hgroup>
+<spacer width="20"/>
+<fieldSet id="frmEditPunct" legend=" Населённый пункт " labelPosition="left">
+<hgroup labelPosition="left">
+<text id="txtPlace" label="Название" size="40" hidden="true" onchange="zenPage.txtPlaceChange();"/>
+<dataCombo id="gePlace"
+	label="Название"
+	editable="true"
+	comboType="timer"
+	size="40"
+	delay="400"
+	searchKeyLen="10"
+	maxRows="10"
+	unrestricted="true"
+	columnHeaders="Населенный пункт"
+	controlClass="uppertext"
+	OnCreateResultSet="CrtSQLPlace"
+	sqlLookup="SELECT Name FROM KLADR.KLADR WHERE Name = ?"
+	onchange="zenPage.getPlace();">
+</dataCombo>
+</hgroup>
+<hgroup labelPosition="left">
+<!--<text id="edtPlaceSynonym" label="Синоним" size="40" />-->
+</hgroup>
+</fieldSet>
+<spacer width="20"/>
+<hgroup labelPosition="left">
+<text id="txtStreet" label="Улица" size="40" hidden="true" onchange="zenPage.txtStreetChange();"/>
+<dataCombo id="geStreet"
+	label="Улица"
+	editable="true"
+	comboType="timer"
+	size="40"
+	delay="400"
+	searchKeyLen="10"
+	maxRows="10"
+	unrestricted="true"
+	displayColumns="2,3"
+	columnHeaders="Улица"
+	controlClass="uppertext"
+	OnCreateResultSet="CrtSQLStreet"
+	sqlLookup="SELECT Name FROM KLADR.STREET WHERE Name = ?"
+	onchange="zenPage.getStreet();">
+</dataCombo>
+</hgroup>
+<spacer width="20"/>
+<hgroup labelPosition="left">
+<text id="geHouse" label="Номер дома" size="3" onchange="zenPage.geHouseChange();"/>
+<spacer width="20" />
+<text id="geBuild" label="Строение" size="3" onchange="zenPage.geBuildChange();"/>
+<spacer width="20" />
+<text id="geApartment" label="Квартира" size="3" onchange="zenPage.geApartmentChange();"/>
+<spacer width="20" />
+</hgroup>
+<hgroup labelPosition="left">
+<text id="gePostIndex" label="Индекс" size="20" readOnly="true"/>
+<spacer width="20" />
+<text id="geRoom" label="Комната" size="10"/>
+</hgroup>
+<spacer width="20"/>
+<fieldSet id="frmEditAddress" legend=" Полный адрес " labelPosition="left">
+<hgroup labelPosition="left">
+<text id="StrAddress" label="" size="60" readOnly="true"/>
+<text id="StrCode" hidden="true"/>
+</hgroup>
+</fieldSet>
+<hgroup  labelPosition="left">
+<hgroup labelPosition="left">
+<checkbox id="cbFind" label="Быстрый поиск" value="1" align="left" onchange="zenPage.cbFindChange();"/>
+<spacer height="20" />
+</hgroup>
+<hgroup labelPosition="left">
+<spacer width="160" />
+<button id="BOK" caption="  Ок  " onclick="zenPage.btnOKclick();" align="right" />
+<spacer height="20" />
+<button id="BCancel" caption="Отмена" onclick="zenPage.cancelPopup();" align="right"/>
+</hgroup>
+</hgroup>
+</fieldSet>
+</page>
+]]></Data>
+</XData>
+
+<Method name="%DrawJSStrings">
+<Description>
+Render list of localized javascript strings for this object.
+javascript-функции, использующие библиотеку jquery</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pVisited:%String]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	d ##super()
+	&js<$('.uppertext').keypress(function(eventObject)
+		{
+			var a=eventObject.which, b=1039;
+			var isTrue = (a+b+Math.abs(a-b))/2;
+			return (isTrue == b ? false : true )
+		})
+		$(".uppertext").css("text-transform", "uppercase");
+		>
+	q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="CrtSQLArea">
+<FormalSpec>*tSC:%Status,pInfo:%ZEN.Auxiliary.QueryInfo</FormalSpec>
+<ReturnType>%ResultSet</ReturnType>
+<Implementation><![CDATA[
+	if %session.Data("Address","NameRegion") '= ""
+	{
+		set tSELECT = "SELECT CodeArea, Name, Socr FROM KLADR.KLADR WHERE Name %STARTSWITH ? and CodeTopicality=0 and CodeStatus=2 and CodeRegion = '"_
+			%session.Data("Address","CodeRegion")_"'"
+	}
+	else
+	{
+		set tSELECT = "SELECT CodeArea, Name, Socr FROM KLADR.KLADR WHERE Name %STARTSWITH ? and CodeTopicality=0 and CodeStatus=2"
+	}
+	set tRS = ##class(%ResultSet).%New()
+	set tSC = tRS.Prepare(tSELECT)
+	set pInfo.queryText = tSELECT
+	quit tRS
+]]></Implementation>
+</Method>
+
+<Method name="CrtSQLCity">
+<FormalSpec>*tSC:%Status,pInfo:%ZEN.Auxiliary.QueryInfo</FormalSpec>
+<ReturnType>%ResultSet</ReturnType>
+<Implementation><![CDATA[
+	if %session.Data("Address","NameRegion") '= ""
+	{
+		set tSELECT = "SELECT CodeCity, Name, Socr FROM KLADR.KLADR WHERE Name %STARTSWITH ? and CodeTopicality=0 and CodeStatus=3 and CodeRegion = '"_
+			%session.Data("Address","CodeRegion")_"'"
+	}
+	else
+	{
+		set tSELECT = "SELECT CodeCity, Name, Socr FROM KLADR.KLADR WHERE Name %STARTSWITH ? and CodeTopicality=0 and CodeStatus=3"
+	}
+	set tRS = ##class(%ResultSet).%New()
+	set tSC = tRS.Prepare(tSELECT)
+	set pInfo.queryText = tSELECT
+	quit tRS
+]]></Implementation>
+</Method>
+
+<Method name="CrtSQLPlace">
+<FormalSpec>*tSC:%Status,pInfo:%ZEN.Auxiliary.QueryInfo</FormalSpec>
+<ReturnType>%ResultSet</ReturnType>
+<Implementation><![CDATA[
+	set tSELECT = "SELECT CodePlace, Name, Socr FROM KLADR.KLADR WHERE Name %STARTSWITH ? and CodeTopicality=0 and CodeStatus=4 and CodeRegion = '"_
+		%session.Data("Address","CodeRegion")_"' and CodeArea ='"_%session.Data("Address","CodeArea")_"'"
+		_" and CodeCity = '"_%session.Data("Address","CodeCity")_"'"
+	set tRS = ##class(%ResultSet).%New()
+	set tSC = tRS.Prepare(tSELECT)
+	set pInfo.queryText = tSELECT
+	quit tRS
+]]></Implementation>
+</Method>
+
+<Method name="CrtSQLStreet">
+<FormalSpec>*tSC:%Status,pInfo:%ZEN.Auxiliary.QueryInfo</FormalSpec>
+<ReturnType>%ResultSet</ReturnType>
+<Implementation><![CDATA[
+	set CODE=%session.Data("Address","CodeRegion")_%session.Data("Address","CodeArea")_
+			%session.Data("Address","CodeCity")_%session.Data("Address","CodePlace")
+	set tSELECT = "SELECT CodeStreet, Name, Socr FROM KLADR.STREET WHERE Name %STARTSWITH ? and CodeTopicality=0 and "_
+		"code %STARTSWITH "_CODE
+	set tRS = ##class(%ResultSet).%New()
+	set tSC = tRS.Prepare(tSELECT)
+	set pInfo.queryText = tSELECT
+	quit tRS
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.AddressEdit","WebForm","OnClick",1,"Форма редактирования адреса")
+	set ^a= $zdt($h)_" ERROR"
+	set c=..%GetComponentById("titlePageHeader")
+	set c.subtitle=##class(Application.TE.Utils).GetConnStr()
+	set res=..fillForm(..str,..KC)
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="fillForm">
+<FormalSpec>rabStr:%String,rabCode:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	if ..num '= 1 set ..%GetComponentById("geState").disabled = 1
+	if rabStr = "" set rabStr = "Россия,,,,,,,,,"
+	if rabCode = "" set rabCode = "643,00,000,000,000,0000"
+	set %session.Data("Address","CodeState") = $p(rabCode,",",1)
+	set %session.Data("Address","CodeRegion") = $p(rabCode,",",2)
+	set %session.Data("Address","CodeArea") = $p(rabCode,",",3)
+	set %session.Data("Address","CodeCity") = $p(rabCode,",",4)
+	set %session.Data("Address","CodePlace") = $p(rabCode,",",5)
+	set %session.Data("Address","CodeStreet") = $p(rabCode,",",6)
+	set %session.Data("Address","NameState") = $zcvt($p(rabStr,",",1),"U")
+	set %session.Data("Address","NameRegion") = $zcvt($p(rabStr,",",3),"U")
+	set %session.Data("Address","NameArea") = $zcvt($p(rabStr,",",4),"U")
+	set %session.Data("Address","NameCity") = $zcvt($p(rabStr,",",5),"U")
+	set %session.Data("Address","NamePlace") = $zcvt($p(rabStr,",",6),"U")
+	set %session.Data("Address","NameStreet") =
+		##class(Common.Address).DelSOCRNAME($zcvt($p(rabStr,",",7),"U"),5,,
+		%session.Data("Address","CodeRegion")_%session.Data("Address","CodeArea")_
+		%session.Data("Address","CodeCity")_%session.Data("Address","CodePlace")_
+		%session.Data("Address","CodeStreet"))
+	
+	//$e($zcvt($p(rabStr,",",7),"U"),4,$l($p(rabStr,",",7)))
+
+	set ..%GetComponentById("geState").value = %session.Data("Address","NameState")
+	set ..%GetComponentById("geRegion").value = %session.Data("Address","NameRegion")
+	set ..%GetComponentById("geArea").value = %session.Data("Address","NameArea")
+	set ..%GetComponentById("geCity").value = %session.Data("Address","NameCity")
+	set ..%GetComponentById("gePlace").value = %session.Data("Address","NamePlace")
+	set ..%GetComponentById("geStreet").value = %session.Data("Address","NameStreet")
+	set ..%GetComponentById("txtCity").value = %session.Data("Address","NameCity")
+	set ..%GetComponentById("txtPlace").value = %session.Data("Address","NamePlace")
+	set ..%GetComponentById("txtStreet").value = %session.Data("Address","NameStreet")
+	
+	do %page.%SetValueById("gePostIndex",$p(rabStr,",",2))
+	do %page.%SetValueById("geHouse",$tr($zcvt($p(rabStr,",",8),"U"),"Д."))
+	do %page.%SetValueById("geBuild",$tr($zcvt($p(rabStr,",",9),"U"),"СТР."))
+	do %page.%SetValueById("geApartment",$tr($zcvt($p(rabStr,",",10),"U"),"КВ."))
+	
+	do ..writeData()
+	quit 1
+]]></Implementation>
+</Method>
+
+<Method name="writeData">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	set txtAddress = %page.%GetComponentById("StrAddress")
+	set txtCode = %page.%GetComponentById("StrCode")
+	
+	set code = %session.Data("Address","CodeRegion")_%session.Data("Address","CodeArea")_
+				%session.Data("Address","CodeCity")_%session.Data("Address","CodePlace")
+	
+	&sql(SELECT TOP 1 INDEX INTO :postIndex FROM KLADR.KLADR WHERE Code %STARTSWITH :code)
+	if %session.Data("Address","CodeStreet") '= "0000"
+	{
+		set CODE=%session.Data("Address","CodeRegion")_%session.Data("Address","CodeArea")_
+			%session.Data("Address","CodeCity")_%session.Data("Address","CodePlace")_%session.Data("Address","CodeStreet")
+		&sql(SELECT TOP 1 INDEX, Socr INTO :curIndex,:streetSocr FROM KLADR.STREET WHERE code %STARTSWITH :CODE)
+		if curIndex'="" set postIndex = curIndex
+	}
+	set %page.%GetComponentById("gePostIndex").value = $g(postIndex)
+	
+	set houseNumb = %page.%GetComponentById("geHouse").value
+	set buildNumb = %page.%GetComponentById("geBuild").value
+	set apartmentNumb = %page.%GetComponentById("geApartment").value
+	//set roomNumb = %page.%GetComponentById("geRoom")
+	
+	set houseSocr = ""
+	set buildSocr = ""
+	set apartmentSocr = ""
+	if %session.Data("Address","CodeStreet") = "0000" set streetSocr = ""
+	else  set streetSocr = " "_$g(streetSocr)
+	if houseNumb '= "" set houseSocr = "Д."
+	if buildNumb '= "" set buildSocr = "СТР."
+	if apartmentNumb '= "" set apartmentSocr = "КВ."
+	
+	set txtAddress.value =
+		$zcvt(%session.Data("Address","NameState"),"U")_","_
+		$g(postIndex,"")_","_
+		$zcvt(%session.Data("Address","NameRegion"),"U")_","_
+		$zcvt(%session.Data("Address","NameArea"),"U")_","_
+		$zcvt(%session.Data("Address","NameCity"),"U")_","_
+		$zcvt(%session.Data("Address","NamePlace"),"U")_","_
+		$zcvt(%session.Data("Address","NameStreet"),"U")_streetSocr_","_
+		houseSocr_houseNumb_","_
+		buildSocr_buildNumb_","_
+		apartmentSocr_apartmentNumb
+	set txtCode.value = 
+		%session.Data("Address","CodeState")_","_
+		%session.Data("Address","CodeRegion")_","_
+		%session.Data("Address","CodeArea")_","_
+		%session.Data("Address","CodeCity")_","_
+		%session.Data("Address","CodePlace")_","_
+		%session.Data("Address","CodeStreet")
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="getState">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set cmb = %page.%GetComponentById("geState")
+	set str = cmb.text
+	&sql(select * from Common_OKCM.OKCM where ObjectName = :str)
+	set Err = $SYSTEM.SQL.SQLCODE(SQLCODE)
+	if SQLCODE '= 0 set cmb.value = ""
+	if cmb.value="643"
+	{
+		set %session.Data("Address","CodeState")=cmb.value
+		set %session.Data("Address","NameState")=cmb.text
+		do ..writeData()
+	}
+	elseif cmb.value=""
+	{
+		set %session.Data("Address","CodeState")="000"
+		set %session.Data("Address","NameState")=""
+	}
+	else
+	{
+		set %session.Data("Address","CodeState")=cmb.value
+		set %session.Data("Address","NameState")=cmb.text
+		set ..%GetComponentById("geRegion").disabled = 1
+		set ..%GetComponentById("geArea").disabled = 1
+		set ..%GetComponentById("geCity").disabled = 1
+		set ..%GetComponentById("gePlace").disabled = 1
+		set ..%GetComponentById("geStreet").disabled = 1
+		set ..%GetComponentById("geHouse").disabled = 1
+		set ..%GetComponentById("geBuild").disabled = 1
+		set ..%GetComponentById("geApartment").disabled = 1
+		set ..%GetComponentById("geRoom").disabled = 1
+		set ..%GetComponentById("StrAddress").value = %session.Data("Address","NameState")_",,,,,,,,,"
+		set ..%GetComponentById("StrCode").value = %session.Data("Address","CodeState")_",00,000,000,000,0000"
+		quit
+	}
+	set ..%GetComponentById("geRegion").disabled = 0
+	set ..%GetComponentById("geArea").disabled = 0
+	set ..%GetComponentById("geCity").disabled = 0
+	set ..%GetComponentById("gePlace").disabled = 0
+	set ..%GetComponentById("geStreet").disabled = 0
+	set ..%GetComponentById("txtCity").disabled = 0
+	set ..%GetComponentById("txtPlace").disabled = 0
+	set ..%GetComponentById("txtStreet").disabled = 0
+	set ..%GetComponentById("geHouse").disabled = 0
+	set ..%GetComponentById("geBuild").disabled = 0
+	set ..%GetComponentById("geApartment").disabled = 0
+	set ..%GetComponentById("geRoom").disabled = 0
+	//do ..writeData()
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="getRegion">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set cmb = %page.%GetComponentById("geRegion")
+	set str = cmb.text
+	&sql(select * from KLADR.KLADR where NAME = :str and codeStatus='1')
+	set Err = $SYSTEM.SQL.SQLCODE(SQLCODE)
+	if SQLCODE '= 0 set cmb.value = ""
+	if cmb.value'=""
+	{
+		set %session.Data("Address","CodeRegion")=cmb.value
+		set %session.Data("Address","NameRegion")=cmb.text
+		set %session.Data("Address","NameState")="Россия"
+		do %page.%SetValueById("geState",%session.Data("Address","NameState"))
+	}
+	else
+	{
+		set %session.Data("Address","CodeRegion")="00"
+		set %session.Data("Address","NameRegion")=""
+	}
+	do ..clearField("Area")
+	do ..clearField("City")
+	do ..clearField("Place")
+	do ..clearField("Street")
+	do ..writeData()
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="getArea">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set cmb = %page.%GetComponentById("geArea")
+	set str = cmb.text
+	&sql(select * from KLADR.KLADR where NAME = :str and codeStatus='2')
+	set Err = $SYSTEM.SQL.SQLCODE(SQLCODE)
+	if SQLCODE '= 0 set cmb.value = ""
+	if cmb.value'=""
+	{
+		set %session.Data("Address","CodeArea")=cmb.value
+		set %session.Data("Address","NameArea")=cmb.text
+		set ..%GetComponentById("txtCity").value = ""
+		set ..%GetComponentById("txtStreet").value = ""
+		set nameAr = cmb.text
+		if $g(%session.Data("Address","NameRegion")) = ""
+		{
+			&SQL(SELECT CodeRegion into :cr from KLADR.KLADR WHERE Name = :nameAr and CodeStatus=2)
+			&SQL(SELECT Name into :gotName from KLADR.KLADR WHERE CodeStatus=1 and CodeRegion = :cr)
+			do %page.%SetValueById("geRegion",gotName)
+			set %session.Data("Address","CodeRegion")=$g(cr)
+			set %session.Data("Address","NameRegion")=$g(gotName)
+			set %session.Data("Address","NameState")="Россия"
+			do %page.%SetValueById("geState",%session.Data("Address","NameState"))
+		}
+	}
+	else
+	{
+		set %session.Data("Address","CodeArea")="000"
+		set %session.Data("Address","NameArea")=""
+	}
+	do ..clearField("City")
+	do ..clearField("Place")
+	do ..clearField("Street")
+	do ..writeData()
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="getCity">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set cmb = %page.%GetComponentById("geCity")
+	set str = cmb.text
+	&sql(select * from KLADR.KLADR where NAME = :str and codeStatus='3')
+	set Err = $SYSTEM.SQL.SQLCODE(SQLCODE)
+	if SQLCODE '= 0 set cmb.value = ""
+	if cmb.value'=""
+	{
+		set %session.Data("Address","CodeCity")=cmb.value
+		set %session.Data("Address","NameCity")=cmb.text
+		set nameAr = cmb.text
+		if $g(%session.Data("Address","NameRegion")) = ""
+		{
+			&SQL(SELECT CodeRegion into :cr from KLADR.KLADR WHERE Name = :nameAr and CodeStatus=3)
+			&SQL(SELECT Name into :gotName from KLADR.KLADR WHERE CodeStatus=1 and CodeRegion = :cr)
+			do %page.%SetValueById("geRegion",gotName)
+			set %session.Data("Address","CodeRegion")=$g(cr)
+			set %session.Data("Address","NameRegion")=$g(gotName)
+			set %session.Data("Address","NameState")="Россия"
+			do %page.%SetValueById("geState",%session.Data("Address","NameState"))
+		}
+		if $g(%session.Data("Address","NameArea")) = "" &&
+			($zcvt(%session.Data("Address","NameRegion"),"U")'="МОСКВА")&&
+			($zcvt(%session.Data("Address","NameRegion"),"U")'="САНКТ-ПЕТЕРБУРГ")&&
+			($zcvt(%session.Data("Address","NameRegion"),"U")'="БАЙКОНУР")
+		{
+			&SQL(SELECT CodeArea into :ca from KLADR.KLADR WHERE Name = :nameAr and CodeStatus=3)
+			if ($g(ca)'="000")
+			{
+				set cr = %session.Data("Address","CodeRegion")
+				&SQL(SELECT Name into :gotName from KLADR.KLADR WHERE CodeStatus=2 and CodeArea = :ca and CodeRegion = :cr)
+				do %page.%SetValueById("geArea",gotName)
+				set %session.Data("Address","CodeArea")=$g(ca)
+				set %session.Data("Address","NameArea")=$g(gotName)
+			}
+		}
+	}
+	else
+	{
+		set %session.Data("Address","CodeCity")="000"
+		set %session.Data("Address","NameCity")=""
+	}
+	do ..clearField("Place")
+	do ..clearField("Street")
+	do ..writeData()
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="getPlace">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	if (%session.Data("Address","CodeArea")'="000")||(%session.Data("Address","CodeCity")'="000")
+	{
+		set cmb = %page.%GetComponentById("gePlace")
+		set str = cmb.text
+		&sql(select * from KLADR.KLADR where NAME = :str and codeStatus='4')
+		set Err = $SYSTEM.SQL.SQLCODE(SQLCODE)
+		if SQLCODE '= 0 set cmb.value = ""
+		if cmb.value'=""
+		{
+			set %session.Data("Address","CodePlace")=cmb.value
+			set %session.Data("Address","NamePlace")=cmb.text
+		}
+		else
+		{
+			set %session.Data("Address","CodePlace")="0000"
+			set %session.Data("Address","NamePlace")=""
+		}
+	}
+	else
+	{
+		&js<alert("Не выбрано место нахождения населенного пункта.")>
+		do %page.%SetValueById("gePlace","")
+	}
+	do ..clearField("Street")
+	do ..writeData()
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="getStreet">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	if ((%session.Data("Address","CodeCity")'="000")||
+		($zcvt(%session.Data("Address","NameRegion"),"U")="МОСКВА")||
+		($zcvt(%session.Data("Address","NameRegion"),"U")="САНКТ-ПЕТЕРБУРГ")||
+		($zcvt(%session.Data("Address","NameRegion"),"U")="БАЙКОНУР"))||
+		(%session.Data("Address","CodePlace")'="000")
+	{
+		set cmb = %page.%GetComponentById("geStreet")
+		set str = cmb.text
+		&sql(select * from KLADR.STREET where NAME = :str)
+		set Err = $SYSTEM.SQL.SQLCODE(SQLCODE)
+		if SQLCODE '= 0 set cmb.value = ""
+		if cmb.value'=""
+		{
+			set %session.Data("Address","CodeStreet")=cmb.value
+			set %session.Data("Address","NameStreet")=cmb.text
+		}
+		else
+		{
+			set %session.Data("Address","CodeStreet")="0000"
+			set %session.Data("Address","NameStreet")=""
+		}
+	}
+	else
+	{
+		&js<alert("Не выбрано место нахождения улицы")>
+		do %page.%SetValueById("geStreet","")
+	}
+	do ..writeData()
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="geHouseChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	/*var str = zenPage.getComponentById("StrAddress").value
+	var i=0, k=0
+	while (true)
+	{
+		if (str.charAt(i)==",") k++
+		if (k==8)
+		{
+			str.indexOf(",",i)
+		}
+	}*/
+	set str = ..%GetComponentById("StrAddress").value
+	set $p(str,",",8) = "Д."_..%GetComponentById("geHouse").value
+	set ..%GetComponentById("StrAddress").value = str
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="geBuildChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = ..%GetComponentById("StrAddress").value
+	set $p(str,",",9) = "СТР."_..%GetComponentById("geBuild").value
+	set ..%GetComponentById("StrAddress").value = str
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="geApartmentChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = ..%GetComponentById("StrAddress").value
+	set $p(str,",",10) = "КВ."_..%GetComponentById("geApartment").value
+	set ..%GetComponentById("StrAddress").value = str
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="clearField">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>name:%String</FormalSpec>
+<Implementation><![CDATA[
+	do %page.%SetValueById("ge"_name,"")
+	do %page.%SetValueById("txt"_name,"")
+	set %session.Data("Address","Code"_name)="000"
+	if name = "Street" set %session.Data("Address","Code"_name)=%session.Data("Address","Code"_name)_"0"
+	set %session.Data("Address","Name"_name)=""
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="cbFindChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set Text = ..%GetComponentById("cbFind").value
+	if Text = 1
+	{
+		set ..%GetComponentById("geCity").hidden = 0
+		set ..%GetComponentById("txtCity").hidden = 1
+		set ..%GetComponentById("gePlace").hidden = 0
+		set ..%GetComponentById("txtPlace").hidden = 1
+		set ..%GetComponentById("geStreet").hidden = 0
+		set ..%GetComponentById("txtStreet").hidden = 1
+		set %session.Data("Find") = 1
+		set ..%GetComponentById("geCity").value = ""
+		set ..%GetComponentById("gePlace").value = ""
+		set ..%GetComponentById("geStreet").value = ""
+		set %session.Data("Address","NameCity") = ""
+		set %session.Data("Address","NamePlace") = ""
+		set %session.Data("Address","NameStreet") = ""
+	}
+	else
+	{ 
+		set ..%GetComponentById("geCity").hidden = 1
+		set ..%GetComponentById("txtCity").hidden = 0
+		set ..%GetComponentById("gePlace").hidden = 1
+		set ..%GetComponentById("txtPlace").hidden = 0
+		set ..%GetComponentById("geStreet").hidden = 1
+		set ..%GetComponentById("txtStreet").hidden = 0
+		set %session.Data("Find") = 0
+		set ..%GetComponentById("txtCity").value = ..%GetComponentById("geCity").text
+		set ..%GetComponentById("txtPlace").value = ..%GetComponentById("gePlace").text
+		set ..%GetComponentById("txtStreet").value = ..%GetComponentById("geStreet").text
+		set %session.Data("Address","NameCity") = ..%GetComponentById("txtCity").value
+		set %session.Data("Address","NamePlace") = ..%GetComponentById("txtPlace").value
+		set %session.Data("Address","NameStreet") = ..%GetComponentById("txtStreet").value
+	}
+	do ..writeData()
+	/**/
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="txtCityChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set ..%GetComponentById("txtStreet").value = ""
+	set str = ..%GetComponentById("StrAddress").value
+	set $p(str,",",5) = ..%GetComponentById("txtCity").value
+	set ..%GetComponentById("StrAddress").value = str
+	set %session.Data("Address","NameCity") = str
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="txtPlaceChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = ..%GetComponentById("StrAddress").value
+	set $p(str,",",6) = ..%GetComponentById("txtPlace").value
+	set ..%GetComponentById("StrAddress").value = str
+	set %session.Data("Address","NamePlace") = str
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="txtStreetChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = ..%GetComponentById("StrAddress").value
+	set $p(str,",",7) = ..%GetComponentById("txtStreet").value
+	set ..%GetComponentById("StrAddress").value = str
+	set %session.Data("Address","NameStreet") = str
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="btnOKclick">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	ret = zenPage.getComponentById("StrCode").value+
+		zenPage.getComponentById("StrAddress").value+zenPage.num;
+	zenPage.firePopupAction("OK",ret,true);
+]]></Implementation>
+</Method>
+
+<Method name="FillCard">
+<Description>
+Заполнение данными с формы объекта (card) для последующей записи в БД
+по ссылке возврат сообщения о незаполненных обязательных полях и список контролов по этим полям
+Формат: ControlList=$lb("MobilePhone","FactPhone"...)
+возврат: 1 - есть ошибки, 0 - все ок</Description>
+<FormalSpec><![CDATA[card:Docs.Pay,&ErrText:%String,flagExecute=0]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[	q
+]]></Implementation>
+</Method>
+
+<Method name="updateButtons">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[	q
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

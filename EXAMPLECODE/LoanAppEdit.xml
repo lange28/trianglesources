@@ -1,0 +1,3778 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.LoanAppEdit">
+<Description>
+Форма редактирования заявки</Description>
+<IncludeCode>EMCConst,ApplicationSettingsConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62509,57376.259234</TimeCreated>
+
+<Parameter name="PAGENAME">
+<Description>
+Displayed name of this page.</Description>
+<Default>LoanAppEdit</Default>
+</Parameter>
+
+<Property name="LoanAppID">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="LoanAppID"/>
+</Property>
+
+<Property name="isLoan">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="isLoan"/>
+</Property>
+
+<Parameter name="JSINCLUDES">
+<Type>STRING</Type>
+<Default>jquery.js,jquery.maskedinput-1.2.2.js</Default>
+</Parameter>
+
+<XData name="Style">
+<Data><![CDATA[
+<style type="text/css">
+
+#userControls {
+	height: 200px;
+	overflow: auto;
+}
+.required {
+}
+.required:after {
+	color: red;
+	content: " *";
+}
+/*перебиваем дефолтное межстрочное растояние между контролами*/
+.zendiv {
+	padding-bottom: 5px;
+}
+/*в группе платежного калькулятора изменем дефолт по межстрочному отступу*/
+#frmCalc .zendiv {
+	padding-bottom: 1px;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page title="Редактирование заявки" xmlns="http://www.intersystems.com/zen">
+<titleBox id="titlePageHeader" title="" subtitle=""/>
+<fieldSet id="frmEdit" legend=" Редактирование заявки " labelPosition="left">
+<tabGroup id="tabGroup" showTabBar="true" onshowTab="zenPage.updateButtons();" remember="true">
+<tab caption="Персональные данные">
+<spacer height="5"/>
+<hgroup labelPosition="left">
+<dateText id="dedtDateReg" controlClass="dateMask" label="Дата" format="DMY" labelClass="required" required="true" labelStyle="font-weight:bold" onchange="zenPage.dedtDateRegChange();"/>
+<spacer width="20"/>
+<combobox id="edtProductType" label="Желаемый продукт" editable="false" labelClass="required" required="true"  labelStyle="font-weight:bold" onchange="zenPage.edtProductTypeChange();">
+</combobox>
+<spacer width="20"/>
+<text id="showPercent" label="Ставка:" size ="3" disabled="true"/>
+<spacer width="20"/>
+<label value="Срок" containerStyle="font-weight:bold"/>
+<text id="edtPeriod" controlClass="numbersOnly" size="10" hidden="true"/>
+<combobox id="cmbPeriod" size="10" onchange="zenPage.cmbPeriodChange();"/>
+<spacer width="20"/>
+<label value="Сумма" containerStyle="font-weight:bold"/>
+<text id="edtSumm" controlClass="numbersOnly" size="10" hidden="true"/>
+<combobox id="cmbSumm" size="10" onchange="zenPage.cmbSummChange();"/>
+<label value=".00 RUR"/>
+<spacer width="20"/>
+</hgroup>
+<hgroup labelPosition="left">
+<combobox id="edtlaLoanAppSourceID" label="Откуда Вы о нас узнали" editable="false" >
+<option value="1" text="Интернет"/>
+<option value="2" text="От знакомых"/>
+</combobox>
+<spacer width="20"/>
+<checkbox id="edtlaFlagAgreement" label="Согласен на предоставление персональных данных третьим лицам"  value="1"/>
+<text id="kcPlaceOfBirth" hidden="true"/>
+<text id="kcRegAddr" hidden="true"/>
+<text id="kcLiveAddr" hidden="true"/>
+<text id="kclaJobAddressID" hidden="true"/>
+</hgroup>
+<fieldSet id="frmEditIdent" legend=" Идентификационные данные " labelPosition="left">
+<hgroup labelPosition="left">
+<text id="edtLastName" controlClass="uppertext" label="Фамилия" labelClass="required" size="40" required="true" labelStyle="font-weight:bold" onkeypress="zenPage.edtLastNameKeyPress();" onchange="zenPage.FIOChange();"/>
+<spacer width="20"/>
+<text id="edtFirstName" controlClass="uppertext" label="Имя" labelClass="required" size="40" required="true" labelStyle="font-weight:bold" onchange="zenPage.FIOChange();"/>
+<spacer width="20"/>
+<text id="edtMiddleName" controlClass="uppertext" label="Отчество" labelClass="required" size="30" required="true" labelStyle="font-weight:bold" onchange="zenPage.FIOChange();"/>
+<spacer width="20"/>
+</hgroup>
+<hgroup labelPosition="left">
+<dateText id="dedtBirthday" controlClass="dateMask" label="Дата рождения" format="DMY" labelClass="required" required="true" labelStyle="font-weight:bold" onchange="zenPage.dedtBirthdayChange(zenThis);"/>
+<spacer width="20"/>
+<text id="edtPlaceOfBirth" label="Место рождения" labelClass="required" size="80" required="true" disabled="true" labelStyle="font-weight:bold"/>
+<spacer width="10"/>
+<button id="btnPlaceOfBirth" caption=" ... " onclick="zenPage.btnEditAddressClick(zenThis);" />
+</hgroup>
+<spacer width="20"/>
+<hgroup labelPosition="left">
+<combobox id="cmbSex" label="Пол" editable="false" labelClass="required" required="true" labelStyle="font-weight:bold">
+</combobox>
+<spacer width="20"/>
+<text id="edtAge" label="Полных лет" size="5" disabled="true"/>
+<spacer width="20"/>
+<checkbox id="cblaFamilyChangeFlag" label="Менялась ли фамилия" value="0" onchange="zenPage.cblaFamilyChangeFlagChange(zenThis);"/>
+<spacer width="20"/>
+<text id="edtlaLastNameOld" controlClass="uppertext" label="если менялась прежняя фамилия: " size="30" hidden="true"/>
+</hgroup>
+</fieldSet>
+<hgroup labelPosition="left">
+<fieldSet id="frmEditPassport" legend=" Паспортные данные " labelPosition="left">
+<hgroup labelPosition="left">
+<text id="edtPassportSeries" controlClass="passportSeriesMask" label="Серия" labelClass="required" size="1" maxlength="4" required="true" labelStyle="font-weight:bold"/>
+<spacer width="20"/>
+<text id="edtPassportNumb" controlClass="passportNumbMask" label="Номер" labelClass="required" size="3" maxlength="6" required="true" labelStyle="font-weight:bold"/>
+</hgroup>
+<spacer width="20"/>
+<hgroup labelPosition="left">
+<dateText id="dedtPassportDate" controlClass="dateMask" label="Дата выдачи" format="DMY" labelClass="required" required="true" labelStyle="font-weight:bold" onchange="zenPage.dedtPassportDateChange();"/>
+<spacer width="20"/>
+<text id="edtPassportIssueDepCode" controlClass="depCodeMask" label="Код подразделения" labelClass="required" size="5" required="true" labelStyle="font-weight:bold" onkeypress="zenPage.edtPassportIssueDepCodeKeyPress(zenThis);"/>
+</hgroup>
+<spacer width="20"/>
+<hgroup labelPosition="left">
+<text id="edtPassportIssueDep" controlClass="issuedep" label="Кем выдан" labelClass="required" size="50" required="true" labelStyle="font-weight:bold"/>
+</hgroup>
+</fieldSet>
+<fieldSet id="frmEditForeignPassport" legend=" Второй документ " labelPosition="left" align="right">
+<hgroup labelPosition="left">
+<combobox id="cmblaaDocType" label="Вид" editable="false" onchange="zenPage.cmblaaDocTypeChange(zenThis);">
+</combobox>
+</hgroup>
+<hgroup labelPosition="left">
+<spacer height="5"/>
+<text id="edtForeignPassportSeries" label="Серия" hidden="true"/>
+<spacer width="20"/>
+<text id="edtForeignPassportNumb" label="Номер" size="3" maxlength="6" hidden="true"/>
+</hgroup>
+<hgroup labelPosition="left">
+<dateText id="dedtForeignPassportDate" controlClass="dateMask" label="Выдан" format="DMY" hidden="true" onchange="zenPage.dedtForeignPassportDateChange();"/>
+<spacer width="20"/>
+<text id="edtForeignPassportIssue" size="40" hidden="true"/>
+</hgroup>
+<spacer width="20"/>
+<spacer width="20"/>
+</fieldSet>
+</hgroup>
+<fieldSet id="frmEditContactData" legend=" Контактные данные " labelPosition="left">
+<hgroup labelPosition="left">
+<text id="edtRegAddr" label="Адрес регистрации" labelClass="required" size="80" required="true" disabled="true" labelStyle="font-weight:bold"/>
+<spacer width="10"/>
+<button id="btnRegAddr" caption=" ... " onclick="zenPage.btnEditAddressClick(zenThis);"/>
+<spacer width="20"/>
+<text id="edtlaPhoneRegID" controlClass="phoneMask" label="Телефон" size="20" maxlength="10"/>
+<spacer width="20"/>
+</hgroup>
+<hgroup labelPosition="left">
+<checkbox id="edtCompareAddr" label="Адрес регистрации и проживания совпадают" value="0" onchange="zenPage.edtCompareAddrChange(zenThis);"/>
+</hgroup>
+<hgroup labelPosition="left">
+<text id="edtLiveAddr" label="Адрес проживания" labelClass="required" size="80" required="true" disabled="true" labelStyle="font-weight:bold"/>
+<spacer width="10"/>
+<button id="btnLiveAddr" caption=" ... " onclick="zenPage.btnEditAddressClick(zenThis);"/>
+<spacer width="20"/>
+<text id="edtlaPhoneLiveID" controlClass="phoneMask" label="Телефон"  size="20" maxlength="10"/>
+<spacer width="20"/>
+</hgroup>
+<hgroup labelPosition="left">
+<text id="edtlaPhoneMobileID" controlClass="phoneMask" label="Мобильный телефон" labelClass="required" size="20" maxlength="10" required="true" labelStyle="font-weight:bold"/>
+<spacer width="20"/>
+</hgroup>
+</fieldSet>
+<fieldSet id="frmEditContactPerson" legend=" Контактное лицо для подтверждения данных заемщика (кроме супруга/и) " labelPosition="left">
+<hgroup labelPosition="left">
+<text id="edtlaLastNameContactPerson" controlClass="uppertext" label="Фамилия" labelClass="required" size="40" required="true" labelStyle="font-weight:bold"/>
+<spacer width="20"/>
+<text id="edtlaFirstNameContactPerson" controlClass="uppertext" label="Имя" labelClass="required" size="40" required="true" labelStyle="font-weight:bold"/>
+<spacer width="20"/>
+<text id="edtlaMiddleNameContactPerson" controlClass="uppertext" label="Отчество" labelClass="required" size="30" required="true" labelStyle="font-weight:bold"/>
+<spacer width="20"/>
+</hgroup>
+<hgroup labelPosition="left">
+<dateText id="dedtlaContactPersonBirthday" controlClass="dateMask" label="Дата рождения" format="DMY" labelClass="required" required="true" labelStyle="font-weight:bold" size="15" onchange="zenPage.dedtlaContactPersonBirthdayChange();"/>
+<spacer width="20"/>
+<combobox id="cmbContactPersonSex" label="Пол" size="10" editable="false" labelClass="required" required="true" labelStyle="font-weight:bold" >
+</combobox>
+<spacer width="20"/>
+<combobox id="cmblaContactPersonStatus" label="Статус" editable="false">
+</combobox>
+<spacer width="20"/>
+<text id="edtlaContactPersonMobilePhone" controlClass="phoneMask" label="Мобильный телефон" labelClass="required" size="20" maxlength="10" required="true" labelStyle="font-weight:bold"/>
+<spacer width="20"/>
+</hgroup>
+<spacer width="20"/>
+</fieldSet>
+ <fieldSet id="frmEditWork" legend=" Сведения о работе " labelPosition="left">
+<hgroup labelPosition="left">
+<text id="edtlaWorkArea" controlClass="uppertext" label="Название организации" size="80"/>
+<spacer width="20"/>
+<text id="edtlaaLastStage" controlClass="numbersOnly" label="Стаж на последнем месте работы" size="5"/>
+<spacer width="10"/>
+<label id="edtlaaLastStageYear" label="лет"  />
+</hgroup>
+<spacer width="20"/>
+<hgroup labelPosition="left">
+<text id="edtlaJobAddressID" label="Адрес фактический" size="100" disabled="true"/>
+<spacer width="10"/>
+<button id="btnlaJobAddressID" caption=" ... " onclick="zenPage.btnEditAddressClick(zenThis);" />
+</hgroup>
+<spacer width="20"/>
+<hgroup labelPosition="left">
+<text id="edtlaParentNameJob" controlClass="uppertext" label="ФИО руководителя" size="100"/>
+<spacer width="20"/>
+<text id="edtlaJobPhoneCity" controlClass="phoneMask" label="Раб. тел." size="20" maxlength="10"/>
+</hgroup>
+<spacer width="20"/>
+</fieldSet>
+</tab>
+<tab caption="Дополнительные сведения">
+<spacer height="5"/>
+<hgroup labelPosition="left">
+<fieldSet id="frmEditDohod" legend=" Информация о доходах заемщика " labelPosition="left">
+<hgroup labelPosition="left">
+<text id="edtlaIncome" controlClass="numbersOnly" label="Сумма ежемесячных доходов" size="10"/>
+<spacer width="20"/>
+</hgroup>
+<spacer width="20"/>
+</fieldSet>
+<fieldSet id="frmEditRashod" legend=" Ежемесячные расходы " labelPosition="left"  align="right">
+<hgroup labelPosition="left">
+<text id="edtlaAmountSpending" label="Сумма ежемесячных расходов" size="10"/>
+<spacer width="20"/>
+</hgroup>
+<spacer width="20"/>
+</fieldSet>
+</hgroup>
+<fieldSet id="frmEditCredit" legend=" Имеющиеся обязательства по кредитам " labelPosition="left">
+<hgroup labelPosition="left">
+<text id="gelaaBorrowCompany" label="Организация" size="10"/>
+<spacer width="20"/>
+<text id="edtlaaBorrowType" label="Вид" size="10"/>
+<spacer width="20"/>
+<text id="edtlaaBorrowSumm"  controlClass="numbersOnly" label="Сумма" size="10"/>
+<spacer width="20"/>
+<text id="edtlaaBorrowDebt" controlClass="numbersOnly" label="Долг" size="10"/>
+<spacer width="20"/>
+<text id="edtlaaBorrowPay" controlClass="numbersOnly" label="Платеж" size="10"/>
+<spacer width="20"/>
+</hgroup>
+<spacer width="20"/>
+</fieldSet>
+<fieldSet id="frmEditSuprug" legend=" Семейное положение и сведения о супруге " labelPosition="left">
+<hgroup labelPosition="left">
+<combobox id="edtlaMaritalStatus" label="Семейное положение" editable="false">
+</combobox>
+<spacer width="20"/>
+<text id="edtlaChildrenCount" controlClass="numbersOnly" label="Детей на иждивении" size="5"/>
+<spacer width="20"/>
+<text id="edtlaNoChildrenCount" controlClass="numbersOnly" label="Детей не на иждивении" size="5"/>
+<spacer width="20"/>
+<text id="edtlaOtherCount" controlClass="numbersOnly" label="Других ижд." size="5"/>
+<spacer width="20"/>
+</hgroup>
+<hgroup labelPosition="left">
+<text id="edtlaMarriedLast" controlClass="uppertext" label="Фамилия" size="40"/>
+<spacer width="20"/>
+<text id="edtlaMarriedFirst" controlClass="uppertext" label="Имя" size="40"/>
+<spacer width="20"/>
+<text id="edtlaMarriedMiddle" controlClass="uppertext" label="Отчество" size="30"/>
+<spacer width="20"/>
+</hgroup>
+<hgroup labelPosition="left">
+<dateText id="edtlaMarriedDateOfBirth" controlClass="dateMask" label="Дата рождения" format="DMY" onchange="zenPage.edtlaMarriedDateOfBirthChange();"/>
+<spacer width="20"/>
+<combobox id="edtlaMarriedSex" label="Пол" editable="false">
+</combobox>
+<spacer width="20"/>
+<text id="edtlaMarriedPersonPhone" controlClass="phoneMask" label="Телефон" size="15" maxlength="10"/>
+<spacer width="20"/>
+<combobox id="cmblaMarriedEmployment" label="Сведения о занятости" editable="false">
+</combobox>
+</hgroup>
+<spacer width="20"/>
+</fieldSet>
+<fieldSet id="frmEditAuto" legend=" Личный автотранспорт " labelPosition="left">
+<hgroup labelPosition="left">
+<text id="edtlaaVehicleBrand" label="Марка" size="20"/>
+<spacer width="20"/>
+<text id="edtlaaVehicleModel" label="Модель" size="20"/>
+<spacer width="20"/>
+<text id="edtlaaVehicleNumber" label="Гос. № " size="10"/>
+<spacer width="20"/>
+<text id="edtlaaVehicleYear" label="Год вып." size="5"/>
+<spacer width="20"/>
+</hgroup>
+</fieldSet>
+<fieldSet id="frmEditPrim" legend=" Примечание " labelPosition="left">
+<hgroup labelPosition="left">
+</hgroup>
+<textarea id="memoNotes" cols="100" rows="20"/>
+<spacer width="20"/>
+</fieldSet>
+</tab>
+</tabGroup>
+<hgroup align="right">
+<button id="btnExecute" caption="Сохранить как черновик" onclick="zenPage.btnBlankclick();"/>
+<button id="btnOK" caption="Верифицировать" onclick="zenPage.btnOKclick();"/>
+<button id="btnClose" caption="Закрыть" onclick="zenPage.btnCancelclick();"/>
+</hgroup>
+</fieldSet>
+</page>
+]]></Data>
+</XData>
+
+<Method name="%DrawJSStrings">
+<Description>
+Render list of localized javascript strings for this object.
+javascript-функции, использующие библиотеку jquery</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pVisited:%String]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	d ##super()
+	&js<$(function()
+		{
+			$.mask.definitions['~']='[+-]';
+			$('.passportSeriesMask').mask('9999');
+			$('.passportNumbMask').mask('999999');
+			$('.depCodeMask').mask('999-999');
+			$('.dateMask').mask('99-99-9999');
+			$('.phoneMask').mask('(999)999-99-99');
+		})
+		
+		$('.uppertext').keypress(function(eventObject)
+		{
+			var a=eventObject.which, b=1039;
+			var isTrue = (a+b+Math.abs(a-b))/2;
+			return ((isTrue == b)&&(a!=32)&&(a!=45) ? false : true)
+		})
+		$(".uppertext").css("text-transform", "uppercase");
+		
+		$('.issuedep').keypress(function(eventObject)
+		{
+			return true
+		})
+		$(".issuedep").css("text-transform", "uppercase"); 
+		$('.numbersOnly').keypress(function(eventObject)
+		{
+			var a=eventObject.which
+			return ((a==48)||(a==49)||(a==50)||(a==51)||(a==52)||(a==53)||
+					(a==54)||(a==55)||(a==56)||(a==57) ? true : false)
+		})
+		>
+	q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.LoanAppEdit","WebForm","OnClick",1,"Форма редактирования заявки")
+	set c=..%GetComponentById("titlePageHeader")
+	set c.subtitle=##class(Application.TE.Utils).GetConnStr()
+
+	set %session.Data("CurrentFormIndex")=$zdt($h)
+	set indexSessionForm=%session.Data("CurrentFormIndex")
+	
+	set %session.Data(indexSessionForm,"ReadOnly")=0
+	set %session.Data(indexSessionForm,"TypeGroup")=""
+	set %session.Data("goSave") = 1
+	
+	set ^a=$zdt($h)_" Error"
+	do ..fillFieldsCmbBox("",1,0)
+	do ..fillField(..LoanAppID,1,0,0)
+	s ^a = ..LoanAppID
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<UDLText name="T">
+<Content><![CDATA[
+//Заполнение полей по заявке id
+
+]]></Content>
+</UDLText>
+
+<Method name="fillField">
+<FormalSpec>id,AllFlds,OnlyGetDataFromid,isRepeat</FormalSpec>
+<Implementation><![CDATA[
+	//id - заявки, из которорой берется информация для заполнения полей
+	//AllFlds=1 - вывести все поля, AllFlds=0 - поля кроме даты и продукта+сумма+срок
+	//вызывается также из GUI.FRM.EMCLoanAppEdit1
+	//OnlyGetDataFromid - для случая, когда берутся данные из другой заявки для ввода новой
+	
+	; программное имя блокировки
+	set indexSessionForm=%session.Data("CurrentFormIndex")
+	set ReadOnly=$g(%session.Data(indexSessionForm,"ReadOnly"))
+	set TypeGroup=$g(%session.Data(indexSessionForm,"TypeGroup"))
+ 	set ..%GetComponentById("dedtDateReg").value = $zd(+$H,3)
+ 	
+ 	// Установка флага изменения параметров для того чтобы была возможность провести провеку заявки
+	if id set %session.Data(indexSessionForm,"ChangeField")=1
+	else  set %session.Data(indexSessionForm,"ChangeField")=0
+	
+	; запомнинамем в памяти формы редактируемые объекты, чтобы далее не считывать его в остальных обработчиках
+	if ..isLoan=1 set loanID = id &sql(select lLoanAppId into :id from Docs.Loan where id = :loanID)
+	if id
+	{
+		set obj = ##class(Docs.LoanApp).%OpenId(id)
+		if $isObject(obj.laLoanAppAddID)
+		{
+			set objadd = obj.laLoanAppAddID
+		}
+		else
+		{
+			set objadd = ##class(Docs.LoanAppAdd).%New()
+			set objadd.laaLoanAppID = obj
+			set obj.laLoanAppAddID = objadd
+		}
+	}
+	else
+	{
+		quit
+	}
+	if 'OnlyGetDataFromid
+	{
+		set caption=$s(id&&('ReadOnly):"Редактирование заявки",'id:"Ввод новой заявки",1:"Просмотр заявки")
+		do %page.%SetValueById("titlePageHeader",caption)
+		set %session.Data(indexSessionForm,"ID")=id
+		set %session.Data(indexSessionForm,"OBJ")=obj
+		set %session.Data(indexSessionForm,"OBJADD")=objadd
+	}
+ 
+	if '$IsObject(obj)
+	{
+		set ErrText = "Ошибка открытия/создания объекта Docs.LoanApp ID="_id
+		&js<alert('#(ErrText)#');>
+		$$$SysLogError($$$EMCSysErr,ErrText)  ; штатное протоколирование ошибок Cache (см. докуматик на %Library.SysLog)
+		quit ""
+	}
+	// =============вложенные объекты===================
+	// Паспорт
+	if '$IsObject(obj.laPassportID) set %session.Data(indexSessionForm,"laPassportID")=##class(Common.Passport).%New()
+	else  set %session.Data(indexSessionForm,"laPassportID")=obj.laPassportID
+	set %session.Data(indexSessionForm,"PassportID")=%session.Data(indexSessionForm,"laPassportID").%Id()
+
+	// Водительское удостоверение
+	if '$IsObject(objadd.laaDriversLicenseID) set %session.Data(indexSessionForm,"laaDriversLicenseID")=##class(Common.DriversLicense).%New()
+	else  set %session.Data(indexSessionForm,"laaDriversLicenseID")=objadd.laaDriversLicenseID
+	set %session.Data(indexSessionForm,"DriversLicenseID")=%session.Data(indexSessionForm,"laaDriversLicenseID").%Id() 
+
+	// Загранпаспорт
+	if '$IsObject(objadd.laaForeignPassportID) set %session.Data(indexSessionForm,"laaForeignPassportID")=##class(Common.ForeignPassport).%New()
+	else  set %session.Data(indexSessionForm,"laaForeignPassportID")=objadd.laaForeignPassportID
+	set %session.Data(indexSessionForm,"ForeignPassportID")=%session.Data(indexSessionForm,"laaForeignPassportID").%Id() 
+
+	// Военный билет
+	if '$IsObject(objadd.laaMilitaryPassportID) set %session.Data(indexSessionForm,"laaMilitaryPassportID")=##class(Common.MilitaryPassport).%New()
+	else  set %session.Data(indexSessionForm,"laaMilitaryPassportID")=objadd.laaMilitaryPassportID
+	set %session.Data(indexSessionForm,"MilitaryPassportID")=%session.Data(indexSessionForm,"laaMilitaryPassportID").%Id() 
+	
+	// ПФР
+	if '$IsObject(objadd.laaPFRID) set %session.Data(indexSessionForm,"laaPFRID")=##class(Common.PFR).%New()
+	else  set %session.Data(indexSessionForm,"laaPFRID")=objadd.laaPFRID
+	set %session.Data(indexSessionForm,"PFRID")=%session.Data(indexSessionForm,"laaPFRID").%Id() 
+
+	// Примечания оператора
+	if '$IsObject(obj.laNotesID)
+	{
+		set %session.Data(indexSessionForm,"laNotesID")=##class(Docs.LoanAppNotes).%New()
+	}
+	else
+	{
+		if $g(%session.Data(indexSessionForm,"ID"))=""
+		{
+			set %session.Data(indexSessionForm,"laNotesID")=obj.laNotesID.%ConstructClone(0)
+		}
+		else
+		{
+			set %session.Data(indexSessionForm,"laNotesID")=obj.laNotesID
+		}
+	}
+	
+	// Клиент
+	if '$IsObject(obj.laClientID) set %session.Data(indexSessionForm,"laClientID")=##class(Subj.Client).%New()
+	else  set %session.Data(indexSessionForm,"laClientID")=obj.laClientID
+	
+	// Персона
+	if '$IsObject(obj.laClientID.PersonID) set %session.Data(indexSessionForm,"PersonID")=##class(Subj.Person).%New()
+	else  set %session.Data(indexSessionForm,"PersonID")=obj.laClientID.PersonID
+	
+	// Кредитная организация
+	if '$IsObject(obj.laLoanAppAddID.laaCreditOrganization)
+	{
+		set %session.Data(indexSessionForm,"laCreditOrganization")=##class(Common.CreditOrganization).%New()
+		set %session.Data(indexSessionForm,"laCreditOrganizationOld")=""
+	}
+	else
+	{
+		set %session.Data(indexSessionForm,"laCreditOrganization")=obj.laLoanAppAddID.laaCreditOrganization.%ConstructClone(0)
+		set %session.Data(indexSessionForm,"laCreditOrganizationOld")=obj.laLoanAppAddID.laaCreditOrganization
+	}
+
+	// телефоны 
+	if '$IsObject(obj.laPhoneRegID)
+	{
+		set %session.Data(indexSessionForm,"laPhoneRegID")=##class(Common.Phone).%New()
+		set %session.Data(indexSessionForm,"laPhoneRegIDOld")=""
+	}
+	else  
+	{
+		// Вместо:
+		// set %session.Data(indexSessionForm,"laPhoneRegID")=obj.laPhoneRegID
+		// Создать новый объект нужно при редактировании ВСЕГДА,
+		// т.к. ссылки могут быть на один и тот же телефон в нескольких телефонах заявки
+		// Если этого не сделать, то вместо введенных телефонов в базе сохранится толкьо один (последний)
+		// Цель всего этого: в БД не будт дублироваться телефоны по одному клиенту
+		set %session.Data(indexSessionForm,"laPhoneRegID")=obj.laPhoneRegID
+		set %session.Data(indexSessionForm,"laPhoneRegIDOld")=obj.laPhoneRegID
+	}
+	if '$IsObject(obj.laPhoneLiveID)
+	{
+		set %session.Data(indexSessionForm,"laPhoneLiveID")=##class(Common.Phone).%New()
+		set %session.Data(indexSessionForm,"laPhoneLiveIDOld")=""
+	}
+	else
+	{
+		// Вместо:
+		// set %session.Data(indexSessionForm,"laPhoneLiveID")=obj.laPhoneLiveID
+		// Создать новый объект нужно при редактировании ВСЕГДА,
+		// т.к. ссылки могут быть на один и тот же телефон в нескольких телефонах заявки
+		// Если этого не сделать, то вместо введенных телефонов в базе сохранится толкьо один (последний)
+		// Цель всего этого: в БД не будт дублироваться телефоны по одному клиенту
+		set %session.Data(indexSessionForm,"laPhoneLiveID")=obj.laPhoneLiveID
+		set %session.Data(indexSessionForm,"laPhoneLiveIDOld")=obj.laPhoneLiveID
+	}
+	if '$IsObject(obj.laPhoneMobileID)
+	{
+		set %session.Data(indexSessionForm,"laPhoneMobileID")=##class(Common.Phone).%New()
+		set %session.Data(indexSessionForm,"laPhoneMobileIDOld")=""
+	}
+	else 
+	{
+		// Вместо:
+		// set %session.Data(indexSessionForm,"laPhoneMobileID")=obj.laPhoneMobileID
+		// Создать новый объект нужно при редактировании ВСЕГДА,
+		// т.к. ссылки могут быть на один и тот же телефон в нескольких телефонах заявки
+		// Если этого не сделать, то вместо введенных телефонов в базе сохранится толкьо один (последний)
+		// Цель всего этого: в БД не будт дублироваться телефоны по одному клиенту
+		set %session.Data(indexSessionForm,"laPhoneMobileID")=obj.laPhoneMobileID
+		set %session.Data(indexSessionForm,"laPhoneMobileIDOld")=obj.laPhoneMobileID
+	}
+	if '$IsObject(obj.laPhoneMobile2ID)
+	{
+		set %session.Data(indexSessionForm,"laPhoneMobile2ID")=##class(Common.Phone).%New()
+		set %session.Data(indexSessionForm,"laPhoneMobile2IDOld")=""
+	}
+	else 
+	{
+		// Вместо:
+		// set %session.Data(indexSessionForm,"laPhoneMobile2ID")=obj.laPhoneMobile2ID
+		// Создать новый объект нужно при редактировании ВСЕГДА,
+		// т.к. ссылки могут быть на один и тот же телефон в нескольких телефонах заявки
+		// Если этого не сделать, то вместо введенных телефонов в базе сохранится толкьо один (последний)
+		// Цель всего этого: в БД не будт дублироваться телефоны по одному клиенту
+		set %session.Data(indexSessionForm,"laPhoneMobile2ID")=obj.laPhoneMobile2ID
+		set %session.Data(indexSessionForm,"laPhoneMobile2IDOld")=obj.laPhoneMobile2ID
+	}
+ 
+	if '$IsObject(obj.laContactPersonMobilePhoneID)
+	{
+		set %session.Data(indexSessionForm,"laContactPersonMobilePhoneID")=##class(Common.Phone).%New()
+		set %session.Data(indexSessionForm,"laContactPersonMobilePhoneIDOld")=""
+	}
+	else 
+	{
+		// Вместо:
+		// set %session.Data(indexSessionForm,"laContactPersonMobilePhoneID")=obj.laContactPersonMobilePhoneID
+		// Создать новый объект нужно при редактировании ВСЕГДА,
+		// т.к. ссылки могут быть на один и тот же телефон в нескольких телефонах заявки
+		// Если этого не сделать, то вместо введенных телефонов в базе сохранится толкьо один (последний)
+		// Цель всего этого: в БД не будт дублироваться телефоны по одному клиенту
+		set %session.Data(indexSessionForm,"laContactPersonMobilePhoneID")=obj.laContactPersonMobilePhoneID
+		set %session.Data(indexSessionForm,"laContactPersonMobilePhoneIDOld")=obj.laContactPersonMobilePhoneID
+	}
+
+	if '$IsObject(obj.laContactPersonPhoneID)
+	{
+		set %session.Data(indexSessionForm,"laContactPersonPhoneID")=##class(Common.Phone).%New()
+		set %session.Data(indexSessionForm,"laContactPersonPhoneIDOld")=""
+	}
+	else 
+	{
+		// Вместо:
+		// set %session.Data(indexSessionForm,"laContactPersonMobilePhoneID")=obj.laContactPersonMobilePhoneID
+		// Создать новый объект нужно при редактировании ВСЕГДА,
+		// т.к. ссылки могут быть на один и тот же телефон в нескольких телефонах заявки
+		// Если этого не сделать, то вместо введенных телефонов в базе сохранится толкьо один (последний)
+		// Цель всего этого: в БД не будт дублироваться телефоны по одному клиенту
+		set %session.Data(indexSessionForm,"laContactPersonPhoneID")=obj.laContactPersonPhoneID
+		set %session.Data(indexSessionForm,"laContactPersonPhoneIDOld")=obj.laContactPersonPhoneID
+	}
+	
+	if '$IsObject(obj.laJobPhoneCityID)
+	{
+		set %session.Data(indexSessionForm,"laJobPhoneCityID")=##class(Common.Phone).%New()
+		set %session.Data(indexSessionForm,"laJobPhoneCityIDOld")=""
+	}
+	else 
+	{
+		// Вместо:
+		// set %session.Data(indexSessionForm,"laJobPhoneCityID")=obj.laJobPhoneCityID
+		// Создать новый объект нужно при редактировании ВСЕГДА,
+		// т.к. ссылки могут быть на один и тот же телефон в нескольких телефонах заявки
+		// Если этого не сделать, то вместо введенных телефонов в базе сохранится толкьо один (последний)
+		// Цель всего этого: в БД не будт дублироваться телефоны по одному клиенту
+		set %session.Data(indexSessionForm,"laJobPhoneCityID")=obj.laJobPhoneCityID
+		set %session.Data(indexSessionForm,"laJobPhoneCityIDOld")=obj.laJobPhoneCityID
+	}
+
+	if '$IsObject(obj.laJobParentPhoneCityID)
+	{
+		set %session.Data(indexSessionForm,"laJobParentPhoneCityID")=##class(Common.Phone).%New()
+		set %session.Data(indexSessionForm,"laJobParentPhoneCityIDOld")=""
+	}
+	else 
+	{
+		// Вместо:
+		// set %session.Data(indexSessionForm,"laJobParentPhoneCityID")=obj.laJobParentPhoneCityID
+		// Создать новый объект нужно при редактировании ВСЕГДА,
+		// т.к. ссылки могут быть на один и тот же телефон в нескольких телефонах заявки
+		// Если этого не сделать, то вместо введенных телефонов в базе сохранится толкьо один (последний)
+		// Цель всего этого: в БД не будт дублироваться телефоны по одному клиенту
+		set %session.Data(indexSessionForm,"laJobParentPhoneCityID")=obj.laJobParentPhoneCityID
+		set %session.Data(indexSessionForm,"laJobParentPhoneCityIDOld")=obj.laJobParentPhoneCityID
+	} 
+
+	if '$IsObject(obj.laContactPersonID) set %session.Data(indexSessionForm,"laContactPersonID")=##class(Subj.Person).%New()
+	else  set %session.Data(indexSessionForm,"laContactPersonID")=obj.laContactPersonID
+
+
+	if '$IsObject(obj.laMarriedPersonID) set %session.Data(indexSessionForm,"laMarriedPersonID")=##class(Subj.Person).%New()
+	else  set %session.Data(indexSessionForm,"laMarriedPersonID")=obj.laMarriedPersonID
+
+	if '$IsObject(obj.laMarriedPersonPhone)
+	{
+		set %session.Data(indexSessionForm,"laMarriedPersonPhone")=##class(Common.Phone).%New()
+		set %session.Data(indexSessionForm,"laMarriedPersonPhoneOld")="" 
+	}
+	else 
+	{
+		set %session.Data(indexSessionForm,"laMarriedPersonPhone")=obj.laMarriedPersonPhone
+		set %session.Data(indexSessionForm,"laMarriedPersonPhoneOld")=obj.laMarriedPersonPhone
+	}
+	set %session.Data(indexSessionForm,"ArrPlaceOfBirth")=##class(%ArrayOfDataTypes).%New()
+	set %session.Data(indexSessionForm,"ArrPlaceOfBirth").Data("daKLADRCode")=""
+	set %session.Data(indexSessionForm,"ArrPlaceOfBirth").Data("daKLADRAddress")=""
+
+	set %session.Data(indexSessionForm,"ArrRegAddr")=##class(%ArrayOfDataTypes).%New()
+	set %session.Data(indexSessionForm,"ArrRegAddr").Data("daKLADRCode")=""
+	set %session.Data(indexSessionForm,"ArrRegAddr").Data("daKLADRAddress")=""
+
+	set %session.Data(indexSessionForm,"ArrLiveAddr")=##class(%ArrayOfDataTypes).%New()
+	set %session.Data(indexSessionForm,"ArrLiveAddr").Data("daKLADRCode")=""
+	set %session.Data(indexSessionForm,"ArrLiveAddr").Data("daKLADRAddress")=""
+
+	set %session.Data(indexSessionForm,"ArrJobAddr")=##class(%ArrayOfDataTypes).%New()
+	set %session.Data(indexSessionForm,"ArrJobAddr").Data("daKLADRCode")=""
+	set %session.Data(indexSessionForm,"ArrJobAddr").Data("daKLADRAddress")=""
+
+	set flagEdit=1
+	set flagBOK=0
+	if TypeGroup=$$$emcVerifier
+	{
+		set flagEdit=1
+	}
+	else
+	{
+		if (id=""||OnlyGetDataFromid)
+		{
+			set flagEdit=0
+			set flagBOK=1
+		}
+		else
+		{
+			if ($IsObject(obj.laStateItemID)) && ($IsObject(obj.laStateItemID.siStateID))
+			{
+				// для состояния заявки Черновик
+				if obj.laStateItemID.siStateID.SysCode=$$$laBlank
+				{
+					set flagEdit=0
+					set flagBOK=1
+				}
+
+				// для состояния заявки Отказано
+				if obj.laStateItemID.siStateID.SysCode=$$$laRefused
+				{
+					set flagEdit=1
+					set flagBOK=0
+				}
+			}
+			else
+			{
+				set flagBOK=1
+			}
+		}
+	}
+	set TypeGroupSecure=""
+	if TypeGroup=$$$emcSecurityGroup
+	{
+		if '(id=""||OnlyGetDataFromid)
+		{
+			if ($IsObject(obj.laStateItemID)) && ($IsObject(obj.laStateItemID.siStateID))
+			{
+				// для состояния заявки Верификация
+				if obj.laStateItemID.siStateID.SysCode=$$$laVerification
+				{
+					set TypeGroupSecure=$$$emcSecurityGroup
+				}
+			}
+		}
+	}
+
+	if id
+	{
+		set laPassportID=%session.Data(indexSessionForm,"laPassportID")
+		set PersonID=%session.Data(indexSessionForm,"PersonID")
+		set laClientID=%session.Data(indexSessionForm,"laClientID")
+		set laCreditOrganization=%session.Data(indexSessionForm,"laCreditOrganization")
+		set laPhoneRegID=%session.Data(indexSessionForm,"laPhoneRegID")
+		set laPhoneLiveID=%session.Data(indexSessionForm,"laPhoneLiveID")
+		set laPhoneMobileID=%session.Data(indexSessionForm,"laPhoneMobileID")
+		set laMarriedPersonID=%session.Data(indexSessionForm,"laMarriedPersonID")
+		set laContactPersonID=%session.Data(indexSessionForm,"laContactPersonID")
+		set laMarriedPersonPhone=%session.Data(indexSessionForm,"laMarriedPersonPhone")
+		set laContactPersonMobilePhoneID=%session.Data(indexSessionForm,"laContactPersonMobilePhoneID")
+		set laJobPhoneCityID=%session.Data(indexSessionForm,"laJobPhoneCityID")
+		
+		set ArrPlaceOfBirth=%session.Data(indexSessionForm,"ArrPlaceOfBirth")
+		set ArrRegAddr=%session.Data(indexSessionForm,"ArrRegAddr")
+		set ArrLiveAddr=%session.Data(indexSessionForm,"ArrLiveAddr")
+		set ArrJobAddr=%session.Data(indexSessionForm,"ArrJobAddr")
+		
+		/*set laCreditOrganizationOld=%session.Data(indexSessionForm,"laCreditOrganizationOld")
+		set laPhoneRegIDOld=%session.Data(indexSessionForm,"laPhoneRegIDOld")
+		set laPhoneLiveIDOld=%session.Data(indexSessionForm,"laPhoneLiveIDOld")
+		set laPhoneMobileIDOld=%session.Data(indexSessionForm,"laPhoneMobileIDOld")
+		set laPhoneMobile2IDOld=%session.Data(indexSessionForm,"laPhoneMobile2IDOld")
+		set laMarriedPersonPhoneOld=%session.Data(indexSessionForm,"laMarriedPersonPhoneOld")
+		set laContactPersonMobilePhoneIDOld=%session.Data(indexSessionForm,"laContactPersonMobilePhoneIDOld")
+		set laContactPersonPhoneIDOld=%session.Data(indexSessionForm,"laContactPersonPhoneIDOld")
+		set laJobPhoneCityIDOld=%session.Data(indexSessionForm,"laJobPhoneCityIDOld")
+		set laJobParentPhoneCityIDOld=%session.Data(indexSessionForm,"laJobParentPhoneCityIDOld")*/
+		
+		set laaDriversLicenseID=%session.Data(indexSessionForm,"laaDriversLicenseID")
+		set laaForeignPassportID=%session.Data(indexSessionForm,"laaForeignPassportID")
+		set laaMilitaryPassportID=%session.Data(indexSessionForm,"laaMilitaryPassportID")
+		set laaPFRID=%session.Data(indexSessionForm,"laaPFRID")
+		do ..fillForm(flagEdit, isRepeat, obj,AllFlds,TypeGroupSecure,laPassportID,PersonID,laClientID,laCreditOrganization,
+				laPhoneRegID,laPhoneLiveID,laPhoneMobileID,laContactPersonMobilePhoneID,laJobPhoneCityID,
+				laMarriedPersonPhone,ArrPlaceOfBirth,ArrRegAddr,ArrLiveAddr,ArrJobAddr,laaDriversLicenseID,
+				laaForeignPassportID,laaMilitaryPassportID,laaPFRID)
+	}
+	// Загрузка фото из файла
+	//d ..ImportPhotoFromFile(id)
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="SetEnabledMaritalStatus">
+<FormalSpec>SetEnabled</FormalSpec>
+<Implementation><![CDATA[
+	set ..%GetComponentById("edtlaMarriedLast").readOnly = 'SetEnabled
+	set ..%GetComponentById("edtlaMarriedFirst").readOnly = 'SetEnabled
+	set ..%GetComponentById("edtlaMarriedMiddle").readOnly = 'SetEnabled
+	set ..%GetComponentById("edtlaMarriedPersonPhone").readOnly = 'SetEnabled
+	set ..%GetComponentById("edtlaMarriedDateOfBirth").readOnly = 'SetEnabled
+	set ..%GetComponentById("edtlaMarriedSex").readOnly = 'SetEnabled
+	set ..%GetComponentById("cmblaMarriedEmployment").readOnly = 'SetEnabled
+]]></Implementation>
+</Method>
+
+<Method name="DocTypeInit">
+<FormalSpec>type</FormalSpec>
+<Implementation><![CDATA[
+	if type = 0
+	{
+		set ..%GetComponentById("edtForeignPassportSeries").hidden = 1
+		set ..%GetComponentById("edtForeignPassportNumb").hidden = 1
+		set ..%GetComponentById("dedtForeignPassportDate").hidden = 1
+		set ..%GetComponentById("edtForeignPassportIssue").hidden = 1
+	}
+	if type = 1
+	{
+		set ..%GetComponentById("edtForeignPassportSeries").hidden = 0
+		set ..%GetComponentById("edtForeignPassportNumb").hidden = 0
+		set ..%GetComponentById("dedtForeignPassportDate").hidden = 0
+		set ..%GetComponentById("edtForeignPassportIssue").hidden = 0
+		
+		//set ..%GetComponentById("edtForeignPassportSeries").maxLength = "5"
+		set ..%GetComponentById("edtForeignPassportSeries").size = "1"
+	}
+	if type = 2
+	{
+		set ..%GetComponentById("edtForeignPassportSeries").hidden = 0
+		set ..%GetComponentById("edtForeignPassportNumb").hidden = 0
+		set ..%GetComponentById("dedtForeignPassportDate").hidden = 0
+		set ..%GetComponentById("edtForeignPassportIssue").hidden = 0
+		
+		//set ..%GetComponentById("edtForeignPassportSeries").maxLength = "2"
+		set ..%GetComponentById("edtForeignPassportSeries").size = "1"
+	}
+	if type = 3
+	{
+		set ..%GetComponentById("edtForeignPassportSeries").hidden = 0
+		set ..%GetComponentById("edtForeignPassportNumb").hidden = 0
+		set ..%GetComponentById("dedtForeignPassportDate").hidden = 0
+		set ..%GetComponentById("edtForeignPassportIssue").hidden = 0
+		
+		//set ..%GetComponentById("edtForeignPassportSeries").maxLength = "2"
+		set ..%GetComponentById("edtForeignPassportSeries").size = "1"
+	}
+	if type = 4
+	{
+		set ..%GetComponentById("edtForeignPassportSeries").hidden = 0
+		set ..%GetComponentById("edtForeignPassportNumb").hidden = 1
+		set ..%GetComponentById("dedtForeignPassportDate").hidden = 0
+		set ..%GetComponentById("edtForeignPassportIssue").hidden = 1
+		
+		set ..%GetComponentById("edtForeignPassportSeries").size = "15"
+	}
+]]></Implementation>
+</Method>
+
+<Method name="FillAndSetPeriod">
+<FormalSpec>ProductTypeID,defaultvalue=""</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	set objProductType = ##class(Docs.ProductType).%OpenId(ProductTypeID)
+	if '$IsObject(objProductType)
+	{
+		set ErrText = "Не найден тип продукта для данной заявки ID="_ProductTypeID
+		//&js<alert('#(ErrText)#')>
+		quit ""
+	}
+	set cvalue = ""
+	set status=$$$scActive
+	&SQL(DECLARE DTPCursor CURSOR FOR select id into :id from Docs.ProductTypeConditions 
+		where cls='Docs.ProductTypeConditions' and Status=:status and ptcProductTypeID=:ProductTypeID
+		Group BY ptcPeriod order by ptcPeriod)
+	&SQL(OPEN DTPCursor)
+	set cmb = ..%GetComponentById("cmbPeriod")
+	set (valueList,displayList) = ""
+	set id=0
+	for
+	{
+		&SQL(FETCH DTPCursor)
+		quit:SQLCODE
+		set obj = ##class(Docs.ProductTypeConditions).%OpenId(id)
+		if '$IsObject(obj) continue
+		set name = obj.ptcPeriod
+		set valueList = valueList_$s(valueList'="":",",1:"")_id
+		set displayList = displayList_$s(displayList'="":",",1:"")_name
+		if defaultvalue = obj.ptcPeriod set cvalue = id
+	}
+	&SQL(close DTPCursor)
+	set cmb.valueList = valueList
+	set cmb.displayList = displayList
+	set cmb.value = defaultvalue
+	quit cvalue
+]]></Implementation>
+</Method>
+
+<Method name="FillAndSetSumm">
+<FormalSpec>ProductTypeID,Period="",defaultvalue=""</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	if Period = "" quit ""
+	set cvalue = ""
+	set status = $$$scActive
+	&SQL(DECLARE DTSCursor CURSOR FOR select id into :id from Docs.ProductTypeConditions 
+		where cls='Docs.ProductTypeConditions' and Status=:status and ptcProductTypeID=:ProductTypeID
+		and ptcPeriod=:Period Group BY ptcAmount order by ptcAmount)
+	&SQL(OPEN DTSCursor)
+	set cmb = ..%GetComponentById("cmbSumm")
+	set (valueList,displayList) = ""
+	for
+	{
+		&SQL(FETCH DTSCursor)
+		quit:SQLCODE
+		set obj = ##class(Docs.ProductTypeConditions).%OpenId(id)
+		if '$IsObject(obj) continue
+		set name = obj.ptcAmount
+		set valueList = valueList_$s(valueList'="":",",1:"")_id
+		set displayList = displayList_$s(displayList'="":",",1:"")_name
+		if defaultvalue = obj.ptcAmount set cvalue = id
+	}
+	&SQL(close DTSCursor)
+	set cmb.valueList = valueList
+	set cmb.displayList = displayList
+	set cmb.value = defaultvalue
+	quit cvalue
+]]></Implementation>
+</Method>
+
+<Method name="fillForm">
+<FormalSpec>flagEdit:%Boolean,isRepeat:%Boolean,obj:Docs.LoanApp,AllFlds,TypeGroup:%String="",laPassportID:Common.Passport,PersonID:Subj.Person,laClientID:Subj.Client,laCreditOrganization:Common.CreditOrganization,laPhoneRegID:Common.Phone,laPhoneLiveID:Common.Phone,laPhoneMobileID:Common.Phone,laContactPersonMobilePhoneID:Common.Phone,laJobPhoneCityID:Common.Phone,laMarriedPersonPhone:Common.Phone,ArrPlaceOfBirth:%ArrayOfDataTypes,ArrRegAddr:%ArrayOfDataTypes,ArrLiveAddr:%ArrayOfDataTypes,ArrJobAddr:%ArrayOfDataTypes,laaDriversLicenseID:Common.DriversLicense,laaForeignPassportID:Common.ForeignPassport,laaMilitaryPassportID:Common.MilitaryPassport,laaPFRID:Common.PFR</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set indexSessionForm=%session.Data("CurrentFormIndex")
+	set flagEdit = $g(flagEdit,0)
+	set flagTabStop = $s(flagEdit=1:0,flagEdit=0:1)
+	set objadd = obj.laLoanAppAddID
+	;
+	/*set laPhoneRegIDOld=%session.Data(indexSessionForm,"laPhoneRegIDOld")
+	set laPhoneLiveIDOld=%session.Data(indexSessionForm,"laPhoneLiveIDOld")
+	set laPhoneMobileIDOld=%session.Data(indexSessionForm,"laPhoneMobileIDOld")
+	set laPhoneMobile2IDOld=%session.Data(indexSessionForm,"laPhoneMobile2IDOld")
+	set laContactPersonMobilePhoneIDOld=%session.Data(indexSessionForm,"laContactPersonMobilePhoneIDOld")
+	set laContactPersonPhoneIDOld=%session.Data(indexSessionForm,"laContactPersonPhoneIDOld")
+	set laJobPhoneCityIDOld=%session.Data(indexSessionForm,"laJobPhoneCityIDOld")
+	set laJobParentPhoneCityIDOld=%session.Data(indexSessionForm,"laJobParentPhoneCityIDOld")
+	set laMarriedPersonPhoneOld=%session.Data(indexSessionForm,"laMarriedPersonPhoneOld")*/
+	;
+	;текстовые данные заявки
+	;
+	if AllFlds set ..%GetComponentById("dedtDateReg").value = $zd(obj.laDateReg,3)
+	set ..%GetComponentById("dedtDateReg").disabled = flagEdit
+	if $isObject(obj.laClientID) && (obj.laClientID.PersonID.DateOfBirth)>0
+	{
+		set age=$s(obj.laDateReg>0:obj.laDateReg,1:$h)-obj.laClientID.PersonID.DateOfBirth\365
+		set ..%GetComponentById("edtAge").value = age
+	}
+	set ..%GetComponentById("showPercent").value = obj.laProc
+	if 'obj.laProc
+	{
+		if $IsObject(obj.laProductTypeID)
+		{
+			set ..%GetComponentById("showPercent").value = obj.laProductTypeID.PTProcTek
+		}
+	}
+	if (TypeGroup'=$$$emcSecurityGroup)
+	{
+		if AllFlds,$IsObject(obj.laProductTypeID)
+		{
+			set cmb = ..%GetComponentById("edtProductType")
+			for i=1:1:$l(cmb.valueList)
+			{
+				if $p(cmb.valueList,",",i) = obj.laProductTypeID.%Id()
+				{
+					set cmb.selectedIndex = i-1
+				}
+			}
+			set cmb.value = obj.laProductTypeID.ObjectName
+			set PeriodID = ..FillAndSetPeriod(obj.laProductTypeID.%Id(),+obj.laPeriod)
+			if PeriodID = "" do ..FillAndSetSumm(obj.laProductTypeID.%Id())
+			else  do ..FillAndSetSumm(obj.laProductTypeID.%Id(),+obj.laPeriod,+obj.laSum)
+			set ..%GetComponentById("cmbPeriod").value = +obj.laPeriod
+			set ..%GetComponentById("edtPeriod").value = +obj.laPeriod
+			set ..%GetComponentById("cmbSumm").value = +obj.laSum
+			set ..%GetComponentById("edtSumm").value = +obj.laSum
+		}
+		if $isObject(obj.laClientID) && (obj.laClientID.PersonID.DateOfBirth)>0
+		{
+			set age = $s(obj.laDateReg>0:obj.laDateReg,1:$h) - obj.laClientID.PersonID.DateOfBirth\365
+			set ..%GetComponentById("edtAge").value = age
+		}
+
+		set ..%GetComponentById("edtProductType").disabled = 'flagTabStop
+		set ..%GetComponentById("cmbSumm").disabled = 'flagTabStop
+		set ..%GetComponentById("cmbPeriod").disabled = 'flagTabStop
+		set ..%GetComponentById("edtSumm").disabled = 'flagTabStop
+		set ..%GetComponentById("edtPeriod").disabled = 'flagTabStop
+		if $IsObject(obj.laProductTypeID)
+		{
+			set vis = $s(obj.laProductTypeID.PTDynamicConditions:1,1:0)
+			set ..%GetComponentById("cmbPeriod").hidden = vis
+			set ..%GetComponentById("cmbSumm").hidden = vis
+			set ..%GetComponentById("edtPeriod").hidden = 'vis
+			set ..%GetComponentById("edtSumm").hidden = 'vis
+		}
+	}
+
+	if $IsObject(obj.laLoanAppSourceID)
+	{
+		set cmb = ..%GetComponentById("edtlaLoanAppSourceID")
+		for i=1:1:$l(cmb.valueList)
+		{
+			if $p(cmb.valueList,",",i) = obj.laLoanAppSourceID.%Id()
+			{
+				set cmb.selectedIndex = i-1
+			}
+		}
+		if 'isRepeat
+		{
+			set cmb.value = obj.laLoanAppSourceID.ObjectName
+		}
+		else
+		{
+			&js<zenPage.getComponentById('edtlaLoanAppSourceID').value = '#(obj.laLoanAppSourceID.ObjectName)#';>
+			&js<zenPage.getComponentById('edtlaLoanAppSourceID').refreshContents(true);>
+		}
+	}
+	set ..%GetComponentById("edtlaLoanAppSourceID").disabled = 'flagTabStop
+	set ..%GetComponentById("edtlaFlagAgreement").value = $s(obj.laFlagAgreement=1:1,1:0)
+	set ..%GetComponentById("edtlaFlagAgreement").readOnly = 'flagTabStop
+
+	set cmb = ..%GetComponentById("cmbSex")
+	for i=1:1:$l(cmb.valueList)
+	{
+		if $p(cmb.valueList,",",i) = obj.laSex
+		{
+			set cmb.selectedIndex = i-1
+		}
+	}
+	if 'isRepeat
+	{
+		set cmb.value = obj.laSexLogicalToDisplay(obj.laSex)
+	}
+	else
+	{
+		&js<zenPage.getComponentById('cmbSex').value = '#(obj.laSex)#';>
+		&js<zenPage.getComponentById('cmbSex').refreshContents(true);>
+	}
+	set ..%GetComponentById("cmbSex").disabled = 'flagTabStop
+
+	set ..%GetComponentById("cblaFamilyChangeFlag").value = $s(obj.laFamilyChangeFlag=1:1,1:0)
+	set ..%GetComponentById("cblaFamilyChangeFlag").disabled = 'flagTabStop
+
+	set ..%GetComponentById("edtlaLastNameOld").value = obj.laLastNameOld
+	set ..%GetComponentById("edtlaLastNameOld").readOnly = flagEdit
+
+	/*set ..%GetComponentById("edtlaRegFrom").value = $s(obj.laRegFrom:$$$HorologToDateEdit(obj.laRegFrom),1:"")
+
+	set ..%GetComponentById("edtlaLiveFrom").value = $s(obj.laLiveFrom:$$$HorologToDateEdit(obj.laLiveFrom),1:"")*/
+
+	set ..%GetComponentById("edtlaWorkArea").value = obj.laWorkArea
+	set ..%GetComponentById("edtlaWorkArea").readOnly = flagEdit
+
+	set ..%GetComponentById("edtlaaLastStage").value = objadd.laaLastStage
+	set ..%GetComponentById("edtlaaLastStage").readOnly = flagEdit
+
+	set ..%GetComponentById("cmblaContactPersonStatus").selectedIndex = obj.laContactPersonStatus-1
+	if 'isRepeat
+	{
+		set ..%GetComponentById("cmblaContactPersonStatus").value = obj.laContactPersonStatusLogicalToDisplay(obj.laContactPersonStatus)
+	}
+	else
+	{
+		&js<zenPage.getComponentById('cmblaContactPersonStatus').value = '#(obj.laContactPersonStatusLogicalToDisplay(obj.laContactPersonStatus))#';>
+		&js<zenPage.getComponentById('cmblaContactPersonStatus').refreshContents(true);>
+	}
+	set ..%GetComponentById("cmblaContactPersonStatus").disabled = 'flagTabStop
+
+	set ..%GetComponentById("cmbContactPersonSex").selectedIndex = obj.laContactPersonID.Gender
+	if 'isRepeat
+	{
+		set ..%GetComponentById("cmbContactPersonSex").value = obj.laContactPersonID.GenderLogicalToDisplay(obj.laContactPersonID.Gender)
+	}
+	else
+	{
+		&js<zenPage.getComponentById('cmbContactPersonSex').value = '#(obj.laContactPersonID.GenderLogicalToDisplay(obj.laContactPersonID.Gender))#';>
+		&js<zenPage.getComponentById('cmbContactPersonSex').refreshContents(true);>
+	}
+	set ..%GetComponentById("cmbContactPersonSex").disabled = 'flagTabStop
+
+	set cmb = ..%GetComponentById("cmblaaDocType")
+	for i=1:1:$l(cmb.valueList)
+	{
+		if $p(cmb.valueList,",",i) = objadd.laaDocType
+		{
+			set cmb.selectedIndex = i-1
+		}
+	}
+	if 'isRepeat
+	{
+		set cmb.value = objadd.laaDocTypeLogicalToDisplay(objadd.laaDocType)
+	}
+	else
+	{
+		&js<zenPage.getComponentById('cmblaaDocType').value = '#(objadd.laaDocTypeLogicalToDisplay(objadd.laaDocType))#';>
+		&js<zenPage.getComponentById('cmblaaDocType').refreshContents(true);>
+	}
+	do ..DocTypeInit(objadd.laaDocType-1)
+
+	set ..%GetComponentById("cmblaaDocType").disabled = 'flagTabStop
+	
+	;паспорт
+	if $IsObject(laPassportID)
+	{
+		set ..%GetComponentById("edtPassportSeries").value = laPassportID.psSeries
+		set ..%GetComponentById("edtPassportNumb").value = laPassportID.psNumber
+		set ..%GetComponentById("dedtPassportDate").value = $s(laPassportID.psDateIssue:$zd(laPassportID.psDateIssue,3),1:"")
+		set ..%GetComponentById("edtPassportIssueDepCode").value = laPassportID.psIssueDepCode
+		set ..%GetComponentById("edtPassportIssueDep").value = laPassportID.psIssueDep
+	}
+
+	// водительское удостоверение
+	if $IsObject(laaDriversLicenseID)&&(objadd.laaDocType=2)
+	{
+		set ..%GetComponentById("edtForeignPassportSeries").value = laaDriversLicenseID.dlSeries
+		set ..%GetComponentById("edtForeignPassportNumb").value = laaDriversLicenseID.dlNumber
+		set ..%GetComponentById("dedtForeignPassportDate").value = $s(laaDriversLicenseID.dlDateIssue:$zd(laaDriversLicenseID.dlDateIssue,3),1:"")
+		set ..%GetComponentById("edtForeignPassportIssue").value = laaDriversLicenseID.dlIssueDep
+	}
+	// загранпаспорт
+	if $IsObject(laaForeignPassportID)&&(objadd.laaDocType=3)
+	{
+		set ..%GetComponentById("edtForeignPassportSeries").value = laaForeignPassportID.fpSeries
+		set ..%GetComponentById("edtForeignPassportNumb").value = laaForeignPassportID.fpNumber
+		set ..%GetComponentById("dedtForeignPassportDate").value = $s(laaForeignPassportID.fpDateIssue:$zd(laaForeignPassportID.fpDateIssue,3),1:"")
+		set ..%GetComponentById("edtForeignPassportIssue").value = laaForeignPassportID.fpIssueDep
+	}
+
+	// военный билет
+	if $IsObject(laaMilitaryPassportID)&&(objadd.laaDocType=4)
+	{
+		set ..%GetComponentById("edtForeignPassportSeries").value = laaMilitaryPassportID.mpSeries
+		set ..%GetComponentById("edtForeignPassportNumb").value = laaMilitaryPassportID.mpNumber
+		set ..%GetComponentById("dedtForeignPassportDate").value = $s(laaMilitaryPassportID.mpDateIssue:$zd(laaMilitaryPassportID.mpDateIssue,3),1:"")
+		set ..%GetComponentById("edtForeignPassportIssue").value = laaMilitaryPassportID.mpIssueDep
+	}
+
+	// ПФР
+	if $IsObject(laaPFRID)&&(objadd.laaDocType=5)
+	{
+		set ..%GetComponentById("edtForeignPassportSeries").value = laaPFRID.pfrNumber
+		set ..%GetComponentById("dedtForeignPassportDate").value = $s(laaPFRID.pfrDate:$zd(laaPFRID.pfrDate,3),1:"")
+	}
+	set notes=$g(%session.Data(indexSessionForm,"laNotesID"))
+	#dim notes As Docs.LoanAppNotes
+	if $IsObject(notes)
+	{
+		set ..%GetComponentById("memoNotes").value = notes.Text
+	}
+	set ..%GetComponentById("edtPassportSeries").readOnly = flagEdit
+	set ..%GetComponentById("edtPassportNumb").readOnly = flagEdit
+	set ..%GetComponentById("dedtPassportDate").disabled = 'flagTabStop
+	set ..%GetComponentById("edtPassportIssueDepCode").readOnly = flagEdit
+	set ..%GetComponentById("edtPassportIssueDep").readOnly = flagEdit
+	;
+	set ..%GetComponentById("edtForeignPassportSeries").readOnly = flagEdit
+	set ..%GetComponentById("edtForeignPassportNumb").readOnly = flagEdit
+	set ..%GetComponentById("dedtForeignPassportDate").disabled = flagEdit
+	set ..%GetComponentById("edtForeignPassportIssue").readOnly = flagEdit
+
+	;физ.лицо
+	if $IsObject(PersonID)
+	{
+		set ..%GetComponentById("edtLastName").value = PersonID.LastName
+		set ..%GetComponentById("edtFirstName").value = PersonID.FirstName
+		set ..%GetComponentById("edtMiddleName").value = PersonID.MiddleName
+		set ..%GetComponentById("dedtBirthday").value = $s(PersonID.DateOfBirth:$zd(PersonID.DateOfBirth,3),1:"")
+	}
+	set ..%GetComponentById("edtLastName").readOnly = flagEdit
+	set ..%GetComponentById("edtFirstName").readOnly = flagEdit
+	set ..%GetComponentById("edtMiddleName").readOnly = flagEdit
+	set ..%GetComponentById("dedtBirthday").disabled = flagEdit
+
+	;
+
+	if $IsObject(obj.laPlaceOfBirth)
+	{
+		set ..%GetComponentById("edtPlaceOfBirth").value = obj.laPlaceOfBirth.daKLADRAddress
+		set ..%GetComponentById("kcPlaceOfBirth").value = obj.laPlaceOfBirth.daKLADRCode
+		set ArrPlaceOfBirth.Data("daKLADRAddress") = obj.laPlaceOfBirth.daKLADRAddress
+		set ArrPlaceOfBirth.Data("daKLADRCode") = obj.laPlaceOfBirth.daKLADRCode
+		//set %session.Data(indexSessionForm,"ArrPlaceOfBirth","daKLADRAddress") = obj.laPlaceOfBirth.daKLADRAddress
+		//set %session.Data(indexSessionForm,"ArrPlaceOfBirth","daKLADRCode") = obj.laPlaceOfBirth.daKLADRCode
+	}
+	
+	set ..%GetComponentById("edtPlaceOfBirth").readOnly = flagEdit
+	if flagEdit=1 set ..%GetComponentById("btnPlaceOfBirth").hidden = 1
+
+	if $IsObject(obj.laRegAddrID)
+	{
+		set ..%GetComponentById("edtRegAddr").value = obj.laRegAddrID.daKLADRAddress
+		set ..%GetComponentById("kcRegAddr").value = obj.laRegAddrID.daKLADRCode
+		set ArrRegAddr.Data("daKLADRAddress") = obj.laRegAddrID.daKLADRAddress
+		set ArrRegAddr.Data("daKLADRCode") = obj.laRegAddrID.daKLADRCode
+	}
+	set ..%GetComponentById("edtRegAddr").readOnly = flagEdit
+	if flagEdit=1 set ..%GetComponentById("btnRegAddr").hidden = 1
+	
+	if $IsObject(obj.laLiveAddrID)
+	{
+		set ..%GetComponentById("edtLiveAddr").value = obj.laLiveAddrID.daKLADRAddress
+		set ..%GetComponentById("kcLiveAddr").value = obj.laLiveAddrID.daKLADRCode
+		set ArrLiveAddr.Data("daKLADRAddress")=obj.laLiveAddrID.daKLADRAddress
+		set ArrLiveAddr.Data("daKLADRCode")=obj.laLiveAddrID.daKLADRCode
+	}
+	set ..%GetComponentById("edtLiveAddr").readOnly = flagEdit
+	if flagEdit=1 set ..%GetComponentById("btnLiveAddr").hidden = 1
+
+	if $IsObject(obj.laRegAddrID) && $IsObject(obj.laLiveAddrID) && (obj.laRegAddrID.daKLADRAddress=obj.laLiveAddrID.daKLADRAddress)
+	{
+		set ..%GetComponentById("edtCompareAddr").value = 1
+		set ..%GetComponentById("edtCompareAddr").label = "Адрес регистрации и проживания совпадают"
+	}
+	else
+	{
+		set ..%GetComponentById("edtCompareAddr").value = 0
+		set ..%GetComponentById("edtCompareAddr").label = "Адрес регистрации и проживания не совпадают"
+	}
+	
+	set ..%GetComponentById("edtCompareAddr").disabled = 'flagTabStop
+ 
+	if $IsObject(laPhoneLiveID) set ..%GetComponentById("edtlaPhoneLiveID").value = ##class(BL.Common.Phone).SetFormatPhone(laPhoneLiveID.phNumber,5)
+	set ..%GetComponentById("edtlaPhoneLiveID").readOnly = flagEdit
+
+	if $IsObject(laPhoneRegID) set ..%GetComponentById("edtlaPhoneRegID").value = ##class(BL.Common.Phone).SetFormatPhone(laPhoneRegID.phNumber,5)
+	set ..%GetComponentById("edtlaPhoneRegID").readOnly = flagEdit
+
+	if $IsObject(laPhoneMobileID) set ..%GetComponentById("edtlaPhoneMobileID").value = laPhoneMobileID.BL.FormatPhone()
+	set ..%GetComponentById("edtlaPhoneMobileID").readOnly = flagEdit
+ 
+	if $IsObject(laContactPersonMobilePhoneID) set ..%GetComponentById("edtlaContactPersonMobilePhone").value = laContactPersonMobilePhoneID.BL.FormatPhone()
+	set ..%GetComponentById("edtlaContactPersonMobilePhone").readOnly = flagEdit
+
+	if $IsObject(laJobPhoneCityID) set ..%GetComponentById("edtlaJobPhoneCity").value = laJobPhoneCityID.BL.FormatPhone()
+	set ..%GetComponentById("edtlaJobPhoneCity").readOnly = flagEdit
+
+	if $IsObject(laMarriedPersonPhone) set ..%GetComponentById("edtlaMarriedPersonPhone").value = ##class(BL.Common.Phone).SetFormatPhone(obj.laMarriedPersonPhone.phNumber)
+	set ..%GetComponentById("edtlaMarriedPersonPhone").readOnly = flagEdit
+
+	set ..%GetComponentById("edtlaWorkArea").value = obj.laWorkArea
+	set ..%GetComponentById("edtlaWorkArea").readOnly = flagEdit
+
+	set ..%GetComponentById("edtlaaLastStage").value = objadd.laaLastStage
+	set ..%GetComponentById("edtlaaLastStage").readOnly = flagEdit
+
+	set ..%GetComponentById("edtlaJobPhoneCity").value = ##class(BL.Common.Phone).SetFormatPhone(obj.laJobPhoneCity,5)
+	set ..%GetComponentById("edtlaJobPhoneCity").readOnly = flagEdit
+	;
+	if $IsObject(obj.laJobAddressID)
+	{
+		set ..%GetComponentById("edtlaJobAddressID").value = obj.laJobAddressID.daKLADRAddress
+		set ..%GetComponentById("kclaJobAddressID").value = obj.laJobAddressID.daKLADRCode
+		set ArrJobAddr.Data("daKLADRAddress") = obj.laJobAddressID.daKLADRAddress
+		set ArrJobAddr.Data("daKLADRCode") = obj.laJobAddressID.daKLADRCode
+	}
+ 
+	set ..%GetComponentById("edtlaJobAddressID").readOnly = flagEdit
+	if flagEdit=1 set ..%GetComponentById("btnlaJobAddressID").hidden = 1
+	set ..%GetComponentById("edtlaParentNameJob").value = obj.laParentNameJob
+	set ..%GetComponentById("edtlaParentNameJob").readOnly = flagEdit
+	;
+	;Информация других займах
+	;
+	set ..%GetComponentById("edtlaIncome").value = obj.laIncome
+	set ..%GetComponentById("edtlaIncome").readOnly = flagEdit
+
+	set ..%GetComponentById("edtlaAmountSpending").value = obj.laAmountSpending
+	set ..%GetComponentById("edtlaAmountSpending").readOnly = flagEdit
+	;
+	;Семейное положение
+	;
+	if obj.laMaritalStatus'=""
+	{
+		if obj.%Id()'=""
+		{
+			set ..%GetComponentById("edtlaMaritalStatus").selectedIndex = obj.laMaritalStatus-1
+			if 'isRepeat
+			{
+				set ..%GetComponentById("edtlaMaritalStatus").value = obj.laMaritalStatusLogicalToDisplay(obj.laMaritalStatus)
+			}
+			else
+			{
+				&js<zenPage.getComponentById('edtlaMaritalStatus').value = '#(obj.laMaritalStatusLogicalToDisplay(obj.laMaritalStatus))#';>
+				&js<zenPage.getComponentById('edtlaMaritalStatus').refreshContents(true);>
+			}
+			if obj.laMaritalStatus'=1
+			{
+				do ..SetEnabledMaritalStatus("false")
+			}
+			else
+			{
+				do ..SetEnabledMaritalStatus("true")
+			}		
+		}
+		else
+		{
+			do ..SetEnabledMaritalStatus("false")
+		}
+	}
+	else
+	{
+		do ..SetEnabledMaritalStatus("false")
+	}
+	set ..%GetComponentById("edtlaMaritalStatus").disabled = 'flagTabStop
+
+	if obj.laChildrenCount'=0 set ..%GetComponentById("edtlaChildrenCount").value = obj.laChildrenCount
+	set ..%GetComponentById("edtlaChildrenCount").readOnly = flagEdit
+
+	if obj.laNoChildrenCount'=0 set ..%GetComponentById("edtlaNoChildrenCount").value = obj.laNoChildrenCount
+	set ..%GetComponentById("edtlaNoChildrenCount").readOnly = flagEdit
+
+	if obj.laOtherCount'=0 set ..%GetComponentById("edtlaOtherCount").value = obj.laOtherCount
+	set ..%GetComponentById("edtlaOtherCount").readOnly = flagEdit
+
+	if obj.laMarriedEmployment'=""
+	{
+		if obj.%Id()'=""
+		{
+			set ..%GetComponentById("cmblaMarriedEmployment").selectedIndex = obj.laMarriedEmployment-1
+			if 'isRepeat
+			{
+				set ..%GetComponentById("cmblaMarriedEmployment").value = obj.laMarriedEmploymentLogicalToDisplay(obj.laMarriedEmployment)
+			}
+			else
+			{
+				&js<zenPage.getComponentById('cmblaMarriedEmployment').value = '#(obj.laMarriedEmploymentLogicalToDisplay(obj.laMarriedEmployment))#';>
+				&js<zenPage.getComponentById('cmblaMarriedEmployment').refreshContents(true);>
+			}
+		}
+	}
+	set ..%GetComponentById("cmblaMarriedEmployment").disabled = 'flagTabStop
+	;
+	;Супруг/Супруга
+	;
+	if $IsObject(obj.laMarriedPersonID)
+	{
+		set ..%GetComponentById("edtlaMarriedLast").value = obj.laMarriedPersonID.LastName
+		set ..%GetComponentById("edtlaMarriedFirst").value = obj.laMarriedPersonID.FirstName
+		set ..%GetComponentById("edtlaMarriedMiddle").value = obj.laMarriedPersonID.MiddleName
+		set val=$s(obj.laMarriedPersonID.DateOfBirth:$zd(obj.laMarriedPersonID.DateOfBirth,3),1:"")
+		set ..%GetComponentById("edtlaMarriedDateOfBirth").value = val
+		set ..%GetComponentById("edtlaMarriedSex").selectedIndex = obj.laMarriedPersonID.Gender
+		if 'isRepeat
+		{
+			set ..%GetComponentById("edtlaMarriedSex").value = obj.laMarriedPersonID.GenderLogicalToDisplay(obj.laMarriedPersonID.Gender)
+		}
+		else
+		{
+			&js<zenPage.getComponentById('edtlaMarriedSex').value = '#(obj.laMarriedPersonID.GenderLogicalToDisplay(obj.laMarriedPersonID.Gender))#';>
+			&js<zenPage.getComponentById('edtlaMarriedSex').refreshContents(true);>
+		}
+	}
+	set ..%GetComponentById("edtlaMarriedLast").readOnly = flagEdit
+	set ..%GetComponentById("edtlaMarriedFirst").readOnly = flagEdit
+	set ..%GetComponentById("edtlaMarriedMiddle").readOnly = flagEdit
+	set ..%GetComponentById("edtlaMarriedDateOfBirth").disabled = 'flagTabStop
+	set ..%GetComponentById("edtlaMarriedSex").disabled = 'flagTabStop
+	;
+	;Автомобиль
+	;
+	if objadd.laaVehicleBrand'="" set ..%GetComponentById("edtlaaVehicleBrand").value = objadd.laaVehicleBrand
+	set ..%GetComponentById("edtlaaVehicleBrand").readOnly = flagEdit
+
+	if objadd.laaVehicleModel'="" set ..%GetComponentById("edtlaaVehicleModel").value = objadd.laaVehicleModel
+	set ..%GetComponentById("edtlaaVehicleModel").readOnly = flagEdit
+ 
+	if objadd.laaVehicleNumber'="" set ..%GetComponentById("edtlaaVehicleNumber").value = objadd.laaVehicleNumber
+	set ..%GetComponentById("edtlaaVehicleNumber").readOnly = flagEdit
+
+	if objadd.laaVehicleYear'="" set ..%GetComponentById("edtlaaVehicleYear").value = objadd.laaVehicleYear
+	set ..%GetComponentById("edtlaaVehicleYear").readOnly = flagEdit
+	;
+	;Контактное лицо
+	;
+	if $IsObject(obj.laContactPersonID)
+	{
+		set ..%GetComponentById("edtlaLastNameContactPerson").value = obj.laContactPersonID.LastName
+		set ..%GetComponentById("edtlaFirstNameContactPerson").value = obj.laContactPersonID.FirstName
+		set ..%GetComponentById("edtlaMiddleNameContactPerson").value = obj.laContactPersonID.MiddleName
+		set val=$s(obj.laContactPersonID.DateOfBirth:$zd(obj.laContactPersonID.DateOfBirth,3),1:"")
+		set ..%GetComponentById("dedtlaContactPersonBirthday").value = val
+	}
+	
+	set ..%GetComponentById("edtlaLastNameContactPerson").readOnly = flagEdit
+	set ..%GetComponentById("edtlaFirstNameContactPerson").readOnly = flagEdit
+	set ..%GetComponentById("edtlaMiddleNameContactPerson").readOnly = flagEdit
+	set ..%GetComponentById("dedtlaContactPersonBirthday").disabled = flagEdit
+	;
+	;Прочие кредиты/займы
+	;
+	if $IsObject(objadd.laaCreditOrganization)
+	{
+		set ..%GetComponentById("gelaaBorrowCompany").value = objadd.laaCreditOrganization.ObjectName
+	}
+	else
+	{
+		set ..%GetComponentById("gelaaBorrowCompany").value = ""
+	}
+	set ..%GetComponentById("gelaaBorrowCompany").readOnly = flagEdit
+
+	set ..%GetComponentById("edtlaaBorrowType").value = objadd.laaBorrowType
+	set ..%GetComponentById("edtlaaBorrowType").readOnly = flagEdit
+
+	set ..%GetComponentById("edtlaaBorrowSumm").value = objadd.laaBorrowSumm
+	set ..%GetComponentById("edtlaaBorrowSumm").readOnly = flagEdit
+
+	set ..%GetComponentById("edtlaaBorrowDebt").value = objadd.laaBorrowDebt
+	set ..%GetComponentById("edtlaaBorrowDebt").readOnly = flagEdit
+
+	set ..%GetComponentById("edtlaaBorrowPay").value = objadd.laaBorrowPay
+	set ..%GetComponentById("edtlaaBorrowPay").readOnly = flagEdit
+	
+	set ..%GetComponentById("btnOK").hidden = flagEdit
+	set ..%GetComponentById("btnExecute").hidden = flagEdit
+	;
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="checkDelayDays">
+<Description><![CDATA[
+Выход :
+	1 - проверка прошла успешно (запрет по кол-ву дней не сработал)
+	$$$ERROR($$$GeneralError, <сообщение-запрос на подтверждение заявки>) т. е. проверка сработала]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ErrMsg</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+ set PersID=$g(%session.Data(indexSessionForm,"PersonID"))
+ if $IsObject(PersID) {
+	 set PersID=PersID.%Id()
+	 }
+ else	{
+	 q
+	 }
+ set dobj=##class(System.TInfoObject).%New()
+ set res=##class(System.Options).GetOptions(dobj,$$$ApplicationSettingsDelayDays,.text)
+ set DelayDays=$g(text)+0
+ i DelayDays>0 {
+	//выдан
+	set dobj=0
+	i 'dobj {
+			&SQL(
+			SELECT id,SysCode,laStateItemID->siDate 
+			INTO :cid,:cnum,:cdate 
+			FROM %IGNOREINDICES "ClsStatusIndex,StatusIndex" Docs.LoanApp 
+			WHERE cls='Docs.LoanApp' 
+			AND Status='A'
+			and laClientID in
+ 					(SELECT id 
+ 					FROM Subj.Client 
+ 					WHERE PersonID=:PersID 
+ 					AND Status='A') 
+ 			and laStateItemID->siStateID->SysCode='laLoanConcession' 
+ 			ORDER BY id desc
+			)
+			//laStateItemID->siDate as StatusDate
+			set Err = $SYSTEM.SQL.SQLCODE(SQLCODE)
+			i SQLCODE<0 &js<alert("Ошибка исполнения SQL запроса при выборке из таблицы заявок:\n"+'#(Err)#')> quit
+			i SQLCODE=0 {
+	 				set res=cdate+DelayDays
+	 				set editDate=$zdh(editdate,3)
+	 				set ret=editDate-res
+	 				i res>editDate {
+		 				set ErrMsg="Предыдущий заём погашен "_$$D^%FD(cdate,"d $m Y г.")_"\nПовторный заём возможен не ранее "_$$D^%FD(res,"d $m Y г.")
+		 				q $$$ERROR($$$GeneralError,ErrMsg)
+		 				}
+   			}
+	}
+ }
+ q $$$OK //???
+]]></Implementation>
+</Method>
+
+<Method name="SaveCheck">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&TypeStatus:%String,&TypeReason:%String,ArrLiveAddr:%String,ArrRegAddr:%String,&MessageBlackList:%String,&MessageDuplex:%String,&CommentScor:%String,obj:Docs.LoanApp,objadd:Docs.LoanAppAdd,PersonID:Subj.Person,laClientID:Subj.Client,laPassportID:Common.Passport,laaForeignPassportID:Common.ForeignPassport,laaMilitaryPassportID:Common.MilitaryPassport,laaDriversLicenseID:Common.DriversLicense,laaPFRID:Common.PFR,laCreditOrganization:Common.CreditOrganization,laPhoneRegID:Common.Phone,laPhoneLiveID:Common.Phone,laPhoneMobileID:Common.Phone]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set indexSessionForm=%session.Data("CurrentFormIndex")
+	set (TypeStatus,TypeReason)=""
+	set MessageDuplex=""
+	set MessageBlackList=""
+	set ArrLiveAddr=$g(ArrLiveAddr)
+	set ArrRegAddr=$g(ArrRegAddr)
+	;
+	/* для изменения
+ 	set laCreditOrganizationOld=%session.Data(indexSessionForm,"laCreditOrganizationOld")
+ 	set laPhoneRegIDOld=%session.Data(indexSessionForm,"laPhoneRegIDOld")
+ 	set laPhoneLiveIDOld=%session.Data(indexSessionForm,"laPhoneLiveIDOld")
+ 	set laPhoneMobileIDOld=%session.Data(indexSessionForm,"laPhoneMobileIDOld")
+ 	set laPhoneMobile2IDOld=%session.Data(indexSessionForm,"laPhoneMobile2IDOld")*/
+ 	
+
+	set res=##class(BL.Docs.LoanApp).BlackListCheck(PersonID,.TypeStatus,.TypeReason, "",.MessageContact)
+	if $$$ISERR(res)
+	{
+		quit res
+	}
+
+	set MessageBlackList=MessageContact
+	if TypeStatus'=""
+	{
+		quit $$$OK
+	}
+
+	set gender = $s(PersonID.Gender=1:"M",PersonID.Gender=2:"W",1:"")
+	set res=##class(BL.Docs.LoanApp).PassportCheck(PersonID.DateOfBirth,laPassportID.psDateIssue,gender,.TypeStatus,.TypeReason)
+	if TypeStatus'=""
+	{
+		quit $$$OK
+	}
+	
+	set res=##class(BL.Docs.LoanApp).AddressesCheck(obj.%Id(),ArrLiveAddr,ArrRegAddr,.MessageAddress)
+	if $$$ISERR(res)
+	{
+		quit res
+	}
+	set MessageDuplex=MessageAddress
+
+	set res=##class(BL.Docs.LoanApp).DuplexAccountCheck(PersonID,PersonID.%Id(),laPassportID.psSeries,laPassportID.psNumber,laPhoneMobileID.phNumber,laPhoneRegID.phNumber,obj.%Id(),.Message)
+	if $$$ISERR(res)
+	{
+		quit res
+	}
+	if MessageDuplex'="" set MessageDuplex=MessageDuplex_"\n"
+	set MessageDuplex=MessageDuplex_Message
+
+	set res=##class(BL.Docs.LoanApp).SecondLoanCheck(PersonID,obj.%Id(),.TypeStatus,.TypeReason,.LoanID,.OldLoanAppID)
+	if $$$ISERR(res)
+	{
+		quit res
+	}
+	if TypeStatus'=$$$laRefused {
+	&SQL(SELECT top 1 lRecurrence INTO :Recurrence FROM Docs.Loan
+   	Where cls='Docs.Loan' AND Status='A' AND lLoanAppID->laClientID->PersonID=:PersonID 
+   	and lStateItemID->lsiStateID->SysCode not in ('scLSAnnul')
+   	order by ID desc)
+ 	if SQLCODE=100
+ 	{
+		set optobj=##class(System.TInfoObject).%New()
+		set res=##class(System.Options).GetOptions(optobj,$$$ApplicationSettingsVerUseIntScor,.ScorOptVal)
+		if $$$ISERR(res) {q res}
+		if ScorOptVal
+		{
+			set res=##class(BL.Docs.LoanApp).PdCheck(obj,.TypeStatus,.TypeReason,.CommentScor,.MessageScor)
+			if $$$ISERR(res)
+			{
+				quit res
+			}
+		}
+	}
+	}
+	//set res=..checkDelayDays(PersonID)
+	if $$$ISERR(res)
+	{
+		set TypeStatus=$$$laRefused,TypeReason=$$$lasrGracePeriod
+		set TypeReason($$$lasrGracePeriod)=$p($system.Status.GetErrorText(res),":",2)
+	}
+	if TypeStatus=""
+	{
+		set TypeStatus=$$$laVerification
+		set TypeReason=$$$lasrEmpty
+	}
+ quit $$$OK
+]]></Implementation>
+</Method>
+
+<UDLText name="T">
+<Content><![CDATA[
+/*ClassMethod checkDelayDays(PersonID As Subj.Person) As %Status
+{
+	set PersID = PersonID
+	if $IsObject(PersID)
+	{
+		set PersID = PersID.%Id()
+	}
+	else
+	{
+		&js<alert("Ошибка определения клиента");>
+		quit
+	}
+	set dobj = ##class(System.TInfoObject).%New()
+	set res=##class(System.Options).GetOptions(dobj,$$$ApplicationSettingsDelayDays,.text)
+	set DelayDays=$g(text)+0
+	if DelayDays>0
+	{
+		//выдан
+		set dobj=0
+		if 'dobj
+		{
+			&SQL(
+				SELECT id,SysCode,laStateItemID->siDate 
+				INTO :cid,:cnum,:cdate 
+				FROM %IGNOREINDICES "ClsStatusIndex,StatusIndex" Docs.LoanApp 
+				WHERE cls='Docs.LoanApp' 
+				AND Status='A'
+				and laClientID in
+ 				(SELECT id 
+ 					FROM Subj.Client 
+ 					WHERE PersonID=:PersID 
+ 					AND Status='A') 
+ 				and laStateItemID->siStateID->SysCode='laLoanConcession' 
+ 				ORDER BY id desc
+			)
+			if SQLCODE < 0 &js<alert("Ошибка исполнения SQL запроса при выборке из таблицы заявок:\n"+'#($SYSTEM.SQL.SQLCODE(SQLCODE))#');> quit
+			if SQLCODE = 0
+			{
+	 			set res = cdate+DelayDays
+	 			set editdate = ..%GetComponentById("dedtDateReg").value
+	 			if '$$$GetProperty(%W,".Text",,ErrMsg) d OK^%WMUTIL(ErrMsg) q
+	 				s editDate=$$$DateEditToHorolog(editdate)
+	 				s ret=editDate-res
+	 				//d OK^%WMUTIL("cd"_$zd(res,3)_"^real"_$zd(editDate,3)_"^"_(res>editDate)_"^"_ret)
+	 				i res>editDate {
+		 				s ErrMsg="Предыдущий заём погашен "_$$D^%FD(cdate,"d $m Y г.")_"^Повторный заём возможен не ранее "_$$D^%FD(res,"d $m Y г.")
+		 				q $$$ERROR($$$GeneralError,ErrMsg)
+		 				}
+   			}
+	}
+ }
+ q $$$OK //???
+}*/
+]]></Content>
+</UDLText>
+
+<Method name="CheckParameter">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+	set indexSessionForm=%session.Data("CurrentFormIndex")
+	if %session.Data(indexSessionForm,"ChangeField")=1 quit 1
+	else  quit 0
+]]></Implementation>
+</Method>
+
+<Method name="btnBlankclick">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	if +$g(%session.Data("goSave")) = 0 quit
+	else  set %session.Data("goSave") = 0
+	//#dim obj as Docs.LoanApp
+	set indexSessionForm=%session.Data("CurrentFormIndex")
+	if ..LoanAppID // если объект уже создан и мы его редактируем
+	{
+		set obj = ##class(Docs.LoanApp).%OpenId(..LoanAppID)
+		if $isObject(obj.laLoanAppAddID)
+		{
+			set objadd = obj.laLoanAppAddID
+		}
+		else
+		{
+			set objadd = ##class(Docs.LoanAppAdd).%New()
+			set objadd.laaLoanAppID = obj
+			set obj.laLoanAppAddID = objadd
+		}
+	}
+	else // если создаем новый объект
+	{
+		set obj = ##class(Docs.LoanApp).%New()
+		set objadd = ##class(Docs.LoanAppAdd).%New()
+		set objadd.laaLoanAppID = obj
+		set obj.laLoanAppAddID = objadd
+	}
+	
+	if $IsObject(obj.laClientID) set laClientID = obj.laClientID 
+	else  set laClientID = ##class(Subj.Client).%New()
+	
+	if $IsObject(obj.laClientID.PersonID) set PersonID = obj.laClientID.PersonID
+	else  set PersonID = ##class(Subj.Person).%New()
+	
+	if $IsObject(obj.laPassportID) set laPassportID = obj.laPassportID
+	else  set laPassportID = ##class(Common.Passport).%New()
+
+	if $IsObject(objadd.laaForeignPassportID) set laaForeignPassportID = objadd.laaForeignPassportID
+	else  set laaForeignPassportID = ##class(Common.ForeignPassport).%New()
+
+	if $IsObject(objadd.laaMilitaryPassportID) set laaMilitaryPassportID = objadd.laaMilitaryPassportID
+	else  set laaMilitaryPassportID = ##class(Common.MilitaryPassport).%New()
+
+	if $IsObject(objadd.laaDriversLicenseID) set laaDriversLicenseID = objadd.laaDriversLicenseID
+	else  set laaDriversLicenseID = ##class(Common.DriversLicense).%New()
+
+	if $IsObject(objadd.laaPFRID) set laaPFRID = objadd.laaPFRID
+	else  set laaPFRID = ##class(Common.PFR).%New()
+
+	set ArrPlaceOfBirth = ##class(%ArrayOfDataTypes).%New()
+	set ArrRegAddr = ##class(%ArrayOfDataTypes).%New()
+	set ArrLiveAddr = ##class(%ArrayOfDataTypes).%New()
+	set ArrJobAddr = ##class(%ArrayOfDataTypes).%New()
+
+	if $IsObject(obj.laPhoneRegID) set laPhoneRegID = obj.laPhoneRegID.%ConstructClone(0)
+	else  set laPhoneRegID = ##class(Common.Phone).%New()
+		
+	if $IsObject(obj.laPhoneLiveID) set laPhoneLiveID = obj.laPhoneLiveID.%ConstructClone(0)	
+	else  set laPhoneLiveID = ##class(Common.Phone).%New()
+	
+	if $IsObject(obj.laPhoneMobileID) set laPhoneMobileID = obj.laPhoneMobileID.%ConstructClone(0)
+	else  set laPhoneMobileID = ##class(Common.Phone).%New()
+
+	if $IsObject(obj.laContactPersonMobilePhoneID) set laContactPersonMobilePhoneID = obj.laContactPersonMobilePhoneID.%ConstructClone(0)
+	else  set laContactPersonMobilePhoneID = ##class(Common.Phone).%New()
+	
+	if $IsObject(obj.laJobPhoneCityID) set laJobPhoneCityID = obj.laJobPhoneCityID.%ConstructClone(0)
+	else  set laJobPhoneCityID = ##class(Common.Phone).%New()
+	
+	if $IsObject(obj.laMarriedPersonPhone) set laMarriedPersonPhone = obj.laMarriedPersonPhone.%ConstructClone(0)
+	else  set laMarriedPersonPhone = ##class(Common.Phone).%New()
+
+	if $IsObject(obj.laLoanAppAddID.laaCreditOrganization) set laCreditOrganization = obj.laLoanAppAddID.laaCreditOrganization
+	else  set laCreditOrganization = ##class(Common.CreditOrganization).%New()
+
+	if $IsObject(obj.laMarriedPersonID) set laMarriedPersonID = obj.laMarriedPersonID
+	else  set laMarriedPersonID = ##class(Subj.Person).%New()
+	
+	if $IsObject(obj.laContactPersonID) set laContactPersonID = obj.laContactPersonID
+	else  set laContactPersonID = ##class(Subj.Person).%New()
+	
+	if $IsObject(obj.laNotesID) set laNotesID = obj.laNotesID
+	else  set laNotesID=##class(Docs.LoanAppNotes).%New()
+
+	set user=##class(System.TAccount).GetSessionAccount()
+	set (ErrText,ControlList)=""
+	set err=0,TabPageFocus=""
+ 	
+	//set newFocus=""
+	if ..FillBeginCard(obj,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	
+	//set newFocus=""
+	if ..FillPersonCard(PersonID,.ErrText)'=$$$OK set err=1
+	set obj.laSex = PersonID.Gender
+	//if TabPageFocus="" set TabPageFocus=newFocus
+	
+	//set newFocus=""
+	if ..FillClientCard(laClientID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillPassportCard(laPassportID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	set secondDoc = %page.%GetComponentById("cmblaaDocType").selectedIndex+1
+	if (secondDoc=3)
+	{
+		//set newFocus=""
+		if ..FillForeignPassportCard(laaForeignPassportID,.ErrText)'=$$$OK
+		//if TabPageFocus="" set TabPageFocus=newFocus
+	}
+	if (secondDoc=4)
+	{
+		//set newFocus=""
+		if ..FillMilitaryPassportCard(laaMilitaryPassportID,.ErrText)'=$$$OK
+		//if TabPageFocus="" set TabPageFocus=newFocus
+	}
+	if (secondDoc=2)
+	{
+		//set newFocus=""
+		if ..FillDriversLicenseCard(laaDriversLicenseID,.ErrText)'=$$$OK
+		//if TabPageFocus="" set TabPageFocus=newFocus
+	}
+	if (secondDoc=5)
+	{
+		//set newFocus=""
+		if ..FillPFRCard(laaPFRID,.ErrText)'=$$$OK
+		//if TabPageFocus="" set TabPageFocus=newFocus
+	}
+
+	//set newFocus=""
+	if ..FillBirthAddrCard(.ArrPlaceOfBirth,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillCard(obj,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillRegAddrCard(.ArrRegAddr,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillLiveAddrCard(.ArrLiveAddr,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillPhoneRegCard(laPhoneRegID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillPhoneLiveCard(laPhoneLiveID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillPhoneMobileCard(laPhoneMobileID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	//if ..FillPhoneMobile2Card(laPhoneMobile2ID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillContactPersonMobPhCard(laContactPersonMobilePhoneID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	//if ..FillContactPersonPhoneCard(laContactPersonPhoneID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillJobPhoneCityCard(laJobPhoneCityID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+	
+	//set newFocus=""
+	//if ..FillJobParentPhoneCityCard(laJobParentPhoneCityID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillCreditOrganizationCard(laCreditOrganization,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillMarriedPhoneMobileCard(laMarriedPersonPhone,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+ 	//set newFocus=""
+ 	if ..FillJobAddrCard(.ArrJobAddr,.ErrText)'=$$$OK set err=1
+ 	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	if (obj.laMaritalStatus=1)  /// || (obj.laMaritalStatus=3) || (obj.laMaritalStatus=5)
+	{
+		//set newFocus=""
+		if ..FillMarriedPersonCard(laMarriedPersonID,.ErrText)'=$$$OK set err=1
+		set obj.laMarriedPersonID=laMarriedPersonID
+		//if TabPageFocus="" set TabPageFocus=newFocus
+	}
+	else
+	{
+		set obj.laMarriedPersonID=""
+	}
+
+	//set newFocus=""
+	if ..FillContactPersonCard(laContactPersonID,.ErrText)'=$$$OK set err=1
+ 	set obj.laContactPersonID=laContactPersonID
+	//if TabPageFocus="" set TabPageFocus=newFocus
+	
+	if err do ..ShowErrFillControls(ErrText) set %session.Data("goSave") = 1 quit
+ 	
+ 	//============================Закончили заполнение================================
+	
+	if obj.laStateItemID.siStateID.SysCode'=$$$laBlank
+	{
+		set ArrayStatusLink=##class(%ArrayOfDataTypes).%New()
+		set TypeStatus=$$$laBlank
+		set TypeReason=$$$lasrEmpty
+
+		set res=##class(BL.Docs.LoanApp).JumpLoanAppStatusLink(TypeStatus,obj.laStateItemID.siStateID,.StatusLinkID,.StatusName)
+		&SQL(Select ID into :ReasonID from Docs.LoanAppStateReason where cls='Docs.LoanAppStateReason' and SysCode=:TypeReason)
+		
+		set ArrayStatusLink.Data(1,"StatusLinkID")=StatusLinkID
+		set ArrayStatusLink.Data(1,"TransferDate")=obj.laDateReg
+		set ArrayStatusLink.Data(1,"ReasonID")=ReasonID
+		set ArrayStatusLink.Data(1,"Info")="Автоматическая установка статуса"
+	}
+	else
+	{
+		set ArrayStatusLink=""
+	}
+
+	set Phones=##class(%ArrayOfDataTypes).%New()
+	set Phones.Data("RegPhone")=laPhoneRegID
+	set Phones.Data("LivePhone")=laPhoneLiveID
+	set Phones.Data("MobilePhone")=laPhoneMobileID
+	set Phones.Data("MarriedPersonPhone")=laMarriedPersonPhone
+	set Phones.Data("laCreditOrganization")=laCreditOrganization
+	set Phones.Data("ContactPersonMobilePhone")=laContactPersonMobilePhoneID
+	set Phones.Data("JobPhoneCity")=laJobPhoneCityID
+	;
+
+	// Примечание
+	set notes = laNotesID
+	if $IsObject(notes)
+	{
+		set str = %page.%GetComponentById("memoNotes").value
+		set notes.Text = str
+		set notes.Info = "Завка №"_obj.SysCode
+	}
+	//commit
+	//set ..%GetComponentById("btnExecute").disabled = 1
+	//set ..%GetComponentById("btnOk").disabled = 1
+	set ^mtempBDA("LoanAppID1")=user.Login
+	set LoanAppID = user.Exec(.doc,"Docs.registerLoanApp",obj,,laClientID,PersonID,laPassportID,ArrPlaceOfBirth,ArrRegAddr,ArrLiveAddr,ArrJobAddr,Phones,ArrayStatusLink,,laaDriversLicenseID,,laaForeignPassportID,,laaMilitaryPassportID,,,,laaPFRID,,notes,laCreditOrganization)
+	set ^mtempBDA("LoanAppID2")=$s($$$ISERR(LoanAppID):$system.Status.GetErrorText(LoanAppID),1:1)
+	if $$$ISERR(LoanAppID)
+	{
+		set Err = $System.Status.GetErrorText(LoanAppID)
+		&js<alert('#(Err)#');>
+		set %session.Data("goSave") = 1
+		quit
+	}
+	&js<alert("Сохранение черновика прошло успешно.")>
+	//kill indexSessionForm
+	kill %session.Data("goSave")
+	&js<zenPage.firePopupAction("OK","",true);>
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="btnOKclick">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	
+	if +$g(%session.Data("goSave")) = 0 quit
+	else  set %session.Data("goSave") = 0
+
+	set indexSessionForm=%session.Data("CurrentFormIndex")
+	
+	// если создаем новый объект
+	if ..LoanAppID // если объект уже создан и мы его редактируем
+	{
+		set obj = ##class(Docs.LoanApp).%OpenId(..LoanAppID)
+		if $isObject(obj.laLoanAppAddID)
+		{
+			set objadd = obj.laLoanAppAddID
+		}
+		else
+		{
+			set objadd = ##class(Docs.LoanAppAdd).%New()
+			set objadd.laaLoanAppID = obj
+			set obj.laLoanAppAddID = objadd
+		}
+	}
+	else // если создаем новый объект
+	{
+		set obj = ##class(Docs.LoanApp).%New()
+		set objadd = ##class(Docs.LoanAppAdd).%New()
+		set objadd.laaLoanAppID = obj
+		set obj.laLoanAppAddID = objadd
+	}
+	
+	if $IsObject(obj.laClientID) set laClientID = obj.laClientID 
+	else  set laClientID = ##class(Subj.Client).%New()
+	
+	if $IsObject(obj.laClientID.PersonID) set PersonID = obj.laClientID.PersonID
+	else  set PersonID = ##class(Subj.Person).%New()
+	
+	if $IsObject(obj.laPassportID) set laPassportID = obj.laPassportID
+	else  set laPassportID = ##class(Common.Passport).%New()
+
+	if $IsObject(objadd.laaForeignPassportID) set laaForeignPassportID = objadd.laaForeignPassportID
+	else  set laaForeignPassportID = ##class(Common.ForeignPassport).%New()
+
+	if $IsObject(objadd.laaMilitaryPassportID) set laaMilitaryPassportID = objadd.laaMilitaryPassportID
+	else  set laaMilitaryPassportID = ##class(Common.MilitaryPassport).%New()
+
+	if $IsObject(objadd.laaDriversLicenseID) set laaDriversLicenseID = objadd.laaDriversLicenseID
+	else  set laaDriversLicenseID = ##class(Common.DriversLicense).%New()
+
+	if $IsObject(objadd.laaPFRID) set laaPFRID = objadd.laaPFRID
+	else  set laaPFRID = ##class(Common.PFR).%New()
+
+	set ArrPlaceOfBirth = ##class(%ArrayOfDataTypes).%New()
+	set ArrRegAddr = ##class(%ArrayOfDataTypes).%New()
+	set ArrLiveAddr = ##class(%ArrayOfDataTypes).%New()
+	set ArrJobAddr = ##class(%ArrayOfDataTypes).%New()
+
+	if $IsObject(obj.laPhoneRegID) set laPhoneRegID = obj.laPhoneRegID.%ConstructClone(0)
+	else  set laPhoneRegID = ##class(Common.Phone).%New()
+		
+	if $IsObject(obj.laPhoneLiveID) set laPhoneLiveID = obj.laPhoneLiveID.%ConstructClone(0)	
+	else  set laPhoneLiveID = ##class(Common.Phone).%New()
+	
+	if $IsObject(obj.laPhoneMobileID) set laPhoneMobileID = obj.laPhoneMobileID.%ConstructClone(0)
+	else  set laPhoneMobileID = ##class(Common.Phone).%New()
+
+	if $IsObject(obj.laContactPersonMobilePhoneID) set laContactPersonMobilePhoneID = obj.laContactPersonMobilePhoneID.%ConstructClone(0)
+	else  set laContactPersonMobilePhoneID = ##class(Common.Phone).%New()
+	
+	if $IsObject(obj.laJobPhoneCityID) set laJobPhoneCityID = obj.laJobPhoneCityID.%ConstructClone(0)
+	else  set laJobPhoneCityID = ##class(Common.Phone).%New()
+	
+	if $IsObject(obj.laMarriedPersonPhone) set laMarriedPersonPhone = obj.laMarriedPersonPhone.%ConstructClone(0)
+	else  set laMarriedPersonPhone = ##class(Common.Phone).%New()
+
+	if $IsObject(obj.laLoanAppAddID.laaCreditOrganization) set laCreditOrganization = obj.laLoanAppAddID.laaCreditOrganization
+	else  set laCreditOrganization = ##class(Common.CreditOrganization).%New()
+
+	if $IsObject(obj.laMarriedPersonID) set laMarriedPersonID = obj.laMarriedPersonID
+	else  set laMarriedPersonID = ##class(Subj.Person).%New()
+	
+	if $IsObject(obj.laContactPersonID) set laContactPersonID = obj.laContactPersonID
+	else  set laContactPersonID = ##class(Subj.Person).%New()
+	
+	if $IsObject(obj.laNotesID) set laNotesID = obj.laNotesID
+	else  set laNotesID=##class(Docs.LoanAppNotes).%New()
+	
+	set user=##class(System.TAccount).GetSessionAccount()
+	set (ErrText,ControlList)=""
+	set err=0,TabPageFocus=""
+ 	
+	//set newFocus=""
+	if ..FillBeginCard(obj,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+	
+	//set newFocus=""
+	if ..FillPersonCard(PersonID,.ErrText)'=$$$OK set err=1
+	set obj.laSex = PersonID.Gender
+	//if TabPageFocus="" set TabPageFocus=newFocus
+	
+	//set newFocus=""
+	if ..FillClientCard(laClientID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillPassportCard(laPassportID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	set secondDoc = %page.%GetComponentById("cmblaaDocType").selectedIndex+1
+	if (secondDoc=3)
+	{
+		//set newFocus=""
+		if ..FillForeignPassportCard(laaForeignPassportID,.ErrText)'=$$$OK
+		//if TabPageFocus="" set TabPageFocus=newFocus
+	}
+	if (secondDoc=4)
+	{
+		//set newFocus=""
+		if ..FillMilitaryPassportCard(laaMilitaryPassportID,.ErrText)'=$$$OK
+		//if TabPageFocus="" set TabPageFocus=newFocus
+	}
+	if (secondDoc=2)
+	{
+		//set newFocus=""
+		if ..FillDriversLicenseCard(laaDriversLicenseID,.ErrText)'=$$$OK
+		//if TabPageFocus="" set TabPageFocus=newFocus
+	}
+	if (secondDoc=5)
+	{
+		//set newFocus=""
+		if ..FillPFRCard(laaPFRID,.ErrText)'=$$$OK
+		//if TabPageFocus="" set TabPageFocus=newFocus
+	}
+
+	//set newFocus=""
+	if ..FillBirthAddrCard(.ArrPlaceOfBirth,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillCard(obj,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillRegAddrCard(.ArrRegAddr,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillLiveAddrCard(.ArrLiveAddr,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillPhoneRegCard(laPhoneRegID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillPhoneLiveCard(laPhoneLiveID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillPhoneMobileCard(laPhoneMobileID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	//if ..FillPhoneMobile2Card(laPhoneMobile2ID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillContactPersonMobPhCard(laContactPersonMobilePhoneID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	//if ..FillContactPersonPhoneCard(laContactPersonPhoneID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillJobPhoneCityCard(laJobPhoneCityID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+	
+	//set newFocus=""
+	//if ..FillJobParentPhoneCityCard(laJobParentPhoneCityID,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillCreditOrganizationCard(laCreditOrganization,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	//set newFocus=""
+	if ..FillMarriedPhoneMobileCard(laMarriedPersonPhone,.ErrText)'=$$$OK set err=1
+	//if TabPageFocus="" set TabPageFocus=newFocus
+
+ 	//set newFocus=""
+ 	if ..FillJobAddrCard(.ArrJobAddr,.ErrText)'=$$$OK set err=1
+ 	//if TabPageFocus="" set TabPageFocus=newFocus
+
+	if (obj.laMaritalStatus=1)  /// || (obj.laMaritalStatus=3) || (obj.laMaritalStatus=5)
+	{
+		//set newFocus=""
+		if ..FillMarriedPersonCard(laMarriedPersonID,.ErrText)'=$$$OK set err=1
+		set obj.laMarriedPersonID=laMarriedPersonID
+		//if TabPageFocus="" set TabPageFocus=newFocus
+	}
+	else
+	{
+		set obj.laMarriedPersonID=""
+	}
+
+	//set newFocus=""
+	if ..FillContactPersonCard(laContactPersonID,.ErrText)'=$$$OK set err=1
+ 	set obj.laContactPersonID=laContactPersonID
+ 	
+ 	if err do ..ShowErrFillControls(ErrText) set %session.Data("goSave") = 1 quit
+ 	
+ 	//============================Закончили заполнение================================
+
+		  s curDate=+$h
+	  i $g(DateReg)>curDate { s curDate=DateReg}
+
+ 	 i $IsObject(ArrRegAddr) {
+		 s addrid=user.Exec(.doc,"Common.registerAddress",ArrRegAddr)
+		 q:$$$ISERR(addrid) addrid
+		 s obj.laRegAddrID=##class(Common.Address).%OpenId(addrid)
+	 } else {s obj.laRegAddrID=""}
+	  set NumberOffice=##class(BL.Subj.BussinesZone).GetNumberOffice(obj.laRegAddrID,.LocationOfficeID,curDate)
+	  &SQL(select count(id) into :cnt from Subj.BZToOfficeLink where DateBegin<=:curDate and DateEnd>=:curDate and OfficeID=:LocationOfficeID)
+	  i SQLCODE=0 {
+		  i cnt<=0 {
+			s ErrText="Верификация запрещена!\nНе найдена привязка офиса в справочнике Зоны присутствия бизнеса на дату "_$$$HorologToDateEdit(curDate)
+			&js<alert('#(ErrText)#');>
+			set %session.Data("goSave") = 1
+		  	q
+		  }
+	  } else {
+			s ErrText="Верификация запрещена\nНе найдена привязка офиса в справочнике Зоны присутствия бизнеса на дату "_$$$HorologToDateEdit(curDate)
+			&js<alert('#(ErrText)#');>
+			set %session.Data("goSave") = 1
+		  	q
+	   }
+
+ 	
+	//if TabPageFocus="" set TabPageFocus=newFocus
+	set ArrayStatusLink=##class(%ArrayOfDataTypes).%New()
+	if (..CheckParameter()=1)||(1)
+	{
+		set res=..SaveCheck(.TypeStatus,.TypeReason,ArrLiveAddr,ArrRegAddr,.MessageBlackList,.MessageDuplex,.MessageScor, obj, objadd, PersonID, laClientID, laPassportID, laaForeignPassportID, laaMilitaryPassportID, laaDriversLicenseID, laaPFRID, laCreditOrganization, laPhoneRegID, laPhoneLiveID, laPhoneMobileID)
+		if $$$ISERR(res)
+		{
+			set Err = $System.Status.GetErrorText(res)
+			&js<alert('#(Err)#');>
+			set %session.Data("goSave") = 1
+			quit
+		}
+		if (TypeStatus="") || (TypeReason="")
+		{
+			&js<alert("Не определен статус или причина заявки.");>
+			set %session.Data("goSave") = 1
+			quit
+		}
+		if MessageDuplex'="" set obj.laCommentDuplex=MessageDuplex
+		set objStatus = ##class(Docs.LoanAppState).OpenSysCode(TypeStatus)
+		set objReason = ##class(Docs.LoanAppStateReason).OpenSysCode(TypeReason)
+		if TypeStatus=$$$laRefused
+		{
+			set message="Заявке присваивается статус: "_objStatus.ObjectName_" "_objReason.ObjectName_"."
+			if TypeReason=$$$lasrGracePeriod,$d(TypeReason($$$lasrGracePeriod)) set message=message_"\n"_TypeReason($$$lasrGracePeriod)
+			set message=message_$s($g(MessageScor)'="":"\n"_MessageScor,1:"")
+			&js<if (!confirm('#(message)#' + "\nПродолжить?"))
+			{
+				zenPage.canSave();
+				return
+			}>
+		}
+		elseif (TypeStatus=$$$laVerification) && ((TypeReason=$$$lasrEmpty) || (TypeReason=$$$lasrHistory) || (TypeReason=$$$lasrScoring))
+		{
+			set message="Заявке присваивается статус: "_objStatus.ObjectName_" "_objReason.ObjectName_"."_$s($g(MessageScor)'="":"\n"_MessageScor,1:"")
+			set message=message_"\nCообщите клиенту о необходимости подождать решения верификатора."
+			&js<if (!confirm('#(message)#' + "\nПродолжить?"))
+			{
+				zenPage.canSave();
+				return
+			}>
+		}
+		elseif (TypeStatus=$$$laApproved) && (TypeReason=$$$lasrHistory)
+		{
+			set message="Заявке присваивается статус: "_objStatus.ObjectName_" "_objReason.ObjectName_"."_$s($g(MessageScor)'="":"\n"_MessageScor,1:"")
+			&js<if (!confirm('#(message)#' + "\nПродолжить?"))
+			{
+				zenPage.canSave();
+				return
+			}>
+		}
+		set res=##class(BL.Docs.LoanApp).JumpLoanAppStatusLink(TypeStatus,obj.laStateItemID.siStateID,.StatusLinkID,.StatusName)
+		&SQL(Select ID into :ReasonID from Docs.LoanAppStateReason where cls='Docs.LoanAppStateReason' and SysCode=:TypeReason)
+
+		set ArrayStatusLink.Data(1,"StatusLinkID")=StatusLinkID
+		set ArrayStatusLink.Data(1,"TransferDate")=obj.laDateReg
+		set ArrayStatusLink.Data(1,"ReasonID")=ReasonID
+		set ArrayStatusLink.Data(1,"Info")=$s($g(MessageScor)'="":MessageScor,1:"Автоматическая установка статуса")
+		set %session.Data(indexSessionForm,"ChangeField")=0
+ 	}
+ 	
+
+	set Phones=##class(%ArrayOfDataTypes).%New()
+	set Phones.Data("RegPhone")=laPhoneRegID
+	set Phones.Data("LivePhone")=laPhoneLiveID
+	set Phones.Data("MobilePhone")=laPhoneMobileID
+	set Phones.Data("MarriedPersonPhone")=laMarriedPersonPhone
+	set Phones.Data("laCreditOrganization")=laCreditOrganization
+	set Phones.Data("ContactPersonMobilePhone")=laContactPersonMobilePhoneID
+	set Phones.Data("JobPhoneCity")=laJobPhoneCityID
+
+	// Примечание
+	set notes = laNotesID
+	if $IsObject(notes)
+	{
+		set str = %page.%GetComponentById("memoNotes").value
+		set notes.Text = str
+		set notes.Info = "Завка №"_obj.SysCode
+	}
+	
+	//commit
+	set ^mtempBDA("LoanAppID1")=user.Login
+	set LoanAppID = user.Exec(.doc,"Docs.registerLoanApp",obj,,laClientID,PersonID,laPassportID,ArrPlaceOfBirth,ArrRegAddr,ArrLiveAddr,ArrJobAddr,Phones,ArrayStatusLink,,laaDriversLicenseID,,laaForeignPassportID,,laaMilitaryPassportID,,,,laaPFRID,,notes,laCreditOrganization)
+	//set ^b= $zdt($h)_" Let'set continue! "
+	set ^mtempBDA("LoanAppID2")=$s($$$ISERR(LoanAppID):$system.Status.GetErrorText(LoanAppID),1:1)
+	if $$$ISERR(LoanAppID)
+	{
+		set Err = $System.Status.GetErrorText(LoanAppID)
+		&js<alert('#(Err)#');>
+		quit
+	}
+	//все ОК - закрытие формы и возврат id "наружу"
+	//&js<alert("Заявка успешно отправлена на верификацию.")>
+	//kill indexSessionForm
+	kill %session.Data("goSave")
+	&js<zenPage.firePopupAction("OK","",true);>
+]]></Implementation>
+</Method>
+
+<Method name="canSave">
+<ClassMethod>1</ClassMethod>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set %session.Data("goSave") = 1
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="ShowErrFillControls">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ErrText:%String="",Prefix:%String="Не заполнены следующие поля:\n"</FormalSpec>
+<Implementation><![CDATA[
+	set str = ErrText
+	if $l(ErrText,"\n")>10 set str = $p(ErrText,"\n",1,10)_"\nи другие..."
+	if str'=""
+	{
+		s str=Prefix_str 
+		&js<alert('#(str)#');>
+	}
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="GetConditions">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ptID:%String="",period:%String="",summ:%String=""</FormalSpec>
+<Implementation><![CDATA[
+	if (ptID="")||(period="")||(summ="") quit ""
+
+	set scActive=$$$scActive
+	&SQL(select id into :id from Docs.ProductTypeConditions where cls='Docs.ProductTypeConditions' and Status=:scActive
+	and ptcAmount=:summ and ptcPeriod=:period and ptcProductTypeID=:ptID)
+	if SQLCODE<0
+	{
+		//set ErrText="Ошибка SQL:"_$SYSTEM.SQL.SQLCODE(SQLCODE)
+		$$$SysLogError($$$EMCSysErr,ErrText) 
+		&js<alert("Ошибка SQL")>
+		quit ""
+	}
+	elseif SQLCODE=100
+	{
+		quit ""
+	}
+	quit id
+]]></Implementation>
+</Method>
+
+<Method name="FillProductCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[card:Docs.LoanApp,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	set str = %page.%GetComponentById("edtProductType").selectedIndex
+	set ptID = $p(%page.%GetComponentById("edtProductType").valueList,",",str+1)
+	set pt=##class(Docs.ProductType).%OpenId(ptID)
+	if 'ptID s ControlList=$g(ControlList)_$lb("edtProductType"),ErrText=$g(ErrText)_"Желаемый тип продукта\n"
+	if ptID
+	{
+		set pt = ##class(Docs.ProductType).%OpenId(ptID)
+		if '$IsObject(pt) set Err = "Не найден тип продукта ID="_ptID &js<alert('#(Err)#');>
+		set card.laProductTypeID = pt
+	}
+
+	if ptID&&$IsObject(pt)&&(pt.PTDynamicConditions)
+	{
+		set period = %page.%GetComponentById("edtPeriod").value
+		set summ = %page.%GetComponentById("edtSumm").value
+		set periodcntrl = "edtlaPeriod" set summcntrl = "nedtlaSumm"
+		if (pt.PTDCMaxPeriod)&&(period>pt.PTDCMaxPeriod) set ErrText=$g(ErrText)_"Срок займа больше чем максимально возможный для продукта ("_pt.PTDCMaxPeriod_")\n"
+		if (pt.PTDCMaxSumm)&&(summ>pt.PTDCMaxSumm) set ErrText=$g(ErrText)_"Сумма займа больше чем максимально возможная для продукта ("_$fn(pt.PTDCMaxSumm,"",2)_"руб.)\n"
+		if (pt.PTDCMinPeriod)&&(period<pt.PTDCMinPeriod) set ErrText=$g(ErrText)_"Срок займа меньше чем минимально возможный для продукта ("_pt.PTDCMinPeriod_")\n"
+		if (pt.PTDCMinSumm)&&(summ<pt.PTDCMinSumm) set ErrText=$g(ErrText)_"Сумма займа меньше чем минимально возможная для продукта ("_$fn(pt.PTDCMinSumm,"",2)_"руб.)\n"
+		if (pt.PTDCSummRangeStep)&&(summ#pt.PTDCSummRangeStep) set ErrText=$g(ErrText)_"Введенная сумма займа ("_$fn(summ,"",2)_") не соответствует "_"\nуказанному шагу ранжирования ("_$fn(pt.PTDCSummRangeStep,"",2)_")"_"\n"
+	}
+	else
+	{
+		set period = %page.%GetComponentById("edtPeriod").value
+		set summ = %page.%GetComponentById("edtSumm").value
+		set periodcntrl="edtPeriod" set summcntrl="edtSumm"
+	}
+	if 'period set ErrText=$g(ErrText)_"Срок займа\n"
+	if 'summ set ErrText=$g(ErrText)_"Сумма займа\n"
+	set id = ..GetConditions(ptID,period,summ)
+	set card.laSum = summ
+	set card.laPeriod = period
+	set str = %page.%GetComponentById("showPercent").value
+	set card.laProc = str
+	quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillBeginCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[card:Docs.LoanApp,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	;
+	set str = %page.%GetComponentById("dedtDateReg").value
+	if str = ""
+	{
+		set ErrText = $g(ErrText)_"Дата регистрации заявки\n"
+	}
+	else
+	{
+		set card.laDateReg = $zdh(str,3) // обратно в дату будет $zd(str,3)
+	}
+	;
+	do ..FillProductCard(card,.ErrText)
+	;
+	set str = %page.%GetComponentById("edtlaLoanAppSourceID").selectedIndex+1
+	set sID = $p(%page.%GetComponentById("edtlaLoanAppSourceID").valueList,",",str)
+	if (sID'="")&&(sID'=0)
+	{
+		set obj = ##class(Common.LoanAppSource).%OpenId(sID)
+		if $IsObject(obj) set card.laLoanAppSourceID = obj
+	}
+	quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillPersonCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[card:Subj.Person,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	;
+	set str = %page.%GetComponentById("edtLastName").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.LastName = str
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Фамилия\n"
+	}
+	;
+	set str = %page.%GetComponentById("edtFirstName").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.FirstName = str
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Имя\n"
+	}
+	;
+ 	set str = %page.%GetComponentById("edtMiddleName").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.MiddleName = str
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Отчество\n"
+	}
+	;
+	if str'=""
+	{
+		set str = %page.%GetComponentById("dedtBirthday").value
+		set card.DateOfBirth=$zdh(str,3)
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Дата рождения\n"
+	}
+	;
+	set str = %page.%GetComponentById("cmbSex").selectedIndex+1
+	set sex = $p(%page.%GetComponentById("cmbSex").valueList,",",str)
+	if str>1
+	{
+		set card.Gender = sex
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Пол заемщика\n"
+	}
+	;
+	quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillClientCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[card:Subj.Client,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[	quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillPassportCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[card:Common.Passport,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	;
+	set str = %page.%GetComponentById("edtPassportSeries").value
+	set str = $ZSTRIP(str,"<>W")
+	if str?4N
+	{
+		set card.psSeries = str
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Паспорт: серия "_$s(str="":"",1:"(несоотв. шаблону)")_"\n"
+	}
+	;
+	set str = %page.%GetComponentById("edtPassportNumb").value
+	set str = $ZSTRIP(str,"<>W")
+	if str?6N
+	{
+		set card.psNumber = str
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Паспорт: номер "_$s(str="":"",1:"(несоотв. шаблону)")_"\n"
+	}
+	;
+	set str = %page.%GetComponentById("edtPassportIssueDepCode").value
+	set str = $ZSTRIP(str,"<>W")
+	s comparestr=$tr(str,"- ")
+	if comparestr?6N
+	{
+		set card.psIssueDepCode = str
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Паспорт: код п."_$s(comparestr="":"",1:"(несоотв. шаблону)")_"\n"
+	}
+	;
+	set str = %page.%GetComponentById("dedtPassportDate").value
+	set str = $ZSTRIP(str,"<>W")
+	i str'=""
+	{
+		set card.psDateIssue = $zdh(str,3)
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Паспорт: дата выдачи\n"
+	}
+	;
+	set str = %page.%GetComponentById("edtPassportIssueDep").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.psIssueDep = str
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Паспорт: кем выдан\n"
+	}
+	;
+	quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillForeignPassportCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[card:Common.ForeignPassport,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	;
+ 	set str = %page.%GetComponentById("edtForeignPassportSeries").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.fpSeries = str
+	}
+ 	;
+ 	set str = %page.%GetComponentById("edtForeignPassportNumb").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.fpNumber = str
+	}
+	;
+	set str = %page.%GetComponentById("dedtForeignPassportDate").value
+	if str'=""
+	{
+		set card.fpDateIssue = $zdh(str,3)
+	}
+	;
+	set str = %page.%GetComponentById("edtForeignPassportIssue").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.fpIssueDep = str
+	}
+	;
+	quit $s($g(ErrText)'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillMilitaryPassportCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[card:Common.MilitaryPassport,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+ 	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	;
+ 	set str = %page.%GetComponentById("edtForeignPassportSeries").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.mbSeries = str
+	}
+ 	;
+ 	set str = %page.%GetComponentById("edtForeignPassportNumb").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.mbNumber = str
+	}
+	;
+	set str = %page.%GetComponentById("dedtForeignPassportDate").value
+	if str'=""
+	{
+		set card.mbDateIssue = $zdh(str,3)
+	}
+	;
+	set str = %page.%GetComponentById("edtForeignPassportIssue").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.mbIssueDep = str
+	}
+	;
+	quit $s($g(ErrText)'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillDriversLicenseCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[card:Common.DriversLicense,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	;
+ 	set str = %page.%GetComponentById("edtForeignPassportSeries").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.dlSeries = str
+	}
+ 	;
+ 	set str = %page.%GetComponentById("edtForeignPassportNumb").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.dlNumber = str
+	}
+	;
+	set str = %page.%GetComponentById("dedtForeignPassportDate").value
+	if str'=""
+	{
+		set card.dlDateIssue = $zdh(str,3)
+	}
+	;
+	set str = %page.%GetComponentById("edtForeignPassportIssue").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.dlIssueDep = str
+	}
+	;
+	quit $s($g(ErrText)'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillPFRCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[card:Common.PFR,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	;
+	set str = %page.%GetComponentById("edtForeignPassportNumb").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.pfrNumber = str
+	}
+	;
+	set str = %page.%GetComponentById("dedtForeignPassportDate").value
+	if str'=""
+	{
+		set card.pfrDate = $zdh(str,3)
+	}
+	;
+	quit $s($g(ErrText)'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillBirthAddrCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&card:%ArrayOfDataTypes,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	;
+	set str = %page.%GetComponentById("edtPlaceOfBirth").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card = ##class(%ArrayOfDataTypes).%New()
+		set card.Data("daKLADRAddress") = str
+	}
+	else
+	{
+		set card = ""
+		set ErrText = $g(ErrText)_"Место рождения\n"
+	}
+	quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillCard">
+<Description>
+Заполнение данными с формы объекта (card) для последующей записи в БД
+по ссылке возврат сообщения о незаполненных обязательных полях и список контролов по этим полям
+Формат: ControlList=$lb("MobilePhone","FactPhone"...)
+возврат: 1 - есть ошибки, 0 - все ок</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[card:Docs.LoanApp,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	;
+	set cardadd = card.laLoanAppAddID
+	set str = %page.%GetComponentById("edtlaFlagAgreement").value
+	if str = 1
+	{
+		set card.laFlagAgreement=1
+	}
+	else
+	{
+		set card.laFlagAgreement=0
+	}
+	;
+	set str = %page.%GetComponentById("cblaFamilyChangeFlag").value
+	if str = 1
+	{
+		set card.laFamilyChangeFlag=1
+ 		;
+		set str = %page.%GetComponentById("edtlaLastNameOld").value
+		set str = $ZSTRIP(str,"<>W")
+		//set card.laFirstNameOld = card.FirstName
+		//set card.laMiddleNameOld = card.MiddleName
+		if str'=""
+		{
+			set card.laLastNameOld = str
+		}
+	}
+	else
+	{
+		set card.laFamilyChangeFlag=0
+		set card.laFirstNameOld=""
+		set card.laLastNameOld=""
+		set card.laMiddleNameOld=""
+	}
+	;
+	set str = %page.%GetComponentById("edtlaWorkArea").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.laWorkArea = str
+	}
+	;
+	set str = %page.%GetComponentById("edtlaaLastStage").value
+	set str = $ZSTRIP(str,"<>W") 
+	set cardadd.laaLastStage = str
+	;
+	set str = %page.%GetComponentById("edtlaParentNameJob").value
+	set card.laParentNameJob = $ZSTRIP(str,"<>W")
+	;
+	// автомобиль
+	;
+	set str = %page.%GetComponentById("edtlaaVehicleBrand").value
+ 	set cardadd.laaVehicleBrand = $ZSTRIP(str,"<>W")
+	;
+	set str = %page.%GetComponentById("edtlaaVehicleModel").value
+	set cardadd.laaVehicleModel = $ZSTRIP(str,"<>W")
+	;
+	set str = %page.%GetComponentById("edtlaaVehicleNumber").value
+	set cardadd.laaVehicleNumber = $ZSTRIP(str,"<>W")
+	;
+	set str = %page.%GetComponentById("edtlaaVehicleYear").value
+	set cardadd.laaVehicleYear = $ZSTRIP(str,"<>W")
+	;
+	set str = %page.%GetComponentById("edtlaJobPhoneCity").value
+	set str = $tr(str,"()-_ ","")
+	if str'=""
+	{
+		set card.laJobPhoneCity = str
+	}
+	;
+	set str = %page.%GetComponentById("edtlaIncome").value
+	set card.laIncome = str
+	;
+	set str = %page.%GetComponentById("edtlaAmountSpending").value
+	set card.laAmountSpending = str
+	;
+	set str = %page.%GetComponentById("edtlaMaritalStatus").selectedIndex+1
+	set card.laMaritalStatus = str
+	;
+	set str = %page.%GetComponentById("cmblaMarriedEmployment").selectedIndex+1
+	set card.laMarriedEmployment = str
+	;
+	set str = %page.%GetComponentById("cmblaContactPersonStatus").selectedIndex+1
+	set card.laContactPersonStatus = str
+	;
+	set str = %page.%GetComponentById("cmblaaDocType").selectedIndex+1
+	set cardadd.laaDocType=str
+	;
+	// дети
+	;
+	set str = %page.%GetComponentById("edtlaChildrenCount").value
+	set card.laChildrenCount = str
+	;
+	set str = %page.%GetComponentById("edtlaNoChildrenCount").value
+	set card.laNoChildrenCount = str
+	;
+	set str = %page.%GetComponentById("edtlaOtherCount").value
+	set card.laOtherCount = str
+	;
+	// контактное лицо
+	;
+	set str = %page.%GetComponentById("edtlaLastNameContactPerson").value
+	if str'=""
+	{
+		set card.laLastNameContactPerson = str
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Фамилия контактного лица\n"
+	}
+	;
+	set str = %page.%GetComponentById("edtlaFirstNameContactPerson").value
+	if str'=""
+	{
+		set card.laFirstNameContactPerson = str
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Имя контактного лица\n"
+	}
+	;
+	set str = %page.%GetComponentById("edtlaMiddleNameContactPerson").value
+	if str'=""
+	{
+		set card.laMiddleNameContactPerson = str
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Отчество контактного лица\n"
+	}
+	;
+	set str = %page.%GetComponentById("dedtlaContactPersonBirthday").value
+	if str'=""
+	{
+		set card.laContactPersonBirthday = $zdh(str,3)
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Дата рождения контактного лица\n"
+	}
+	;
+	set str = %page.%GetComponentById("edtlaContactPersonMobilePhone").value
+	set str=##class(BL.Common.Phone).SetDeFormatPhone(str)
+	if str'=""
+	{
+		set card.laContactPersonMobilePhone = str
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Мобильный телефон контактного лица\n"
+	}
+ 	set card.laContactPersonMobilePhone = str
+	;
+	// прочие кредиты/займы
+	;
+	set str = %page.%GetComponentById("edtlaaBorrowType").value
+	set cardadd.laaBorrowType = str
+	;
+	set str = %page.%GetComponentById("edtlaaBorrowSumm").value
+	set cardadd.laaBorrowSumm = str
+	;
+	set str = %page.%GetComponentById("edtlaaBorrowDebt").value
+	set cardadd.laaBorrowDebt = str
+	;
+	set str = %page.%GetComponentById("edtlaaBorrowPay").value
+	set cardadd.laaBorrowPay = str
+	
+	;для истории изменений
+	set card.HistoryController.Info = "Форма редактирования заявки"
+	quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<UDLText name="T">
+<Content><![CDATA[
+//рабочий адрес
+
+]]></Content>
+</UDLText>
+
+<UDLText name="T">
+<Content><![CDATA[
+//"Россия,344000,РОСТОВСКАЯ,,РОСТОВ-НА-ДОНУ,,ПРИВЕТЛИВАЯ УЛ,Д.10,,КВ.1"
+
+]]></Content>
+</UDLText>
+
+<Method name="FillRegAddrCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&card:%ArrayOfDataTypes,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	set str = %page.%GetComponentById("edtRegAddr").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card = ##class(%ArrayOfDataTypes).%New() set card.Data("daKLADRAddress") = str
+	}
+	else
+	{
+		set card = ""
+		set ErrText = $g(ErrText)_"Адрес регистрации\n"
+	}
+	quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillLiveAddrCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&card:%ArrayOfDataTypes,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	set str = %page.%GetComponentById("edtLiveAddr").value
+	set str = $ZSTRIP(str,"<>W") 
+	if str'=""
+	{
+		set card = ##class(%ArrayOfDataTypes).%New() set card.Data("daKLADRAddress")=str
+	}
+	else
+	{
+		set card = ""
+		set ErrText = $g(ErrText)_"Адрес проживания\n"
+	}
+	quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillPhoneRegCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[card:Common.Phone,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	set str = %page.%GetComponentById("edtlaPhoneRegID").value
+	set str = ##class(BL.Common.Phone).SetDeFormatPhone(str)
+	set card.phNumber = str
+	quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillPhoneLiveCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[card:Common.Phone,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	set str = %page.%GetComponentById("edtlaPhoneLiveID").value
+	set str = ##class(BL.Common.Phone).SetDeFormatPhone(str)
+	set card.phNumber = str
+	quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillPhoneMobileCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[card:Common.Phone,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	set str = %page.%GetComponentById("edtlaPhoneMobileID").value
+	set str = ##class(BL.Common.Phone).SetDeFormatPhone(str)
+	if str'=""
+	{
+		set card.phNumber = str
+	}
+	else
+	{
+		set ErrText=$g(ErrText)_"Мобильный телефон\n"
+	}
+	quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillContactPersonMobPhCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[card:Common.Phone,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	set str = %page.%GetComponentById("edtlaContactPersonMobilePhone").value
+	set str = ##class(BL.Common.Phone).SetDeFormatPhone(str)
+	set card.phNumber = str
+	quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillJobPhoneCityCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[card:Common.Phone,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	set str = %page.%GetComponentById("edtlaJobPhoneCity").value
+	set str = ##class(BL.Common.Phone).SetDeFormatPhone(str)
+	set card.phNumber = str
+	quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillCreditOrganizationCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[card:Common.CreditOrganization,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	set str = %page.%GetComponentById("gelaaBorrowCompany").value
+	set card.ObjectName = str
+	quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillMarriedPhoneMobileCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[card:Common.Phone,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	set str = %page.%GetComponentById("edtlaMarriedPersonPhone").value
+	set str = ##class(BL.Common.Phone).SetDeFormatPhone(str)
+	set card.phNumber = str
+	quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillJobAddrCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&card:%ArrayOfDataTypes,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	set str = %page.%GetComponentById("edtlaJobAddressID").value
+	set str = $ZSTRIP(str,"<>W") 
+	set card = ##class(%ArrayOfDataTypes).%New()
+	set card.Data("daKLADRAddress") = str
+	quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillMarriedPersonCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[card:Subj.Person,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	set str = %page.%GetComponentById("edtlaMarriedLast").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.LastName = str
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Фамилия супруга(супруги)\n"
+	}
+	;
+	set str = %page.%GetComponentById("edtlaMarriedFirst").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.FirstName = str
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Имя супруга(супруги)\n"
+	}
+	;
+	set str = %page.%GetComponentById("edtlaMarriedMiddle").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.MiddleName = str
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Отчество супруга(супруги)\n"
+	}
+	;
+	set str = %page.%GetComponentById("edtlaMarriedDateOfBirth").value
+	
+	if str'=""
+	{
+		set card.DateOfBirth = $zdh(str,3)
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Дата рождения супруга(супруги)\n"
+	}
+	;
+	set str = %page.%GetComponentById("edtlaMarriedSex").selectedIndex
+	set sex = $p(%page.%GetComponentById("edtlaMarriedSex").valueList,",",str+1)
+	if (sex="") || (sex=-1)
+	{
+		set ErrText = $g(ErrText)_"Пол  супруга(супруги)\n"
+	}
+	else
+	{
+		set card.Gender = sex
+	}
+	;
+	quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="FillContactPersonCard">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[card:Subj.Person,&ErrText:%String]]></FormalSpec>
+<Implementation><![CDATA[
+	if '$IsObject(card)
+	{
+		set ErrText = $g(ErrText)_"Отсутсвует объект Заявка\n"
+		quit '$$$OK
+	}
+	set str = %page.%GetComponentById("edtlaLastNameContactPerson").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.LastName = str
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Фамилия контактного лица\n"
+	}
+	;
+	set str = %page.%GetComponentById("edtlaFirstNameContactPerson").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.FirstName = str
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Имя контактного лица\n"
+	}
+	;
+	set str = %page.%GetComponentById("edtlaMiddleNameContactPerson").value
+	set str = $ZSTRIP(str,"<>W")
+	if str'=""
+	{
+		set card.MiddleName = str
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Отчество контактного лица\n"
+	}
+	;
+	set str = %page.%GetComponentById("dedtlaContactPersonBirthday").value
+	if str'=""
+	{
+		set card.DateOfBirth = $zdh(str,3)
+	}
+	else
+	{
+		set ErrText = $g(ErrText)_"Дата рождения контактного лица\n"
+	}
+	;
+	set str = %page.%GetComponentById("cmbContactPersonSex").selectedIndex
+    i (str="") || (str=0)
+    {
+		s ErrText=$g(ErrText)_"Пол контактного лица\n"
+    }
+    else
+    {
+		s card.Gender=str
+   	}
+    quit $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="btnCancelclick">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	window.close();
+	//cancelPopup();
+]]></Implementation>
+</Method>
+
+<Method name="updateButtons">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[	q
+]]></Implementation>
+</Method>
+
+<Method name="btnEditAddressClick">
+<FormalSpec>comp</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var parms = new Object();
+	if (comp.id == "btnPlaceOfBirth")
+	{
+		parms.str = zenPage.getComponentById("edtPlaceOfBirth").value;
+		parms.KC = zenPage.getComponentById("kcPlaceOfBirth").value;
+		parms.num = 1;
+	}
+	if (comp.id == "btnRegAddr")
+	{
+		parms.str = zenPage.getComponentById("edtRegAddr").value;
+		parms.KC = zenPage.getComponentById("kcRegAddr").value;
+		parms.num = 2
+	}
+	if (comp.id == "btnLiveAddr")
+	{
+		parms.str = zenPage.getComponentById("edtLiveAddr").value;
+		parms.KC = zenPage.getComponentById("kcLiveAddr").value;
+		parms.num = 3;
+	}
+	if (comp.id == "btnlaJobAddressID")
+	{
+		parms.str = zenPage.getComponentById("edtlaJobAddressID").value;
+		parms.KC = zenPage.getComponentById("kclaJobAddressID").value;
+		parms.num = 4;
+	}
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.AddressEdit.cls'),
+    	'A True Dialogue',
+    	'status,scrollbars,resizable,width=520,height=600',
+   		parms);
+]]></Implementation>
+</Method>
+
+<Method name="onPopupAction">
+<FormalSpec>popupName,action,value</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var str = new String(value);
+	if (str!="")
+    {
+	    if (str.charAt(str.length-1) == 1)
+	    {
+	    	var edtAddr = zenPage.getComponentById("edtPlaceOfBirth");
+	    	var edtCode = zenPage.getComponentById("kcPlaceOfBirth");
+	    }
+	    if (str.charAt(str.length-1) == 2)
+	    {
+	    	var edtAddr = zenPage.getComponentById("edtRegAddr");
+	    	var edtCode = zenPage.getComponentById("kcRegAddr");
+	    }
+	    if (str.charAt(str.length-1) == 3)
+	    {
+	    	var edtAddr = zenPage.getComponentById("edtLiveAddr");
+	    	var edtCode = zenPage.getComponentById("kcLiveAddr");
+	    }
+	    if (str.charAt(str.length-1) == 4)
+	    {
+	    	var edtAddr = zenPage.getComponentById("edtlaJobAddressID");
+	    	var edtCode = zenPage.getComponentById("kclaJobAddressID");
+	    }
+	    edtCode.setProperty("value",str.slice(0,23));
+	    edtAddr.setProperty("value",str.slice(23,-1));
+    }
+]]></Implementation>
+</Method>
+
+<Method name="edtLastNameKeyPress">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[	quit
+]]></Implementation>
+</Method>
+
+<Method name="dedtDateRegChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = %page.%GetComponentById("dedtDateReg").value
+	if (str = "-1") set %page.%GetComponentById("dedtDateReg").value = "" quit
+]]></Implementation>
+</Method>
+
+<Method name="dedtBirthdayChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = %page.%GetComponentById("dedtBirthday").value
+	if (str = "-1") set %page.%GetComponentById("dedtBirthday").value = "" quit
+	set hdr=$zdh(str,3)
+	do %page.%SetValueById("edtAge",$h-hdr\365)
+	do ..ChangeFioBirth()
+]]></Implementation>
+</Method>
+
+<Method name="FIOChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[	do ..ChangeFioBirth()
+]]></Implementation>
+</Method>
+
+<Method name="ChangeFioBirth">
+<Implementation><![CDATA[
+	kill old merge old=%session.Data("oldFioBirth")
+	set first = ..%GetComponentById("edtFirstName").value
+	quit:first=""
+	set last = ..%GetComponentById("edtLastName").value
+	quit:last=""
+	set mid = ..%GetComponentById("edtMiddleName").value
+	quit:mid=""
+	set bthext = ..%GetComponentById("dedtBirthday").value
+	quit:bthext=""
+	set birth = $zdh(bthext,3)
+	//if $g(old("first"))=first,$g(old("last"))=last,$g(old("mid"))=mid,$g(old("birth"))=birth quit
+	set old("first")=first,old("last")=last,old("mid")=mid,old("birth")=birth
+	kill %session.Data("oldFioBirth") merge %session.Data("oldFioBirth")=old
+
+	set fiodr=last_" "_first_" "_mid_", д.р."_bthext
+
+	set ID = ..LoanAppID  //ID заявки
+	set statA = $$$scActive
+	//проверка на наличие клиента в клиентской базе
+	//ignoreindices cls, status работает быстрее
+	&SQL(SELECT id INTO :idPerson FROM %IGNOREINDICES "ClsStatusIndex,StatusIndex" Subj.Person
+		WHERE cls='Subj.Person' AND Status=:statA
+		and FirstName=:first AND LastName=:last AND MiddleName=:mid AND DateOfBirth=:birth)
+	if SQLCODE<0 set Err = $SYSTEM.SQL.SQLCODE(SQLCODE) &js<alert("Ошибка исполнения SQL запроса при выборке из таблицы Subj.Person:\n"+'#(Err)#');> quit
+	if SQLCODE=100 quit  //клиента в базе нет, дальнейшие проверки не нужны
+
+	//проверка на наличие в черном списке
+	&SQL(SELECT id INTO :idBlack FROM Docs.BlackList
+		WHERE cls='Docs.BlackList' AND Status=:statA
+		and blPersonID=:idPerson and blBeginDate<={fn CURDATE()} and blEndDate>={fn CURDATE()})
+	if SQLCODE<0 set Err = $SYSTEM.SQL.SQLCODE(SQLCODE) &js<alert("Ошибка исполнения SQL запроса при выборке из черного списка:\n"+'#(Err)#');> quit
+	if SQLCODE=0
+	{
+		&js<alert("Клиент "+'#(fiodr)#'+"\nсодержится в списке нежелательных клиентов.");>
+		quit
+	}
+
+	//клиент: пока один, но теоретически м.б.несколько, имеющих ссылку на одного Person
+	&SQL(SELECT id INTO :idClient FROM Subj.Client WHERE PersonID=:idPerson AND Status=:statA ORDER BY id desc)
+	if SQLCODE<0 set Err = $SYSTEM.SQL.SQLCODE(SQLCODE) &js<alert("Ошибка исполнения SQL запроса при выборке из таблицы клиентов:\n"+'#(Err)#');> quit
+	if SQLCODE=100 q  //Не клиент, значит, новый, и больше не проверяем
+
+	//проверка на наличие черновика заявки на того же клиента
+	//если черновиков несколько, берется последний
+	set laBlank = $$$laBlank
+	set ID1 = $s(ID:ID,1:-1) //для избежания написания 2-х SELECTов если у нас запись новая
+	&SQL(SELECT id,SysCode,laPassportID INTO :idBlank,:numZ, :idPassport
+		FROM %IGNOREINDICES "ClsStatusIndex,StatusIndex" Docs.LoanApp
+		WHERE cls='Docs.LoanApp' AND Status=:statA and ID<>:ID1
+			and laClientID in (SELECT id FROM Subj.Client WHERE PersonID=:idPerson AND Status=:statA)
+			and laStateItemID->siStateID->SysCode=:laBlank
+		ORDER BY id desc)
+	if SQLCODE<0 set Err = $SYSTEM.SQL.SQLCODE(SQLCODE) &js<alert("Ошибка исполнения SQL запроса при выборке из таблицы заявок:\n"+'#(Err)#');> quit
+	if SQLCODE=0
+	{
+		set txt = "\nНа клиента "_fiodr_" уже введена заявка № "_numZ_"\nи находится в статусе ""Черновик""\n\nВернуться к редактированию предыдущей заявки № "_numZ_" ?"
+		&js<if (confirm('#(txt)#'))
+		{
+			zenPage.goEditAgain(#(idBlank)#);
+			return
+		}>
+	}
+	
+	//выбираем последнюю заявку клиента для проведения анализа (не черновик, который обработан выше)
+	set laRefused = $$$laRefused  //и не "отказан"
+	set laAnnounce=$$$laAnnounce  //и не "оповещен"
+	//laAnnounce "обовещен (об отказе)". Игнорируем, т.к. это не дело операциониста сразу отказывать мошенникам
+	&SQL(SELECT id,SysCode,laStateItemID->siStateID->SysCode INTO :idZ,:numZ,:statZ
+	FROM %IGNOREINDICES "ClsStatusIndex,StatusIndex" Docs.LoanApp
+	WHERE cls='Docs.LoanApp' AND Status=:statA and ID<>:ID1
+		and laClientID in (SELECT id FROM Subj.Client WHERE PersonID=:idPerson AND Status=:statA)
+		and laStateItemID->siStateID->SysCode not in (:laBlank,:laRefused,:laAnnounce)
+	ORDER BY id desc)
+	if SQLCODE<0 set Err = $SYSTEM.SQL.SQLCODE(SQLCODE) &js<alert("Ошибка исполнения SQL запроса при выборке из таблицы заявок:\n"+'#(Err)#');> quit
+	if SQLCODE=100 q  //не было предыдущей заявки, проверять нечего
+	//игнорируемые статусы
+	quit:statZ=$$$laLoanInReestr  //еще не реализован
+	quit:statZ=$$$laLoanCancelled //еще не реализован
+
+	//статус "Одобрено" или "Верификация"
+	if (statZ=$$$laApproved) || (statZ=$$$laVerification)
+	{
+		&js<alert("На клиента "+'#(fiodr)#'+" уже введена заявка № "+'#(numZ)#'+"\nи находится на рассмотрении.");>
+		quit
+	}
+
+	//статус "Зарегистрирован", "Выдан" или "Уступлен"
+	set activeDog=(statZ=$$$laLoanRegistered) || (statZ=$$$laLoanGranted) || (statZ=$$$laLoanCession)
+	if activeDog || (statZ=$$$laLoanConcession)
+	{
+		&SQL(SELECT id,SysCode,lDateReg,lStateItemID->lsiStateID->SysCode
+			INTO :idLoan,:numLoan,:dateLoan,:statLoan
+			FROM %IGNOREINDICES "ClsStatusIndex,StatusIndex" Docs.Loan
+			WHERE cls='Docs.Loan' AND Status=:statA and lLoanAppID=:idZ
+			ORDER BY id desc)
+		if SQLCODE<0 set Err = $SYSTEM.SQL.SQLCODE(SQLCODE) &js<alert("Ошибка исполнения SQL запроса при выборке из таблицы займов:\n"+'#(Err)#');> quit
+		if SQLCODE=100 quit  //по идее, заявки со статусами, предполагающими наличие договора, но не имеющего договора, говорит об испорченной базе
+		if activeDog
+		{
+			set txt = "На клиента "_fiodr_" уже зарегистрирован договор № "_numLoan
+			if dateLoan set txt = txt_" от "_$zd(dateLoan,3)_"."
+			set txt=txt_"\nНеобходимо обратиться к менеджеру по сопровождению займов."
+			&js<alert('#(txt)#')>
+			quit
+		}
+		//заем погашен
+		&js<alert("Клиент "+'#(fiodr)#'+" обратился повторно: проверьте актуальность данных.")>
+		set %session.Data("FieldsRewrite") = 1  //см.комментарий в самом низу
+		set %session.Data("PassportID") = idPassport
+		do ..fillField(idZ,0,1,1)  //перевывод новой заявки с полями кроме 1-й строки
+		//эта строка нужна из-за ошибки в GUI:
+		//самопроизвольный вызов метода d ##class(GUI.FRM.EMCLoanAppEdit).CompareAddrChange()
+		//при перевыводе всех полей, поле не читается, ошибка не формируется, клиент падает
+		//сброс s %session.Data("FieldsRewrite")=0  происходит в CompareAddrChange()
+		quit
+	}
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="goEditAgain">
+<FormalSpec>idBlank</FormalSpec>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	do ..fillField(idBlank,1,0,1) //перевывод новой заявки со всеми полями
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="dedtPassportDateChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = %page.%GetComponentById("dedtPassportDate").value
+	if (str = "-1") set %page.%GetComponentById("dedtPassportDate").value = "" quit
+]]></Implementation>
+</Method>
+
+<Method name="dedtForeignPassportDateChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = %page.%GetComponentById("dedtForeignPassportDate").value
+	if (str = "-1") set %page.%GetComponentById("dedtForeignPassportDate").value = "" quit
+]]></Implementation>
+</Method>
+
+<Method name="dedtlaContactPersonBirthdayChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = %page.%GetComponentById("dedtlaContactPersonBirthday").value
+	if (str = "-1") set %page.%GetComponentById("dedtlaContactPersonBirthday").value = "" quit
+]]></Implementation>
+</Method>
+
+<Method name="edtlaMarriedDateOfBirthChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = %page.%GetComponentById("edtlaMarriedDateOfBirth").value
+	if (str = "-1") set %page.%GetComponentById("edtlaMarriedDateOfBirth").value = "" quit
+]]></Implementation>
+</Method>
+
+<Method name="cblaFamilyChangeFlagChange">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var edt = zenPage.getComponentById('edtlaLastNameOld');
+	edt.setProperty("hidden",!edt.getProperty("hidden"));
+]]></Implementation>
+</Method>
+
+<Method name="edtCompareAddrChange">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var text = zenPage.getComponentById('edtLiveAddr');
+	text.setProperty("value",zenPage.getComponentById('edtRegAddr').value)
+	var text = zenPage.getComponentById('kcLiveAddr');
+	text.setProperty("value",zenPage.getComponentById('kcRegAddr').value)
+	var text = zenPage.getComponentById('edtlaPhoneLiveID');
+	text.setProperty("value",zenPage.getComponentById('edtlaPhoneRegID').value)
+]]></Implementation>
+</Method>
+
+<Method name="edtPassportIssueDepCodeKeyPress">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[	//zenPage.getComponentById('edtPassportIssueDepCode').value = "___-___"
+]]></Implementation>
+</Method>
+
+<Method name="cmblaaDocTypeChange">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	switch (zenPage.getComponentById('cmblaaDocType').getProperty("selectedIndex"))
+	{
+		case 0:
+			zenPage.getComponentById('edtForeignPassportSeries').setProperty("hidden",true);
+			zenPage.getComponentById('edtForeignPassportNumb').setProperty("hidden",true);
+			zenPage.getComponentById('dedtForeignPassportDate').setProperty("hidden",true);
+			zenPage.getComponentById('edtForeignPassportIssue').setProperty("hidden",true);
+		break
+		case 1:
+			zenPage.getComponentById('edtForeignPassportSeries').setProperty("hidden",false);
+			zenPage.getComponentById('edtForeignPassportNumb').setProperty("hidden",false);
+			zenPage.getComponentById('dedtForeignPassportDate').setProperty("hidden",false);
+			zenPage.getComponentById('edtForeignPassportIssue').setProperty("hidden",false);
+			
+			zenPage.getComponentById('edtForeignPassportSeries').setProperty("maxLength",5);
+			zenPage.getComponentById('edtForeignPassportSeries').setProperty("size",1);
+		break
+		case 2:
+			zenPage.getComponentById('edtForeignPassportSeries').setProperty("hidden",false);
+			zenPage.getComponentById('edtForeignPassportNumb').setProperty("hidden",false);
+			zenPage.getComponentById('dedtForeignPassportDate').setProperty("hidden",false);
+			zenPage.getComponentById('edtForeignPassportIssue').setProperty("hidden",false);
+			
+			zenPage.getComponentById('edtForeignPassportSeries').setProperty("maxLength",2);
+			zenPage.getComponentById('edtForeignPassportSeries').setProperty("size",1);
+		break
+		case 3:
+			zenPage.getComponentById('edtForeignPassportSeries').setProperty("hidden",false);
+			zenPage.getComponentById('edtForeignPassportNumb').setProperty("hidden",false);
+			zenPage.getComponentById('dedtForeignPassportDate').setProperty("hidden",false);
+			zenPage.getComponentById('edtForeignPassportIssue').setProperty("hidden",false);
+			
+			zenPage.getComponentById('edtForeignPassportSeries').setProperty("maxLength",2);
+			zenPage.getComponentById('edtForeignPassportSeries').setProperty("size",1);
+		break
+		case 4:
+			zenPage.getComponentById('edtForeignPassportSeries').setProperty("hidden",false);
+			zenPage.getComponentById('edtForeignPassportNumb').setProperty("hidden",true);
+			zenPage.getComponentById('dedtForeignPassportDate').setProperty("hidden",false);
+			zenPage.getComponentById('edtForeignPassportIssue').setProperty("hidden",true);
+			
+			zenPage.getComponentById('edtForeignPassportSeries').setProperty("maxLength",14);
+			zenPage.getComponentById('edtForeignPassportSeries').setProperty("size",15);
+		break
+	}
+]]></Implementation>
+</Method>
+
+<Method name="edtProductTypeChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = ..%GetComponentById("edtProductType").selectedIndex
+	set id = $p(..%GetComponentById("edtProductType").valueList,",",str+1)
+	quit:'id
+	set pt = ##class(Docs.ProductType).%OpenId(id)
+	if '$IsObject(pt)
+	{
+		set ErrText = "Не найден тип продукта ID="_id
+		&js<alert('#(ErrText)#')> quit
+	}
+	do %page.%SetValueById("showPercent",pt.PTProcTek)
+
+	if pt.PTDynamicConditions
+	{
+		set ..%GetComponentById("edtPeriod").hidden = 0
+		set ..%GetComponentById("edtSumm").hidden = 0
+		set ..%GetComponentById("cmbPeriod").hidden = 1
+		set ..%GetComponentById("cmbSumm").hidden = 1
+	}
+	else
+	{
+		set ..%GetComponentById("edtPeriod").hidden = 1
+		set ..%GetComponentById("edtSumm").hidden = 1
+		set ..%GetComponentById("cmbPeriod").hidden = 0
+		set ..%GetComponentById("cmbSumm").hidden = 0
+		d ..FillAndSetPeriod(id)
+		d ..FillAndSetSumm(id)
+	}
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="cmbPeriodChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = ..%GetComponentById("edtProductType").selectedIndex
+	set ptID = $p(..%GetComponentById("edtProductType").valueList,",",str+1)
+	set period = ..%GetComponentById("cmbPeriod").text
+	set ..%GetComponentById("edtPeriod").value = period
+	do ..FillAndSetSumm(ptID,period)
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="cmbSummChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set summ = ..%GetComponentById("cmbSumm").text
+	set ..%GetComponentById("edtSumm").value = summ
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="fillFieldsCmbBox">
+<FormalSpec>id,AllFlds,OnlyGetDataFromid</FormalSpec>
+<Implementation><![CDATA[
+ //id - заявки, из которорой берется информация для заполнения полей
+ //AllFlds=1 - вывести все поля, AllFlds=0 - поля кроме даты и продукта+сумма+срок
+ //вызывается также из GUI.FRM.EMCLoanAppEdit1
+ //OnlyGetDataFromid - для случая, когда берутся данные из другой заявки для ввода новой
+
+ d ..fillComboBox("edtlaMaritalStatus","Docs.LoanApp||laMaritalStatus",6)
+ d ..fillComboBox("cmblaContactPersonStatus","Docs.LoanApp||laContactPersonStatus",1)
+ d ..fillComboBox("cmblaaDocType","Docs.LoanAppAdd||laaDocType",1)
+ d ..fillComboBox("cmblaMarriedEmployment","Docs.LoanApp||laMarriedEmployment",3)
+ ;пол
+ set (valueList,displayList,default) = ""
+ set list=##class(Subj.Person).GenderList(2,1)  ;2-код~наименование, 1-полный список
+ for i=1:1:$ll(list) {
+	 set value=$li(list,i)
+	 set types=$p(value,"~") set:i=1 default=types
+	 set trans=$p(value,"~",2) 
+	 set valueList = valueList _ $S(valueList'="":",",1:"") _types
+	 set displayList = displayList _ $S(displayList'="":",",1:"") _ trans
+ }
+ k tCombo
+ set tCombo = ..%GetComponentById("cmbSex")
+ set tCombo.valueList = valueList
+ set tCombo.displayList = displayList
+ set tCombo.value = default
+
+ k tCombo
+ set tCombo = ..%GetComponentById("edtlaMarriedSex")
+ set tCombo.valueList = valueList
+ set tCombo.displayList = displayList
+ set tCombo.value = default
+ 
+ k tCombo
+ set tCombo = ..%GetComponentById("cmbContactPersonSex")
+ set tCombo.valueList = valueList
+ set tCombo.displayList = displayList
+ set tCombo.value = default
+ 
+ ;место размещения рекламы
+ ;set Date=$s($IsObject(obj):obj.laDateReg,1:+$h)
+ set Date=+$h
+ set list=##class(BL.Common.LoanAppSource).GetListLoanAppSource(2,Date)
+ set (valueList,displayList,default) = ""
+ for i=1:1:$ll(list) {
+	 set value=$li(list,i)
+	 set types=$p(value,"~")
+	 set trans=$p(value,"~",2) 
+ 	 set valueList = valueList _ $S(valueList'="":",",1:"") _types
+	 set displayList = displayList _ $S(displayList'="":",",1:"") _ trans
+ }
+ k tCombo
+ set tCombo = ..%GetComponentById("edtlaLoanAppSourceID")
+ set tCombo.valueList = valueList
+ set tCombo.displayList = displayList
+ ;тип продукта
+ ;set Date=$s($IsObject(obj):obj.laDateReg,1:+$h)
+ set Date=+$h
+ set res=##class(BL.Docs.ProductType).GetListProductType(Date,.list)
+ set (valueList,displayList) = ""
+ i res {
+	 f i=1:1:$ll(list) {
+		 set value=$li(list,i)
+		 set types=$p(value,"~")
+		 set trans=$p(value,"~",2) 
+		 set valueList = valueList _ $S(valueList'="":",",1:"") _types
+		 set displayList = displayList _ $S(displayList'="":",",1:"") _ trans
+	 }
+ }
+ k tCombo
+ set tCombo = ..%GetComponentById("edtProductType")
+ set tCombo.valueList = valueList
+ set tCombo.displayList = displayList
+ q
+]]></Implementation>
+</Method>
+
+<Method name="fillComboBox">
+<Description>
+Метод заполнения компонента ComboBox</Description>
+<FormalSpec>NameComboBox="",Name="",defaulValue=""</FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+ if (NameComboBox="") || (Name="") quit 0
+ set ref=##class(%Dictionary.PropertyDefinition).%OpenId(Name)
+ if '$IsObject(ref) quit 0
+ set list=ref.Parameters.GetAt("DISPLAYLIST")
+ set (valueList,displayList) = ""
+ for i=2:1:$l(list,",") {
+	 set types=i-1
+	 set trans=$p(list,",",i) 
+ 	 set valueList = valueList _ $S(valueList'="":",",1:"") _types
+	 set displayList = displayList _ $S(displayList'="":",",1:"") _ trans
+ }
+ set tCombo = ..%GetComponentById(NameComboBox)
+ set tCombo.valueList = valueList
+ set tCombo.displayList = displayList
+
+ if defaulValue'="" set tCombo.value = defaulValue
+ q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="getGoSave">
+<ReturnType>%Integer</ReturnType>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[	quit %session.Data("goSave")
+]]></Implementation>
+</Method>
+
+<Method name="onunloadHandler">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var res = zenPage.getGoSave();
+	if (res == 1)
+		return "Данные не сохранены. Точно перейти?";
+	else
+		return
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

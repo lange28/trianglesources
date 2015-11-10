@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.RPT.AdvRepaymentLoan">
+<Description>
+Печатная форма: договор о досрочном погашении</Description>
+<IncludeCode>EMCConst,ApplicationSettingsConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62747,55539.203594</TimeCreated>
+
+<Method name="OnPage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.RPT.AdvRepaymentLoan","WebForm","OnClick",1,"Печатная форма: договор о досрочном погашении")
+	// Подготовка данных для вывода на печать
+	s TextMessage=..GetData(.Parameters)
+	// В случае проблем подготовки данных
+	i TextMessage'="" {
+	&html<
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+	<html><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+	<title></title>
+	<body>#(TextMessage)#</body>
+	</html>
+	</html>>
+	q $$$OK
+	}
+	// Вывод отчета
+	&html<
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+<title></title>
+<style type="text/css"><!-- 
+.page_break {page-break-before: always;}
+.s0 {
+ font-family: Times New Roman;
+ font-size: 16px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ text-align: Right; vertical-align: Top;
+}
+.s1 {
+ font-family: Arial;
+ font-size: 11px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Right; vertical-align: Top;
+}
+.s2 {
+ font-family: Times New Roman;
+ font-size: 15px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ text-align: Right; vertical-align: Top;
+}
+.s3 {
+ font-family: Times New Roman;
+ font-size: 15px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Right; vertical-align: Top;
+}
+.s4 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Right; vertical-align: Top;
+}
+.s5 {
+ font-family: Times New Roman;
+ font-size: 19px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Middle;
+}
+.s6 {
+ font-family: Times New Roman;
+ font-size: 16px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Justify; vertical-align: Top;
+}
+.s7 {
+ font-family: Times New Roman;
+ font-size: 16px;
+ color: #000000; font-style: italic;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+.s8 {
+ font-family: Times New Roman;
+ font-size: 16px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Right; vertical-align: Top;
+}
+.s9 {
+ font-family: Times New Roman;
+ font-size: 11px;
+ color: #000000; font-style: italic;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 1;
+ border-bottom-width: 0px;
+ text-align: Center; vertical-align: Top;
+}
+.s10 {
+ font-family: Times New Roman;
+ font-size: 11px;
+ color: #000000; font-style: italic;
+ background-color: transparent;
+ text-align: Left; vertical-align: Middle;
+}
+--></style>
+</head>
+<body onload="printpage()"
+ bgcolor="#FFFFFF" text="#000000">
+ <script language="Javascript1.2">
+	function printpage()
+	{
+		window.print();
+	}
+	</script>
+<a name="PageN1"></a>
+<table width="683" border="0" cellspacing="0" cellpadding="0">
+<tr style="height: 1px"><td width="2"/><td width="1"/><td width="56"/><td width="1"/><td width="172"/><td width="20"/><td width="14"/><td width="5"/><td width="106"/><td width="266"/><td width="2"/><td width="1"/><td width="30"/><td width="3"/><td width="2"/><td width="2"/></tr>
+<tr style="height:15px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td colspan="5" class="s1">Отпечатано: #($zdt($h,4))#</td><td/><td/><td/>
+</tr>
+<tr style="height:6px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:25px">
+<td/><td/><td/><td/><td/><td colspan="10" class="s0">#(Parameters("Value","lOrg"))#</td><td/>
+</tr>
+<tr style="height:35px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:21px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="7" class="s2">Генеральному директору</td><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="7" class="s2">#(Parameters("Value","DirectorGnrl"))#</td><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="7" class="s3">Клиент: #(Parameters("Value","lClientShort"))#, дата рождения: #(Parameters("Value","lClientBirthDay"))#</td><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:22px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="7" class="s3">Паспорт: #(Parameters("Value","lPassport"))#, дата выдачи: #(Parameters("Value","lPassportIssueDate"))#</td><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="7" rowspan="2" class="s4">Выдан: #(Parameters("Value","lPassportIssueDep"))#<br>код подразделения: #(Parameters("Value","lPassportIssueDep"))#</td><td/><td/>
+</tr>
+<tr style="height:45px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:21px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="7" class="s3">Aдрес рег-ии: #(Parameters("Value","lClientRegAddress1"))#</td><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:21px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="7" class="s3">#(Parameters("Value","lClientRegAddress2"))#</td><td/><td/>
+</tr>
+<tr style="height:29px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:21px">
+<td/><td/><td colspan="4" class="s6">г. #(Parameters("Value","lCity"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:25px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="6" class="s8">#(Parameters("Value","lCurrDate"))#</td><td/>
+</tr>
+<tr style="height:50px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:55px">
+<td/><td colspan="15" class="s5">ЗАЯВЛЕНИЕ<br>о полном досрочном погашении займа</td>
+</tr>
+<tr style="height:33px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:22px">
+<td/><td colspan="2" class="s6">         Я,  </td><td/><td colspan="8" class="s6">#(Parameters("Value","lClient"))#, </td><td/><td/><td/><td/>
+</tr>
+<tr style="height:15px">
+<td/><td/><td/><td/><td colspan="7" class="s9">ФИО полностью </td><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:22px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:181px">
+<td/><td colspan="15" class="s6">прошу осуществить полное досрочное погашение займа согласно Договору Займа <br> № #(Parameters("Value","lSysCode"))# от #(Parameters("Value","lDateReg"))#, заключенному между мной и #(Parameters("Value","lOrg"))#.<br><br>Срок осуществления досрочного погашения #(Parameters("Value","lDateAdvantesRepayment"))#.<br>Сумма досрочного погашения #(Parameters("Value","lSumAdvantesRepayment"))#<br><br>    Обязуюсь обеспечить достаточную сумму для осуществления полного погашения всех обязательств по займу не позднее даты досрочного погашения.</td>
+</tr>
+<tr style="height:82px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:22px">
+<td colspan="10" class="s7">_______________________(_________________________________________________)       </td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:15px">
+<td colspan="10" class="s10">(подпись, расшифровка полностью)</td><td/><td/><td/><td/><td/><td/>
+</tr>
+</table>
+</body></html>
+>
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<UDLText name="T">
+<Content><![CDATA[
+// Подготовка данных для вывода в отчете
+
+]]></Content>
+</UDLText>
+
+<Method name="GetData">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&Parameters]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	// Проверка входных параметров
+	// id
+	// Для теста set id = 27537926
+	// Инициализация данных
+	set id = $g(%request.Data("ID",1))
+	set AwaitingSumm = $g(%request.Data("Summ",1))
+	if id = "" quit "Не задан ID класса Docs.Loan"
+	set obj = ##class(System.TInfoObject).%New()
+	set res = ##class(System.Options).GetOptions(obj,$$$ApplicationSettingsFirmName,.lOrganisation)
+	set Parameters("Value","lOrg") = lOrganisation
+	set loan = ##class(Docs.Loan).%OpenId(id)
+	If '$IsObject(loan)
+	{
+		quit "Не найден договор ID="_id $$$SysLogError($$$EMCSysErr,ErrText)
+	}
+	set loanapp = loan.lLoanAppID
+	set Parameters("Value","lDateReg") = $$D^%FD(loan.lDateReg,""" d ""  $m  Y г.")
+	set Parameters("Value","lClientShort") = $zzdsp(loanapp.laClientID.PersonID.ShortName,7)
+	set Parameters("Value","lClient") = loanapp.laClientID.PersonID.FullName
+	set Parameters("Value","lClientBirthDay") = $$$HorologToDateEdit(loanapp.laClientID.PersonID.DateOfBirth)
+	set Parameters("Value","lSysCode") = loan.SysCode
+	set Parameters("Value","lPassport") = loanapp.laPassportID.psSeries_" № "_loanapp.laPassportID.psNumber
+	set Parameters("Value","lPassportIssueDep") = loanapp.laPassportID.psIssueDep
+	set Parameters("Value","lPassportIssueCode") = loanapp.laPassportID.psIssueDepCode
+	set Parameters("Value","lPassportIssueDate") = $s(loanapp.laPassportID.psDateIssue>0:$$$HorologToDateEdit(loanapp.laPassportID.psDateIssue)_" г.",1:"")
+	set lDateAdvantesRepayment = $s(loan.lDateAR:loan.lDateAR,loan.lDatePresheduleAR:loan.lDatePresheduleAR,1:+$H)
+	set Parameters("Value","lDateAdvantesRepayment") = $s(lDateAdvantesRepayment:$$D^%FD(lDateAdvantesRepayment,""" d ""  $m  Y г."),1:"")
+	set lSumAdvantesRepayment = $s(AwaitingSumm'="":AwaitingSumm,1:loan.lSummAR)
+	set lSumAdvantesRepayment = $fn(lSumAdvantesRepayment,"",2)
+	set Parameters("Value","lSumAdvantesRepayment") = lSumAdvantesRepayment_" руб. ("_##class(System.TUtil).NumberToString(lSumAdvantesRepayment)_"руб. "_$p(lSumAdvantesRepayment,".",2)_" коп.)"
+	;Адрес регистрации
+	if $IsObject(loanapp.laRegAddrID)
+	{
+		set addres=loanapp.laRegAddrID
+		set addr=addres.GetAddressForLoanAppInfo()
+		set Parameters("Value","lClientRegAddress1") = $p(addr,",",1,3)
+		set Parameters("Value","lClientRegAddress2") = $p(addr,",",4,99)
+	}
+	set userID = ##class(System.TAccount).GetSessionAccount().%Id()
+	&SQL(SELECT sePersonID->FIO2,seWrntNumber,seWrntDate,seOfficeID->offAddrID->daCity INTO :lFIO,:lWarrant,:lDateWarrant,:lCity FROM Subj.Employee WHERE sePersonID->AccountID = :userID)
+	if SQLCODE
+	{
+		set lCity = loan.lGiveOutEmployeeID.seOfficeID.offAddrID.daCity
+	}
+	set Parameters("Value","lCity") = lCity
+	set lCurrDate = $s(loan.lDateAR:loan.lDateAR,loan.lDatePresheduleAR:loan.lDatePresheduleAR,1:+$H)
+	set Parameters("Value","lCurrDate") = $$D^%FD(lCurrDate,""" d ""  $m  Y г.")
+	set Parameters("Value","DirectorGnrl") = ..DirectorGeneral()
+	quit ""
+]]></Implementation>
+</Method>
+
+<Method name="DirectorGeneral">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	set MainFIODir = ""
+	set res = ##class(System.Options).GetOptions(##class(System.TInfoObject).%New(),$$$ApplicationSettingsDirectoryID,.Dir) 
+	if '$$$ISERR(res)
+	{
+		if ##class(BL.Subj.Employee).GetEmployeeProp(Dir,,.MainFIODir)
+	}
+	quit MainFIODir
+]]></Implementation>
+</Method>
+</Class>
+</Export>

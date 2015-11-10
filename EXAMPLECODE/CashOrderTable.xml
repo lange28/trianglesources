@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.CashOrderTable">
+<Description>
+Таблица инкассаций/доставок денег банком
+coType - фильтр по типу. 0=все,1=подкрепление,2=инкассация</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>GUI.WEB.TablePageTemplate</Super>
+<TimeCreated>62508,53537.974645</TimeCreated>
+
+<Property name="coType">
+<Description>
+coType - фильтр по типу. 0=все,1=подкрепление,2=инкассация</Description>
+<Type>%String</Type>
+<Parameter name="ZENURL" value="coType"/>
+</Property>
+
+<XData name="mainTablePane">
+<Description>
+This XML block defines the contents of the table pane</Description>
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<pane id="tPane" xmlns="http://www.intersystems.com/zen">
+<text id="coType" value="0" hidden="true" />
+
+<tableNavigatorBar id="navBar" showPageSize="true" tablePaneId="mainTable" />
+  <csMenuBar id="mainTableMenu" width="100%">
+  <csMenuBarItem caption="Редактировать">
+    <contextMenu id="fileMenu" >
+      <csMenuItem icon="images/file.png" caption="Добавить" onclick="zenPage.addCashOrder(zenThis);"  />
+      <csMenuItem icon="images/open.png" caption="Изменить" onclick="zenPage.rowDblClick(zenThis);"  />
+      <csMenuItem icon="images/cut.png" caption="Удалить" onclick="zenPage.jsDelCashOrder();"  />
+    </contextMenu>
+  </csMenuBarItem>
+  <csMenuBarItem caption="Действия">
+    <contextMenu id="actionMenu" >
+      <csMenuItem icon="images/buildall.png" caption="Загрузка платежей QIWI" onclick="alert('Не доступно');"  />
+      <csMenuItem icon="images/compile.png" caption="Пакетное проведение" onclick="alert('Не доступно');"  />
+      <csMenuItem icon="images/workspace.png" caption="Перенос платежа на другой договор" onclick="alert('Не доступно');"  />
+    </contextMenu>
+  </csMenuBarItem>
+  <csMenuBarItem caption="Печать">
+    <contextMenu id="printMenu" >
+      <csMenuItem icon="images/print.png" caption="Кассовый ордер" onclick="zenPage.CLprintMenu(zenThis)"  />
+    </contextMenu>
+  </csMenuBarItem>
+
+</csMenuBar>
+<tablePane id="mainTable"
+	width="100%"
+	useSnapshot="true"
+	maxRows="1000"
+	pageSize="20"
+	tableName="Docs.CashOrder"
+	valueColumn="ID"
+	ondblclick="zenPage.rowDblClick(zenThis);"
+	showQuery="false"
+	showZebra="true"
+	useKeys="false"
+	fixedHeaders="true"
+	bodyHeight="30em"
+	headerLayout="headersOnTop"
+	OnCreateResultSet="CreateSQL"
+	orderByClause="id desc"
+	>
+<column colName="ID" 
+		width="50"
+		hidden="true"
+		/>
+<column colName="coDate"
+header="Дата"
+		width="100"
+		id="filtercoDate"
+		colExpression="coDate" 
+		filterType="date"
+		filterOp="BETWEEN"
+		 />
+<column colName="coSumm"
+header="Сумма"
+		width="80"
+		id="filtercoSumm"
+		colExpression="coSumm"
+		filterType="text"
+		filterOp=">="
+		 />
+
+<column colName="Office"
+header="Касса"
+		colExpression="coOfficeID->ObjectName" 
+		width="200"
+		filterType="text"
+		filterOp="%STARTSWITH"
+		
+		/>
+<column colName="Info" 
+ header="Комментарий"
+		width="350"
+		colExpression="Info"
+		 />
+<column colName="UserCreate" 
+header="Исполнитель"
+	    colExpression="UserCreate->ObjectName"
+		width="300"
+		filterType="text"
+		filterOp="%STARTSWITH"
+		 />
+<column colName="coExecuted" 
+header="Проведен"
+		colExpression="coExecuted"
+		width="90"
+		filterEnum="1,0"
+		filterEnumDisplay="Да,Нет"
+		filterType="enum"
+		 />
+<condition colName="Executed" 
+		predicate="EQ" 
+		value="Да" rowStyle="font-weight: bold;"
+		 />
+
+</tablePane>
+<spacer height="10"/>
+</pane>
+]]></Data>
+</XData>
+
+<Method name="CreateSQL">
+<FormalSpec>*tSC:%Status,pInfo:%ZEN.Auxiliary.QueryInfo</FormalSpec>
+<ReturnType>%ResultSet</ReturnType>
+<Implementation><![CDATA[
+	s coType=..coType
+	i 'coType {
+		s cond="cls='Docs.CashOrder' and Status='"_$$$scActive_"'"
+	} else {
+		s coTypeStr=##class(Docs.CashOrder).coTypeLogicalToDisplay(coType)
+		s cond="cls='Docs.CashOrder' and Status='"_$$$scActive_"' and coType='"_coTypeStr_"'"
+   }
+   s myOfficeID=%session.Data("CurrentOffice","ID")
+   if ##class(Subj.Office).%ExistsId(myOfficeID) {
+ 	s cond=cond_" and (coOfficeID="_myOfficeID_" or coOfficeID->Parent="_myOfficeID_" or coOfficeID->Parent->Parent="_myOfficeID_")"
+   }
+   s tSELECT = "select ID,coDate,coSumm,Info,UserCreate->ObjectName As UserCreate,coOfficeID->ObjectName As Office,coExecuted"
+   s tSELECT = tSELECT_" from Docs.CashOrder where "_cond
+   
+   If ($G(pInfo.filters("coSumm"))'="") Set tWHERE = tWHERE _ " AND " _ "coSumm %STARTSWITH '" _ pInfo.filters("coSumm") _ "'"
+   If ($G(pInfo.filters("Info"))'="") Set tWHERE = tWHERE _ " AND " _ "Info %STARTSWITH '" _ pInfo.filters("Info") _ "'"
+   If ($G(pInfo.filters("UserCreate"))'="") Set tWHERE = tWHERE _ " AND " _ "UserCreate->ObjectName %STARTSWITH '" _ pInfo.filters("UserCreate") _ "'"
+   If ($G(pInfo.filters("Office"))'="") Set tWHERE = tWHERE _ " AND " _ "coOfficeID->ObjectName %STARTSWITH '" _ pInfo.filters("Office") _ "'"
+   If ($G(pInfo.filters("coExecuted"))'="") Set tWHERE = tWHERE _ " AND " _ "coExecuted %STARTSWITH '" _ pInfo.filters("coExecuted") _ "'"
+   If ($G(pInfo.filters("coDate"))'="")
+	{
+		Set date1 = $$$HorologToDateEdit($zdh($p(pInfo.filters("coDate"),",",1),3))
+		Set date2 = $$$HorologToDateEdit($zdh($p(pInfo.filters("coDate"),",",2),3))
+		Set tWHERE = tWHERE _ " AND " _ "(coDate BETWEEN '" _ date1 _ "' AND '" _ date2 _ "')"
+	}
+   
+   
+   s tSELECT = tSELECT_" ORDER BY ID desc" 
+   s tRS = ##class(%ResultSet).%New()
+   s tSC = tRS.Prepare(tSELECT)
+   s pInfo.queryText = tSELECT
+   q tRS
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.CashOrderTable","WebForm","OnClick",1,"Таблица инкассаций/доставок денег банком")
+ s coType=..coType
+ i 'coType { s caption="Подкрепление и инкассация" }
+ else { s caption=$s(coType=$$$coTypeIn:"Доставка денег банком",1:"Инкассация") }
+ s ..PAGENAME=caption
+ 
+ s c=..%GetComponentById("coType")
+ s c.value=coType
+
+ q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="rowDblClick">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	var parms = new Object();
+  	parms.CashOrderID = id;
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.CashOrderEdit.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=720,height=400',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="addCashOrder">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var c = this.getComponentById('coType');
+	var value = c.getProperty('value');
+	if (value=="") {
+		alert("Не задан тип операции");
+		return
+	}
+	var parms = new Object();
+	parms.coType = value;
+  	zenPage.launchPopupWindow(zenLink('GUI.WEB.CashOrderEdit.cls'),
+    'A True Dialogue',
+    'status,scrollbars,resizable,width=720,height=400',
+    parms);
+]]></Implementation>
+</Method>
+
+<Method name="onPopupAction">
+<FormalSpec>popupName,action,value</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[	zenPage.getComponentById('mainTable').executeQuery();
+]]></Implementation>
+</Method>
+
+<Method name="jsDelCashOrder">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	if (confirm("Вы уверены, что хотите отменить проведение документа?")==false) return;
+	this.CancelTr(id);
+]]></Implementation>
+</Method>
+
+<Method name="CancelTr">
+<Description>
+Отмена проведения</Description>
+<FormalSpec>id:%String</FormalSpec>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ i id="" q
+ s obj=##class(Docs.CashOrder).%OpenId(id)
+ i '$IsObject(obj) s ErrText="Ошибка открытия объекта Docs.CashOrder ID="_id $$$SysLogError($$$EMCSysErr,ErrText) &js<alert('#(ErrText)#');> q 
+ i obj.coExecuted=$$$NotExecuted {
+ 	s ErrText="Документ не проведен"
+ 	&js<alert('#(ErrText)#');>
+ 	q
+ }
+ s userId=$g(%session.Data("UserId"))
+ s user=##class(System.TAccount).%OpenId(userId)
+ // Признак проведения
+ //s obj.coExecuted=0
+ // Инкассация, доставка денег из банка	 
+ s TypePlanAcn=$$$teAcntOSN
+ s scActive=$$$scActive
+ &sql(select id into :operID from Data_TE.Oper where dteoxMainDoc=:id and Status=:scActive and dteoxType->TOTxAcntModule=:TypePlanAcn)
+ i SQLCODE=0 {
+	 s ret=user.Exec(.doc,"TE.CancelOper",operID)
+	 if $$$ISERR(ret) {
+		 s ErrText=$replace($system.Status.GetErrorText(res),"^",$c(13,9))
+		 &js<alert('#($zcvt(ErrText,"O","JS"))#');> 
+		 q
+	 }
+ }
+ &js<zenPage.getComponentById('mainTable').executeQuery();>
+]]></Implementation>
+</Method>
+
+<Method name="CLprintMenu">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var table = this.getComponentById('mainTable');
+	var id = table.getProperty('value');
+	if (id=="") {
+		alert("Ничего не выбрано");
+		return
+	}
+	this.CashOrderPrint(id);
+]]></Implementation>
+</Method>
+
+<Method name="CashOrderPrint">
+<Description>
+Кассовый ордер</Description>
+<FormalSpec>id:%String</FormalSpec>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ if id="" quit
+ s status=$$$scActive
+ // coType определяем по таблице
+ s cashOrder=##Class(Docs.CashOrder).%OpenId(id)
+ i '$IsObject(cashOrder) {
+	 s ErrText="Ошибка открытия объекта Docs.CashOrder"
+	 &js<alert('#(ErrText)#');>
+	 q
+ }
+ s coType=cashOrder.coType
+ s Err=##class(BL.Docs.CashOrder).TrByPayID(id,coType,.IDs)  //IDs - список кассовых проводок
+ i Err'="" {
+	 s ErrText="Ошибки печати кассового ордера "_Err
+	 $$$SysLogError($$$EMCSysErr,ErrText)
+	 &js<alert('#(ErrText)#');> q 
+ }
+ f i=1:1:$ll(IDs) {
+	 s pIDs=$li(IDs,i)
+	 if coType=1 {&js<zenPage.gotoPage(zenLink('GUI.WEB.RPT.CashPaysOrder.cls?ID=#(id)#'));> q}
+	 if coType=2 {&js<zenPage.gotoPage(zenLink('GUI.WEB.RPT.CashOutOrder.cls?ID=#(id)#'));> q}
+ }
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

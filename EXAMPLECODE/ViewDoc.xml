@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.ViewDoc">
+<Description>
+Форма для просмотра прикрепленных документов</Description>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62784,34103.38461</TimeCreated>
+
+<Property name="LoanID">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="LoanID"/>
+</Property>
+
+<Property name="DocID">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="DocID"/>
+</Property>
+
+<XData name="Contents">
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page xmlns="http://www.intersystems.com/zen" title="">
+<html OnDrawContent="DrawTitle"/>
+</page>
+]]></Data>
+</XData>
+
+<Method name="DrawTitle">
+<FormalSpec>pSeed:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set imgAdr = "MainPortal\Files\UPLOAD\DEALID27594068\2012-11"_..LoanID
+	&html<<table class="helpDeskTitle" border="0" cellpadding="0" cellspacing="0" width="100%">
+		<tr>
+		<td align="left" width="40"><img width="200" height="100" src="images/logo.png"/></td>
+		</tr>
+		</table>
+		>
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.ViewDoc","WebForm","OnClick",1,"Форма для просмотра прикрепленных документов")
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

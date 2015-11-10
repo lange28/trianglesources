@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.RPT.LoanEasyEspress1">
+<Description>
+Печатная форма: договор экспресс1</Description>
+<IncludeCode>EMCConst,EMCReport,ApplicationSettingsConst</IncludeCode>
+<Super>%CSP.SessionEvents,%CSP.Page</Super>
+<TimeCreated>62795,46205.191813</TimeCreated>
+
+<Method name="OnPage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.RPT.LoanEasyEspress1","WebForm","OnClick",1,"Печатная форма: договор экспресс1")
+	// Подготовка данных для вывода на печать
+	s TextMessage=..GetData(.Parameters)
+	// В случае проблем подготовки данных
+	i TextMessage'="" {
+	&html<
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+	<html><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+	<title></title>
+	<body>#(TextMessage)#</body></html>
+	</html>>
+	q $$$OK
+	}
+	// Вывод отчета
+	&html<
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+<title></title>
+<style type="text/css"><!-- 
+.s0 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Top;
+}
+.s1 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+.s2 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Justify; vertical-align: Top;
+}
+.s3 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Middle;
+}
+.s4 {
+ font-family: Arial;
+ font-size: 1px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 1;
+ border-bottom-width: 0px;
+ text-align: Left; vertical-align: Top;
+}
+.s5 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Top;
+}
+.s6 {
+ font-family: Arial;
+ font-size: 11px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Right; vertical-align: Top;
+}
+.s7 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Right; vertical-align: Top;
+}
+.s8 {
+ font-family: Arial;
+ font-size: 1px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 0px;
+ border-top-width: 0px;
+ border-bottom-width: 0px;
+ text-align: Left; vertical-align: Top;
+}
+.s9 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal; text-decoration: underline;
+ background-color: transparent;
+ text-align: Center; vertical-align: Top;
+}
+.s10 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+.s11 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ text-align: Justify; vertical-align: Top;
+}
+.s12 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Right; vertical-align: Middle;
+}
+.s13 {
+ font-family: Arial;
+ font-size: 1px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+.s14 {
+ font-family: Arial;
+ font-size: 1px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 1;
+ border-bottom-width: 0px;
+ text-align: Left; vertical-align: Top;
+}
+--></style>
+</head>
+<body onload="printpage()"
+ bgcolor="#FFFFFF" text="#000000">
+  <script language="Javascript1.2">
+	function printpage()
+	{
+		window.print();
+	}
+	</script>
+<a name="PageN1"></a>
+<table width="685" border="0" cellspacing="0" cellpadding="0">
+<tr style="height: 1px"><td width="1"/><td width="1"/><td width="4"/><td width="1"/><td width="10"/><td width="26"/><td width="54"/><td width="6"/><td width="1"/><td width="2"/><td width="25"/><td width="31"/><td width="106"/><td width="22"/><td width="2"/><td width="42"/><td width="1"/><td width="2"/><td width="1"/><td width="3"/><td width="2"/><td width="1"/><td width="1"/><td width="2"/><td width="2"/><td width="4"/><td width="12"/><td width="3"/><td width="12"/><td width="11"/><td width="14"/><td width="16"/><td width="43"/><td width="7"/><td width="18"/><td width="3"/><td width="2"/><td width="2"/><td width="134"/><td width="11"/><td width="15"/><td width="10"/><td width="12"/><td width="2"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="2"/><td width="2"/></tr>
+<tr style="height:15px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="15" class="s6"> </td><td/><td/><td/>
+</tr>
+<tr style="height:22px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td colspan="47" class="s0">ДОГОВОР ЗАЙМА № #(Parameters("Value","lSysCode"))#</td><td/><td/><td/>
+</tr>
+<tr style="height:6px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:22px">
+<td/><td/><td/><td/><td/><td colspan="6" rowspan="2" class="s1">г.#(Parameters("Value","lSity"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="13" class="s1">#(Parameters("Value","lDate"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:115px">
+<td colspan="47" class="s2">     Общество с ограниченной ответственностью #(Parameters("Value","lOrganisation"))#, именуемое в дальнейшем “Заимодавец”, в лице Менеджера по выдаче займов #(Parameters("Value","lFIO"))#, действующего на основании доверенности № #(Parameters("Value","lWarrant"))# от #(Parameters("Value","lDateWarrant"))#,  с одной стороны, и #(Parameters("Value","lClientsFIO"))#, проживающий по адресу #(Parameters("Value","lClientsAddress"))#, адрес по прописке #(Parameters("Value","lClientsLifeVAddress"))#, паспорт серия #(Parameters("Value","lPassportNumber"))# выдан #(Parameters("Value","lPassportDateIssue"))# г. #(Parameters("Value","lPassportIssue"))#, код подразделения #(Parameters("Value","lPassportCode"))#, именуемый в дальнейшем “Заемщик”, с другой стороны, заключили настоящий договор о нижеследующем.</td><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:19px">
+<td colspan="47" class="s3">1.     ПРЕДМЕТ ДОГОВОРА</td><td/><td/><td/>
+</tr>
+<tr style="height:91px">
+<td colspan="47" class="s2">     1.1. По настоящему Договору Займодавец передает Заемщику заем на сумму #(Parameters("Value","lLoanSum"))# #(Parameters("Value","lLoanSumProp"))# рублей 00 копеек  (далее – «Сумма займа»),  а Заемщик  обязуется  вернуть указанную сумму займа в обусловленный настоящим Договором срок и уплатить на нее указанные в Договоре проценты.  <br>     1.2. Займодавец обязуется предоставить Сумму займа в течение 1 (одного) календарного дня с даты подписания настоящего Договора путем выдачи денежных средств Заемщику через кассу или перечисляет ее на указанный Заемщиком банковский счет.</td><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td colspan="47" class="s3">2.     УСЛОВИЯ ПРЕДОСТАВЛЕНИЯ ЗАЙМА</td><td/><td/><td/>
+</tr>
+<tr style="height:93px">
+<td colspan="47" class="s2">        2.1. Сумма займа предоставляется на срок до #(Parameters("Value","lEndDate"))#.<br>   2.2. За пользование займом Заемщик выплачивает Займодавцу комиссию из расчета #(Parameters("Value","lPerc"))# процента в #(Parameters("Value","lPercType"))#.<br>   2.3. Комиссию за пользование предоставленной Суммой займа Заемщик вправе выплатить одновременно с погашением займа либо выплачивать еженедельно, путём оплаты процентов по основному долгу с одновременным погашением части займа после заключения дополнительного соглашения.</td><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td colspan="47" class="s3">3.    ПРАВА И ОБЯЗАННОСТИ СТОРОН</td><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:90px">
+<td colspan="47" class="s2">    3.1.  Возврат указанной в настоящем Договоре Суммы займа производится в срок, указанный в п.2.1 настоящего Договора.<br>     3.2.  Сумма займа может быть возвращена Заемщиком досрочно с одновременным погашением комиссии                по займу за период, предусмотренный в настоящем договоре, в полном размере.<br>   3.3.  В связи с тем, что возврат суммы займа и начисленной комиссии за пользование займом производится единоразово одним платежом, график платежей к Договору не составляется.</td><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td colspan="47" class="s3">4.    ОТВЕТСТВЕННОСТЬ СТОРОН</td><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:376px">
+<td colspan="47" class="s2">     4.1.  В случае нарушения срока погашения займа, а также срока уплаты процентов Заемщик уплачивает  Займодавцу  пени,  в размере 0,1% (одна десятая) процента от суммы просроченного платежа.  <br>     4.2.  В случае нарушения Займодавцем срока предоставления Суммы займа, указанного в п.1.2. настоящего Договора, Займодавец уплачивает Заемщику пени в размере 0,1% процента от Суммы займа за каждый день просрочки. <br>     4.3.  В случае неисполнения или ненадлежащего исполнения одной из Сторон обязательств по настоящему Договору, она обязана возместить другой Стороне причиненные таким неисполнением убытки.<br>     4.4.  При просрочке уплаты Заемщиком процентов по настоящему договору более 14 дней,  последний уплачивает Займодавцу штраф в размере 500,00 (Пятьсот) рублей единовременно.<br>     4.5.  Неисполнение одной из Сторон условий настоящего Договора, приведшее к материальным потерям второй Стороны, влечет за собой применение к виновной стороне штрафных санкций в размере нанесенного ущерба и может служить основанием досрочного прекращения Договора.<br>     4.6.  Предоставление Заемщиком  недостоверных сведений о себе (о своей работе, о контактных телефонах, в т.ч. о телефонах моих знакомых, о своём месте фактического проживания и о своей регистрации), а равно как и иных, предоставленных ложных или вводящих в заблуждение сведениях, или использование чужих документов является мошенничеством, и попадает под действия статьи 159 УК РФ и может наказываться лишением свободы сроком до 2 лет.<br>     4.7.  При нарушении Заемщиком сроков единовременного погашения займа продолжительностью свыше 7 (семи) календарных дней, Займодавец вправе обратиться в коллекторское агентство, для взыскания задолженности с Заемщика в досудебном порядке или обратиться в Суд за защитой нарушенных прав и своих законных интересов, в том числе при помощи судебных приставов путем ареста имущества Заемщика. При этом все судебные издержки будут возложены на Заемщика..<br>     4.8.  В случае нарушения Заемщиком принятых на себя обязательств по погашению займа Займодавец, по своему усмотрению, без согласия Заемщика может уступить третьему лицу свои права требования путем заключения договора возмездной уступки прав (цессии).</td><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td colspan="47" rowspan="2" class="s3">5.    ФОРС - МАЖОР</td><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/>
+</tr>
+<tr style="height:61px">
+<td colspan="47" rowspan="2" class="s2">  5.1.  Стороны освобождаются от ответственности за частичное или полное неисполнение обязательств по настоящему Договору, если это неисполнение явилось следствием обстоятельств непреодолимой силы, возникших после заключения настоящего Договора в результате обстоятельств чрезвычайного характера, которые Стороны не могли предвидеть или предотвратить.</td><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/>
+</tr>
+<tr style="height:40px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="16" class="s7"></td><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td colspan="6" class="s14" style="font-size:1px"><span style="font-size:1px">.</span>
+</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+<td colspan="6" class="s14" style="font-size:1px"><span style="font-size:1px">.</span>
+</td><td/><td/>
+</tr>
+<tr style="height:13px">
+<td colspan="7" rowspan="3" class="s5">Заимодавец</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="4" rowspan="3" class="s5">Заемщик</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td colspan="5" class="s4" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="7" class="s4" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:7px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+</table>
+<a name="PageN2"></a>
+<table width="685" border="0" cellspacing="0" cellpadding="0">
+<tr style="height: 1px"><td width="1"/><td width="1"/><td width="4"/><td width="1"/><td width="10"/><td width="26"/><td width="54"/><td width="6"/><td width="1"/><td width="2"/><td width="25"/><td width="31"/><td width="106"/><td width="22"/><td width="2"/><td width="42"/><td width="1"/><td width="2"/><td width="1"/><td width="3"/><td width="2"/><td width="1"/><td width="1"/><td width="2"/><td width="2"/><td width="4"/><td width="12"/><td width="3"/><td width="12"/><td width="11"/><td width="14"/><td width="16"/><td width="43"/><td width="7"/><td width="18"/><td width="3"/><td width="2"/><td width="2"/><td width="134"/><td width="11"/><td width="15"/><td width="10"/><td width="12"/><td width="2"/><td width="1"/><td width="1"/><td width="1"/><td width="1"/><td width="2"/><td width="2"/></tr>
+<tr style="height:37px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:186px">
+<td colspan="47" class="s2">     5.2. При наступлении обстоятельств, указанных в п. 5.1. настоящего Договора, каждая Сторона должна без промедления известить о них в письменном виде другую Сторону. Извещение должно содержать данные о характере обстоятельств, а также официальные документы, удостоверяющие наличие этих обстоятельств и, по возможности, дающие оценку их влияния на возможность исполнения стороной своих обязательств по данному Договору<br>     5.3. Если Сторона не направит или несвоевременно направит извещение, предусмотренное в п. 5.2. настоящего Договора, то она обязана возместить второй стороне понесенные ею убытки.<br>     5.4. В случаях наступления обстоятельств, предусмотренных в п. 5.1 .настоящего Договора,  срок выполнения стороной обязательств по настоящему Договору отодвигается соразмерно времени,  в течение которого действуют эти обстоятельства и их последствия.<br>     5.5. Если, наступившие обстоятельства, перечисленные в п. 5.1. настоящего Договора и их последствия продолжают действовать более двух месяцев,  Стороны  проводят  дополнительные  переговоры  для  выявления приемлемых альтернативных способов исполнения настоящего Договора</td><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td colspan="47" class="s3">6.      КОНФИДЕНЦИАЛЬНОСТЬ</td><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:77px">
+<td colspan="47" class="s2">  6.1. Условия  настоящего  Договора  и  соглашений  (протоколов и т.п.)  к  нему  конфиденциальны  и  не  подлежат   разглашению. <br>  6.2. Стороны принимают все необходимые меры для того, чтобы их сотрудники, агенты, правопреемники без предварительного согласия другой стороны не информировали третьих лиц о деталях данного договора и приложений к нему.</td><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td colspan="47" class="s3">7.     РАЗРЕШЕНИЕ СПОРОВ</td><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:59px">
+<td colspan="47" class="s2">     7.1. Все  споры  и  разногласия,  которые  могут  возникнуть  между  Сторонами  по  вопросам,  не  нашедшим  своего  разрешения  в тексте данного Договора, будут разрешаться путем переговоров.<br>     7.2. При  неурегулировании  в  процессе  переговоров  спорных  вопросов,  споры  разрешаются  в  порядке,  установленном  действующим законодательством Российской Федерации.</td><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td colspan="47" class="s3">8.    ПРЕКРАЩЕНИЕ ДОГОВОРА</td><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:52px">
+<td colspan="47" class="s1">      8.1.  Настоящий договор прекращается:<br>- по соглашению сторон;<br>- по иным основаниям, предусмотренным действующим законодательством Российской Федерации.</td><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td colspan="47" class="s3">9.     ЗАКЛЮЧИТЕЛЬНЫЕ ПОЛОЖЕНИЯ</td><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:104px">
+<td colspan="47" class="s1">     9.1. Любые изменения и дополнения к настоящему Договору действительны, при условии, если они совершены в письменной форме и подписаны надлежаще уполномоченными на то представителями Сторон.<br>     9.2. Все уведомления и сообщения должны направляться в письменной форме. <br>     9.3. Настоящий Договор вступает в силу с момента подписания.<br>     9.4. Настоящий Договор будет считаться исполненным при выполнении Сторонами взаимных обязательств. <br>     9.5. Настоящий Договор составлен в двух экземплярах,  имеющих  одинаковую  юридическую силу,  по одному экземпляру для каждой из Сторон.</td><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td colspan="47" class="s3">10.     АДРЕСА И РЕКВИЗИТЫ СТОРОН</td><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td rowspan="29" class="s8" style="font-size:1px"> </td><td colspan="20" class="s4" style="font-size:1px"> </td><td rowspan="29" class="s8" style="font-size:1px"> </td><td colspan="25" class="s4" style="font-size:1px"> </td><td rowspan="10" class="s13" style="font-size:1px"> </td><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td/><td/><td/><td colspan="7" class="s9">Заимодавец</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="11" class="s9">Заемщик</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td colspan="20" class="s4" style="font-size:1px"> </td><td colspan="25" class="s4" style="font-size:1px"> </td><td/><td/>
+</tr>
+<tr style="height:3px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td colspan="14" rowspan="2" class="s10">#(Parameters("Value","lOrganisation"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:20px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="20" class="s10">#(Parameters("Value","lClientsFIO"))#</td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:3px">
+<td/><td colspan="16" rowspan="4" class="s1">Юридический адрес: #(Parameters("Value","lOrgAddress"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td colspan="24" class="s1">Паспорт серия #(Parameters("Value","lPassportNumber"))#</td><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:10px">
+<td/><td/><td/><td/><td/><td colspan="26" rowspan="3" class="s1">Дата выдачи #(Parameters("Value","lPassportDateIssue"))#</td><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td colspan="17" rowspan="3" class="s1">ИНН  #(Parameters("Value","lINN"))#</td><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td class="s13" style="font-size:1px"> </td><td/><td/>
+</tr>
+<tr style="height:16px">
+<td/><td/><td/><td/><td/><td colspan="26" rowspan="5" class="s1">выдан #(Parameters("Value","lPassportIssue"))# код подразделения #(Parameters("Value","lPassportCode"))#</td>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td colspan="16" class="s1">ОГРН #(Parameters("Value","lOGRN"))#</td><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:10px">
+<td/><td colspan="15" rowspan="3" class="s1">р/с #(Parameters("Value","lRS"))#<br>в #(Parameters("Value","lBank"))# </td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td rowspan="10" class="s13" style="font-size:1px"> </td><td/><td/>
+</tr>
+<tr style="height:21px">
+<td/><td/><td/><td/><td/><td/><td colspan="24" rowspan="5" class="s1">Адрес прописки <br>#(Parameters("Value","lClientsAddress"))#</td><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:15px">
+<td/><td colspan="18" class="s1">БИК #(Parameters("Value","lBIK"))#</td><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:11px">
+<td/><td colspan="17" rowspan="3" class="s1">корр.сч. #(Parameters("Value","lKS"))#</td><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td colspan="24" rowspan="2" class="s1">Адрес регистрации<br>#(Parameters("Value","lClientsLifeVAddress"))#</td><td/><td/>
+</tr>
+<tr style="height:51px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:3px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td colspan="47" class="s4" style="font-size:1px"> </td><td/><td/><td/>
+</tr>
+<tr style="height:10px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:19px">
+<td/><td/><td/><td colspan="14" rowspan="6" class="s1">Менеджер по выдаче займов<br><br>_____________/#(Parameters("Value","lFIOSgn"))#/ <br><br>По Доверенности №#(Parameters("Value","lWarrant"))# от #(Parameters("Value","lDateWarrant"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:10px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="7" rowspan="3" class="s1">/#(Parameters("Value","lClientsFIOSgn"))#/</td><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="11" class="s4" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:10px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:14px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:29px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="16" rowspan="2" class="s11">С правилами предоставления займов ознакомлен, возражений не имею</td><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:13px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:10px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:26px">
+<td/><td/><td/><td/><td colspan="8" class="s1">М. П.</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:19px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td colspan="6" class="s14" style="font-size:1px"><span style="font-size:1px">.</span>
+</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+<td colspan="6" class="s14" style="font-size:1px"><span style="font-size:1px">.</span>
+</td><td/><td/>
+</tr>
+<tr style="height:13px">
+<td colspan="7" rowspan="3" class="s5">Заимодавец</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="4" rowspan="3" class="s5">Заемщик</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="5" class="s4" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="7" class="s4" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+</table>
+</body></html>
+>
+ Quit $$$OK
+]]></Implementation>
+</Method>
+
+<UDLText name="T">
+<Content><![CDATA[
+// Подготовка данных для вывода в отчете
+
+]]></Content>
+</UDLText>
+
+<Method name="GetData">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&Parameters]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	// Инициализация данных
+	s Parameters("Value","lSysCode")=" "
+	s Parameters("Value","lSity")=" "
+	s Parameters("Value","lDate")=" "
+	s Parameters("Value","lOrganisation")=" "
+	s Parameters("Value","lWarrant")=" "
+	s Parameters("Value","lFIO")=" "
+	s Parameters("Value","lFIOSgn")=" "
+	s Parameters("Value","lDateWarrant")=" "
+	s Parameters("Value","lClientsFIO")=" "
+	s Parameters("Value","lClientsFIOSgn")=" "
+	s Parameters("Value","lLoaSum")=" "
+	s Parameters("Value","lLoaSumProp")=" "
+	s Parameters("Value","lEndDate")=" "
+	s Parameters("Value","lPerc")=" "
+	s Parameters("Value","lPercType")=" "
+	s Parameters("Value","lMinPeriod")=" "
+	s Parameters("Value","lMinPeriodProp")=" "
+	s Parameters("Value","lEdIzm")=" "
+	s Parameters("Value","ProcPros")=" "
+	s Parameters("Value","lOrgAddress")=" "
+	s Parameters("Value","lINNKPP")=" "
+	s Parameters("Value","lOGRN")=" "
+	s Parameters("Value","lRS")=" "
+	s Parameters("Value","lBank")=" "
+	s Parameters("Value","laPhoneMobile")=" "
+	s Parameters("Value","lKS")=" "
+	s Parameters("Value","laEMail")=" "
+	s Parameters("Value","lBIK")=" "
+    
+    s Parameters("Value","lLoanSum")=" "
+    s Parameters("Value","lLoanSumProp")=" "
+    s Parameters("Value","lEndDate")=" "  
+    
+    s Parameters("Value","lClientsBirthDay")=" "
+
+    s Parameters("Value","lPassportNumber")=" "
+    s Parameters("Value","lPassportIssue")=" "
+    s Parameters("Value","lPassportDateIssue")=" "
+    s Parameters("Value","lPassportCode")=" "
+    
+    s Parameters("Value","lOrgPhone")=" " 	
+
+
+    //для теста
+    //s ID=##class(Docs.Loan).OpenSysCode("1211231011070001").%Id()
+	s ID=$g(%request.Data("ID",1))
+	i ID="" q "Не задан ID договора"
+ 	s obj=##class(Docs.Loan).%OpenId(ID)
+	i '$IsObject(obj) q "Не найден договор, ID="_ID
+	try {
+		s res=..InitData(ID,.Parameters)
+	} catch ex {
+		s res="Параметры типа договора не соответствуют ожидаемым в печатной форме."
+	}
+	q res
+]]></Implementation>
+</Method>
+
+<Method name="InitData">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[id="",&Parameters]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+ i id="" q "Не задан ID договора"
+ s obj=##class(Docs.Loan).%OpenId(id)
+ i '$IsObject(obj) q "Не найден договор, ID="_id
+ d OnGetWEBVariables^prtLoanExpress1(id,.Parameters)
+ set Parameters("Value","lClientsLifeVAddress") = obj.lLoanAppID.laLiveAddrID.GetAddressForLoanAppInfo()
+ set Parameters("Value","lINN")=$p(Parameters("Value","lINNKPP"),"/",1)
+ q ""
+]]></Implementation>
+</Method>
+</Class>
+</Export>

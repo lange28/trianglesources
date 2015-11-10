@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.RPT.CachKO4List">
+<Description>
+Печатная форма: лист кассовой книги</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62776,41337.120728</TimeCreated>
+
+<Method name="OnPage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.RPT.CachKO4List","WebForm","OnClick",1,"Печатная форма: лист кассовой книги")
+	// Подготовка данных для вывода на печать
+	s TextMessage=..GetData(.Parameters)
+	// В случае проблем подготовки данных
+	i TextMessage'="" {
+	&html<
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+	<html><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+	<title></title>
+	<body>#(TextMessage)#</body>
+	</html>
+	</html>>
+	q $$$OK
+	}
+	// Вывод отчета
+	&html<
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+<title></title>
+<style type="text/css"><!-- 
+.page_break {page-break-before: always;}
+.s0 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Top;
+}
+.s1 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+.s2 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Top;
+}
+.s3 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+.s4 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 0px;
+ text-align: Left; vertical-align: Top;
+}
+.s5 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Right; vertical-align: Top;
+}
+.s6 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Top;
+}
+.s7 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Middle;
+}
+.s8 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Top;
+}
+.s9 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Left; vertical-align: Top;
+}
+.s10 {
+ font-family: Times New Roman;
+ font-size: 8px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Bottom;
+}
+.s11 {
+ font-family: Arial;
+ font-size: 1px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 1;
+ border-bottom-width: 0px;
+ text-align: Left; vertical-align: Top;
+}
+.s12 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Top;
+}
+.s13 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 1;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Top;
+}
+.s14 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Top;
+}
+.s15 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Top;
+}
+.s16 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Right; vertical-align: Top;
+}
+.s17 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Right; vertical-align: Top;
+}
+.s18 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Middle;
+}
+.s19 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Top;
+}
+.s20 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Top;
+}
+.s21 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Left; vertical-align: Top;
+}
+.s22 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Center; vertical-align: Top;
+}
+.s23 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 1;
+ border-right-width: 1;
+ border-top-width: 0px;
+ border-bottom-width: 1;
+ text-align: Left; vertical-align: Top;
+}
+--></style>
+</head>
+<body onload="printpage()"
+ bgcolor="#FFFFFF" text="#000000">
+ <script language="Javascript1.2">
+	function printpage()
+	{
+		window.print();
+	}
+	</script>
+<a name="PageN1"></a>
+<table width="1039" border="0" cellspacing="0" cellpadding="0">
+<tr style="height: 1px"><td width="26"/><td width="4"/><td width="8"/><td width="30"/><td width="42"/><td width="15"/><td width="8"/><td width="4"/><td width="15"/><td width="11"/><td width="34"/><td width="26"/><td width="19"/><td width="4"/><td width="8"/><td width="15"/><td width="4"/><td width="4"/><td width="72"/><td width="4"/><td width="8"/><td width="8"/><td width="30"/><td width="8"/><td width="11"/><td width="15"/><td width="79"/><td width="4"/><td width="19"/><td width="15"/><td width="11"/><td width="8"/><td width="30"/><td width="42"/><td width="4"/><td width="11"/><td width="8"/><td width="4"/><td width="15"/><td width="8"/><td width="38"/><td width="23"/><td width="23"/><td width="11"/><td width="15"/><td width="4"/><td width="4"/><td width="72"/><td width="4"/><td width="4"/><td width="11"/><td width="8"/><td width="26"/><td width="4"/><td width="11"/><td width="15"/><td width="76"/><td width="4"/></tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="2" rowspan="2" class="s1">Касса за</td><td/><td/><td colspan="9" rowspan="2" class="s2">#(Parameters("Value","BeginDate"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="2" rowspan="2" class="s1">Касса за</td><td/><td colspan="9" rowspan="2" class="s2">#(Parameters("Value","BeginDate"))#</td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:15px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td rowspan="38" class="s4" style="font-size:1px"></td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:7px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:7px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="11" rowspan="2" class="s1">Вкладной лист кассовой книги</td><td/><td/><td/><td colspan="3" rowspan="2" class="s1">Лист  ______</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="10" rowspan="2" class="s2">Отчет кассира</td><td/><td/><td/><td colspan="4" rowspan="2" class="s1">Лист  ______</td><td/>
+</tr>
+<tr style="height:11px">
+<td rowspan="36" class="s3" style="font-size:1px"></td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:77px">
+<td/><td colspan="3" class="s0">Номер документа</td><td colspan="12" class="s13">От кого получено или кому выдано</td><td colspan="3" class="s13">Номер кор- респонди- рующего счета, субсчета</td><td colspan="6" class="s13">Приход, руб. коп.</td><td class="s13">Расход, руб. коп.</td><td/><td/><td/><td colspan="3" class="s0">Номер Документа</td><td colspan="12" class="s13">От кого получено или кому выдано</td><td colspan="3" class="s13">Номер кор- респонди- рующего счета, субсчета</td><td colspan="7" class="s13">Приход, руб. коп.</td><td colspan="2" class="s13">Расход, руб. коп.</td>
+</tr>
+<tr style="height:22px">
+<td/><td colspan="3" class="s14">1</td><td colspan="12" class="s15">2</td><td colspan="3" class="s15">3</td><td colspan="6" class="s15">4</td><td class="s15">5</td><td/><td/><td/><td colspan="3" class="s14">1</td><td colspan="12" class="s15">2</td><td colspan="3" class="s15">3</td><td colspan="7" class="s15">4</td><td colspan="2" class="s15">5</td>
+</tr>
+<tr style="height:22px">
+<td/><td colspan="18" class="s16">Остаток на начало дня</td><td colspan="6" class="s17">#(Parameters("Value","SumPBeg"))#</td><td class="s18">X</td><td/><td/><td/><td colspan="18" class="s16">Остаток на начало дня</td><td colspan="7" class="s17">#(Parameters("Value","SumPBeg"))#</td><td colspan="2" class="s19">X</td>
+</tr>>
+	s gl=$na(^||M("Data"))
+	s i=""
+	//for i=1:1:10
+	f  {
+		s i=$o(@gl@(i))
+		q:i=""
+		
+		&html<
+		<tr style="height:22px">
+		<td/><td colspan="3" class="s14">#($g(@gl@(i,"NomerDoc")))#</td><td colspan="12" class="s15">#($g(@gl@(i,"Komu")))#</td><td colspan="3" class="s15">#($g(@gl@(i,"KorSchet")))#</td><td colspan="6" class="s15">#($g(@gl@(i,"SumP")))#</td><td class="s15">#($g(@gl@(i,"SumR")))#</td><td/><td/><td/><td colspan="3" class="s14">#($g(@gl@(i,"NomerDoc")))#</td><td colspan="12" class="s15">#($g(@gl@(i,"Komu")))#</td><td colspan="3" class="s15">#($g(@gl@(i,"KorSchet")))#</td><td colspan="7" class="s15">#($g(@gl@(i,"SumP")))#</td><td colspan="2" class="s15">#($g(@gl@(i,"SumR")))#</td>
+		</tr>>
+	}
+	&html<
+<tr style="height:15px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="4" rowspan="2" class="s1">Итого за день</td><td/><td colspan="6" rowspan="3" class="s16">#(Parameters("Value","SumPDay"))#</td><td rowspan="3" class="s17">#(Parameters("Value","SumRDay"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="4" rowspan="2" class="s1">Итого за день</td><td/><td colspan="7" rowspan="3" class="s16">#(Parameters("Value","SumPDay"))#</td><td colspan="2" rowspan="3" class="s17">#(Parameters("Value","SumRDay"))#</td>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="5" rowspan="3" class="s1" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:11px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="8" rowspan="2" class="s1">Остаток на конец дня</td><td/><td colspan="6" rowspan="3" class="s16">#(Parameters("Value","SumPEnd"))#</td><td rowspan="3" class="s18">X</td><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="7" rowspan="2" class="s1">Остаток на конец дня</td><td/><td colspan="7" rowspan="3" class="s16">#(Parameters("Value","SumPEnd"))#</td><td colspan="2" rowspan="3" class="s18">X</td>
+</tr>
+<tr style="height:7px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:37px">
+<td/><td/><td/><td colspan="15" class="s1">в том числе на заработную плату, выплаты социального характера и стипендии</td><td/><td colspan="6" rowspan="2" class="s23" style="font-size:1px"> </td><td rowspan="2" class="s18">X</td><td/><td/><td/><td/><td/><td colspan="15" class="s1">в том числе на заработную плату, выплаты социального характера и стипендии</td><td/><td colspan="7" rowspan="2" class="s23" style="font-size:1px"> </td><td colspan="2" rowspan="2" class="s18">X</td>
+</tr>
+<tr style="height:7px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:7px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td colspan="4" class="s2">Кассир</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="9" class="s12" style="font-size:1px"> </td><td/><td/><td/><td/><td colspan="5" class="s2">Кассир</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="11" class="s12" style="font-size:1px"> </td>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td colspan="7" class="s11" style="font-size:1px"> </td><td/><td/><td colspan="9" rowspan="2" class="s10">расшифровка подписи</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="6" class="s11" style="font-size:1px"> </td><td/><td/><td colspan="11" rowspan="2" class="s10">расшифровка подписи</td>
+</tr>
+<tr style="height:10px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td colspan="7" class="s10">подпись</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="6" class="s10">подпись</td><td/><td/>
+</tr>
+<tr style="height:7px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:22px">
+<td/><td/><td colspan="19" class="s1">Записи в кассовой книге проверил, и документы в</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="19" class="s1">Записи в кассовой книге проверил, и документы в</td><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td colspan="4" class="s1">количестве</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="2" class="s1">приходных и</td><td/><td/><td/><td/><td colspan="5" class="s1">количестве</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="3" class="s1">приходных и</td>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="16" class="s11" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="16" class="s11" style="font-size:1px"> </td><td/><td/><td/><td/>
+</tr>
+<tr style="height:10px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="16" class="s10">(прописью)</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="16" class="s10">(прописью)</td><td/><td/><td/><td/>
+</tr>
+<tr style="height:7px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="2" class="s1">расходных</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="3" class="s1">расходных</td>
+</tr>
+<tr style="height:1px">
+<td/><td/><td colspan="21" class="s11" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td/><td/><td colspan="22" class="s11" style="font-size:1px"> </td><td/><td/><td/><td/>
+</tr>
+<tr style="height:10px">
+<td/><td/><td colspan="21" class="s10">(прописью)</td><td/><td/><td/><td/><td/><td/><td/><td colspan="22" class="s10">(прописью)</td><td/><td/><td/><td/>
+</tr>
+<tr style="height:7px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td colspan="4" class="s1">получил.</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="5" class="s1">получил.</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:7px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:18px">
+<td/><td/><td colspan="2" class="s1">Бухгалтер</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="9" class="s12">#(Parameters("Value","GlavBuh"))#</td><td/><td/><td/><td/><td colspan="2" class="s1">Бухгалтер</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="11" class="s12">#(Parameters("Value","GlavBuh"))#</td>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td colspan="7" class="s11" style="font-size:1px"> </td><td/><td/><td/><td/><td/><td colspan="9" rowspan="2" class="s10">расшифровка подписи</td><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="7" class="s11" style="font-size:1px"> </td><td/><td/><td/><td/><td colspan="11" rowspan="2" class="s10">расшифровка подписи</td>
+</tr>
+<tr style="height:10px">
+<td/><td/><td/><td/><td/><td colspan="7" class="s10">подпись</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="7" class="s10">подпись</td><td/><td/><td/><td/>
+</tr>
+<tr style="height:51px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+</table>
+</body></html>
+>
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="GetData">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&Parameters]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	// Проверка входных параметров
+	// Инициализация данных
+	// для теста
+	/*set FirmName = "ООО ""ООО Медея"""
+	set OKPO = "91972447"
+	set Date = "2012-09-18"
+	set StrPodr = "101107 Восстания 1"
+	set StrPodrID = "27534170"
+	set DirectoryFIO = "СИЗОВА ЕЛЕНА АЛЕКСЕЕВНА"
+	set ChiefAccountantFIO = "СИЗОВА ЕЛЕНА АЛЕКСЕЕВНА"*/
+	
+	set FirmName = $g(%request.Data("FirmName",1))
+	set OKPO = $g(%request.Data("OKPO",1))
+	set Date = $g(%request.Data("Date",1))
+	set StrPodr = $g(%request.Data("StrPodr",1))
+	set StrPodrID = $g(%request.Data("StrPodrID",1))
+	set DirectoryFIO = $g(%request.Data("DirectoryFIO",1))
+	set ChiefAccountantFIO = $g(%request.Data("ChiefAccountantFIO",1))
+	
+
+	set %session.Data("Year") = $p(Date,"-",1) ;в виде строки
+	set %session.Data("FirmName") = FirmName
+	set %session.Data("OKPO") = OKPO
+	set %session.Data("BeginDate") = Date ;в виде строки
+	set %session.Data("EndDate") = ""
+	set %session.Data("StrPodr") = StrPodr
+	set %session.Data("StrPodrID") = StrPodrID
+	set %session.Data("PrtHeader") = "FALSE"
+	set %session.Data("PrdFooter") = "FALSE"
+	set %session.Data("DirectoryFIO") = DirectoryFIO
+	set %session.Data("ChiefAccountantFIO") = ChiefAccountantFIO
+
+	set Parameters("Value","Org")		= $g(%session.Data("FirmName"))
+	set Parameters("Value","StrPodr")	= $g(%session.Data("StrPodr"))
+	set Parameters("Value","KodOKPO")	= $g(%session.Data("OKPO"))
+	set Parameters("Value","RukDolzh")	= ""
+	set Parameters("Value","RukFio")	= $g(%session.Data("DirectoryFIO"))
+	set Parameters("Value","GlavBuh")	= ##class(BL.Subj.Person).FormShortFio($g(%session.Data("ChiefAccountantFIO")))
+	set Parameters("Value","DataBook")	= $g(%session.Data("Year"))  
+	set Parameters("Value","BeginDate") = $g(%session.Data("BeginDate"))
+	if Parameters("Value","BeginDate") = "" quit "Не введена дата."
+	set DtFrom = $zdh(Parameters("Value","BeginDate"),3)
+	do ##class(System.Options).GetOptions(##class(System.TInfoObject).%New(),"PrimaryAcntPlan",.acntModule)
+	set acntModule=$g(acntModule,$$$teAcntOSN)
+	; нач. остаток по кассе берется со счета(ов) кассы. конечный вычисляется, чтобы ручные проводки не искажали его
+	set StrPodrID=$g(%session.Data("StrPodrID"))
+	if StrPodrID
+	{ ; остаток по одной заданной кассе	 
+		set StrPodrORef=##class(Subj.Office).%OpenId(StrPodrID)
+		if '$IsObject(StrPodrORef) quit "Не найдено структурное подразделение с ID="_StrPodrID
+		set reg=StrPodrORef.BL.GetCashReg(acntModule)
+		#dim reg as Data.TE.Reg
+		if '$IsObject(reg)
+		{
+			set ErrText = "Для точки выдачи '"_StrPodrORef.ObjectName_"' не открыт счет кассы"
+			set res = $$$ERROR($$$GeneralError,ErrText) 
+			quit ErrText
+		}
+		set SumPBeg = reg.GetBalanceDt(DtFrom-1,1),cashRegID=reg.%Id() 
+	}
+	else
+	{
+		set SumPBeg = ..GetBalanceDtAll(DtFrom-1),cashRegID=""
+	} ; остаток по всем кассам
+	set Parameters("Value","SumPBeg") = SumPBeg
+	set (SumPDay,SumRDay)=0
+	set scActive=$$$scActive
+	&SQL(DECLARE COD CURSOR FOR select id into :id from Docs.CashOrder where Status=:scActive and cls='Docs.CashOrder' and coDate=:DtFrom and coExecuted=1)
+	&SQL(OPEN COD)
+	kill ^||M
+	set ^||M("Count")=0
+	if SQLCODE<0 set ErrText="Ошибка исполнения SQL запроса: "_$SYSTEM.SQL.SQLCODE(SQLCODE) quit ErrText
+	for
+	{
+		&SQL(FETCH COD)
+		quit:SQLCODE
+		set co = ##class(Docs.CashOrder).%OpenId(id)
+		if '$IsObject(co) quit ///"Ошибка открытия Docs.CashOrder ID="_id
+		;фильтр по кассе(=подразделению)
+		if StrPodrID&&('$IsObject(co.coOfficeID)) CONTINUE
+		if StrPodrID&&(co.coOfficeID.%Id()'=StrPodrID) CONTINUE
+		;подбор данных
+		set ^||M("Count")=^||M("Count")+1
+		set i=^||M("Count")
+		set ^||M("Data",i,"NomerDoc") =co.coNumber.pdDocNumber
+		set (sumP,sumR)=0
+		if co.coTypeDocInfo=$$$coTypeDocPKO s sumP=co.coSumm
+		if co.coTypeDocInfo=$$$coTypeDocRKO s sumR=co.coSumm
+		set ^||M("Data",i,"SumP")=$j(sumP,0,2)
+		set ^||M("Data",i,"SumR")=$j(sumR,0,2)
+		set SumPDay=SumPDay+sumP
+		set SumRDay=SumRDay+sumR
+		if (acntModule=$$$teAcntUSN) s ^||M("Data",i,"KorSchet")=$s($IsObject(co.coUsnAcntPlanID):co.coUsnAcntPlanID.SysCode,1:"Н/Д")
+		else  set ^||M("Data",i,"KorSchet")=$s($IsObject(co.coAcntPlanCashID):co.coAcntPlanCashID.SysCode,1:"Н/Д")
+		set ^||M("Data",i,"Komu")=$s(co.coFIO'="":co.coFIO,1:co.coComment)
+	}
+	&sql(close COD)
+	set Parameters("Value","SumPDay")=$j(SumPDay,0,2)
+	set Parameters("Value","SumRDay")=$j(SumRDay,0,2)
+	set Parameters("Value","SumPEnd")=$j(SumPBeg+SumPDay-SumRDay,0,2)
+	; печать пустой строки если нет кассовых док-тов
+	if '^||M("Count")
+	{
+		set ^||M("Data",0,"NomerDoc")=""
+		set ^||M("Data",0,"Komu")=""
+		set ^||M("Data",0,"KorSchet")=""
+		set ^||M("Data",0,"SumP")=""
+		set ^||M("Data",0,"SumR")=""
+	}
+	quit ""
+]]></Implementation>
+</Method>
+
+<Method name="GetBalanceDtAll">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Date</FormalSpec>
+<Implementation><![CDATA[
+	set RegID=$$$MFOAcnt_".%"
+	do ##class(System.Options).GetOptions(##class(System.TInfoObject).%New(),"PrimaryAcntPlan",.acntModule)
+	set acntModule=$g(acntModule,$$$teAcntOSN)
+	set (BalDt,BalCt)=0
+	&sql(select sum(BalDt),sum(BalCt) into :BalDt,:BalCt from Data_TE.RegItem where Parent->SysCode like :RegID and DtOper<=:Date and NextDtOper>:Date and Parent->AcntID->dteapxAcntModule=:acntModule)
+	if SQLCODE<0
+	{
+		set ErrText="Ошибка исполнения SQL запроса "_$SYSTEM.SQL.SQLCODE(SQLCODE)
+		$$$SysLogError($$$EMCSysErr,ErrText)
+		quit ""
+	}
+	quit $j(BalDt-BalCt,0,2)
+]]></Implementation>
+</Method>
+</Class>
+</Export>

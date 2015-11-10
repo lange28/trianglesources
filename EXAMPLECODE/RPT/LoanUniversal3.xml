@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.RPT.LoanUniversal3">
+<Description>
+Печатная форма: договор универсальный 3</Description>
+<IncludeCode>EMCConst,EMCReport,ApplicationSettingsConst</IncludeCode>
+<Super>%CSP.SessionEvents,%CSP.Page</Super>
+<TimeCreated>62509,50155.030969</TimeCreated>
+
+<Method name="OnPage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.RPT.LoanUniversal3","WebForm","OnClick",1,"Печатная форма: договор универсальный 3")
+	// Подготовка данных для вывода на печать
+	s TextMessage=..GetData(.Parameters)
+	// В случае проблем подготовки данных
+	i TextMessage'="" {
+	&html<
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+	<html><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+	<title></title>
+	<body>#(TextMessage)#</body></html>
+	</html>>
+	q $$$OK
+	}
+	// Вывод отчета
+	&html<
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name=Generator content="FastReport 3.0 http://www.fast-report.com">
+<title></title>
+<style type="text/css"><!-- 
+.page_break {page-break-before: always;}
+.s0 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Top;
+}
+.s1 {
+ font-family: Times New Roman;
+ font-size: 12px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+.s2 {
+ font-family: Times New Roman;
+ font-size: 12px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Top;
+}
+.s3 {
+ font-family: Times New Roman;
+ font-size: 12px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Justify; vertical-align: Top;
+}
+.s4 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ text-align: Center; vertical-align: Top;
+}
+.s5 {
+ font-family: Times New Roman;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+.s6 {
+ font-family: Arial;
+ font-size: 1px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-color:#000000; border-style: solid;
+ border-left-width: 0px;
+ border-right-width: 0px;
+ border-top-width: 1;
+ border-bottom-width: 0px;
+ text-align: Left; vertical-align: Top;
+}
+.s7 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ text-align: Left; vertical-align: Top;
+}
+--></style>
+</head>
+<body onload="printpage()"
+ bgcolor="#FFFFFF" text="#000000">
+ <script language="Javascript1.2">
+	function printpage()
+	{
+		window.print();
+	}
+	</script>
+<a name="PageN1"></a>
+<table width="682" border="0" cellspacing="0" cellpadding="0">
+<tr style="height: 1px"><td width="7"/><td width="4"/><td width="16"/><td width="20"/><td width="3"/><td width="48"/><td width="137"/><td width="16"/><td width="88"/><td width="20"/><td width="27"/><td width="22"/><td width="108"/><td width="81"/><td width="8"/><td width="65"/><td width="10"/><td width="1"/></tr>
+<tr style="height:18px">
+<td colspan="17" class="s0">ДОГОВОР ЗАЙМА № #(Parameters("Value","lSysCode"))#</td><td/>
+</tr>
+<tr style="height:33px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:5px">
+<td colspan="6" rowspan="3" class="s1">г. #(Parameters("Value","lSity"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:16px">
+<td/><td/><td/><td/><td/><td/><td/><td colspan="3" class="s2">#(Parameters("Value","lDate"))#</td><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:16px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:66px">
+<td colspan="17" class="s3">Микрофинансовая организация #(Parameters("Value","lOrganisation"))#, в лице #(Parameters("Value","lFIO"))# , действующего на основании  доверенности № #(Parameters("Value","lWarrant"))# от #(Parameters("Value","lDateWarrant"))#  именуемое в дальнейшем «Заимодавец», с одной стороны, и  #(Parameters("Value","lClientsFIO"))#, именуемый(ая) в дальнейшем «Заемщик», действующий(ая) как физическое лицо с другой стороны, вместе именуемые Стороны заключили настоящий договор о нижеследующем:</td><td/>
+</tr>
+<tr style="height:21px">
+<td colspan="17" class="s4">1. Предмет договора</td><td/>
+</tr>
+<tr style="height:1px">
+<td colspan="17" rowspan="2" class="s3">1.1. В соответствии с настоящим договором Заимодавец предоставляет Заемщику в собственность денежные средства в размере #(Parameters("Value","lLoanSum"))# (#(Parameters("Value","lLoanSumProp"))#) рублей  (далее – Займ/Сумма займа) со сроком возврата не позднее #(Parameters("Value","lEndDate"))# года. <br>
+  1.2. За пользование займом Заемщик уплачивает Займодавцу проценты из расчета #(Parameters("Value","lPerc"))#  в  #(Parameters("Value","lPercType"))# от суммы займа.</td>
+<td/>
+</tr>
+<tr style="height:66px">
+<td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:22px">
+<td colspan="17" class="s4">2. Порядок предоставления займа, его возврата и уплаты процентов</td><td/>
+</tr>
+<tr style="height:80px">
+<td colspan="17" class="s3">2.1. Передача денежных средств от Заимодавца к Заемщику производится путем выдачи наличных денежных средств из кассы Заимодавца по расходно-кассовому ордеру в день подписания настоящего договора.<br>2.2. Проценты за пользование Займом начисляются, со дня подписания настоящего договора и по день возврата займа включительно.<br>2.3. Сумма займа и начисленные проценты  возвращаются Заемщиком в порядке, установленном графиком платежей, являющимся неотъемлемой частью настоящего Договора (Приложение № 1).</td><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:22px">
+<td colspan="17" class="s4">3. Права и обязанности сторон</td><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:319px">
+<td colspan="17" class="s3">3.1. Заимодавец обязан:<br>3.1.1. Предоставить Заемщику сумму займа в день подписания настоящего договора.<br>3.1.2. Оказывать Заемщику информационные и консультационные услуги для обеспечения надлежащего исполнения условий настоящего договора.<br>3.2. Займодавец вправе:<br>3.2.1. Информировать Заемщика о просрочках по возврату займа и уплате процентов за пользование займом.<br>3.2.2. Начислять неустойку (пени) за несвоевременный возврат суммы займа и начисленных процентов за пользование займом.<br>3.2.3. Приостановить начисление неустойки (пени) за несвоевременный возврат суммы займа и начисленных процентов за пользование займом ранее срока указанного в п.4.2. настоящего договора.<br>3.2.4. Переуступить право требования по настоящему Договору без согласия Заемщика.<br>3.3. Заемщик обязан возвратить Займ, уплатить проценты, начисленные за пользование Займом, а также выплатить неустойку (пени) при возникновении  в порядке и сроки, предусмотренные настоящим договором.<br>3.4. Заемщик вправе произвести возврат займа или часть займа досрочно.<br>3.5. В случае досрочного возврата займа полностью, проценты начисляются за фактическое время пользования займом, но не менее чем за  #(Parameters("Value","lMinPeriod"))# (#(Parameters("Value","lMinPeriodProp"))#) #(Parameters("Value","lEdIzm"))#.<br>3.6. Срок, указанный в п.1.1. настоящего договора, может быть продлен по соглашению сторон, путем заключения Дополнительного соглашения при условии уплаты Заемщиком процентов начисленных за пользование Займом.<br>3.7. Если сумма произведенного Заемщиком платежа будет недостаточна для исполнения его денежного обязательства полностью, Заимодавец зачисляет полученную от Заемщика сумму в следующем порядке:<br>в первую очередь - на погашение начисленных пени;<br>во вторую очередь - на погашение процентов за пользование займом;<br>в третью очередь - на погашения суммы основного долга.</td><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:27px">
+<td colspan="17" class="s4">4. Ответственность сторон</td><td/>
+</tr>
+<tr style="height:3px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:99px">
+<td colspan="17" class="s3">4.1. В случае нарушения сроков возврата Займа и уплаты процентов за пользование займом (далее - сумма задолженности) Заемщик  выплачивает Заимодавцу неустойку (пени)  из расчета #(Parameters("Value","ProcPros"))#.  Уплата  пени  не освобождает Заемщика от возврата займа и уплаты процентов за пользование займом.<br>4.2. Начисление пени прекращается со дня даты подачи искового заявления.<br>4.3. В случаях, не предусмотренных настоящим договором, имущественная ответственность определяется в соответствии с действующим законодательством РФ.  </td><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:27px">
+<td colspan="17" class="s4">5. Обстоятельства непреодолимой силы (форс-мажор)</td><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:115px">
+<td colspan="17" class="s3">5.1. Сторона, не исполнившая или ненадлежащим образом исполнившая какое-либо обязательство по настоящему договору, несет ответственность, если не докажет, что надлежащее исполнение оказалось невозможным вследствие непреодолимой силы (форс-мажер), то есть чрезвычайных и непредотвратимых при данных условиях обстоятельств, непосредственно влияющих на возможность такой Стороны исполнять свои обязательства по настоящему договору.<br>5.2. Сторона, затронутая форс-мажорными обстоятельствами, должна в срок не более 48-ми часов уведомить другую сторону о возникновении, виде и возможной продолжительности действия форс-мажорных обстоятельств, которые препятствуют исполнению Договора. <br>5.3. На время действия форс-мажорных обстоятельств исполнение обязательств приостанавливается, санкции за неисполнение или ненадлежащее исполнение условий Договора не применяются.<br>5.4. Наступление форс-мажорных обстоятельств при условии соблюдения требований, предусмотренных п.п. 5.1 и 5.2 настоящего Договора, продлевает срок исполнения договорных обязательств на период, который в целом соответствует сроку действия наступившего обстоятельства.<br>5.5. Если затронутая форс-мажорными обстоятельствами сторона не сообщит другой стороне в указанный в п. 5.2 срок о наступлении форс-мажорных обстоятельств, она лишается права ссылаться на них, разве что само наступившее обстоятельство препятствовало передаче или посылке такого сообщения.<br>5.6. Подтверждением наличия и продолжительности форс-мажорных обстоятельств является соответствующий документ, выданный уполномоченным органом. </td><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:27px">
+<td colspan="17" class="s4">6. Разрешение споров, прекращение договора</td><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:99px">
+<td colspan="17" class="s3">6.1. Возникшие в рамках настоящего договора споры и разногласия разрешаются путем переговоров, а при отсутствии согласия все споры между Сторонами будут переданы на рассмотрение в суд по месту нахождения Ответчика.<br>6.2. Претензионный порядок досудебного урегулирования споров из настоящего договора является для Сторон обязательным.<br>6.3. Претензионные письма направляются Сторонами почтовым отправлением с уведомлением о вручении по местонахождению Сторон, указанным в п. 8 настоящего договора. Направление Сторонами претензионных писем иным способом не допускается.<br>6.4. Срок рассмотрения претензионного письма составляет не более 5(пяти) рабочих дней со дня получения последнего адресатом.</td><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:23px">
+<td colspan="17" class="s4">7. Заключительные положения</td><td/>
+</tr>
+<tr style="height:5px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:257px">
+<td colspan="17" class="s3">7.1. Условия настоящего договора являются конфиденциальными. Ни одна из Сторон не будет передавать третьим лицам информацию относительно действительных условий или порядка выполнения настоящего договора, кроме случаев, предусмотренных законодательством Российской Федерации.<br>7.2. Подписанием настоящего договора Заемщик заявляет, что заключает настоящий договор добровольно, не под влиянием обмана, насилия, угрозы, и настоящий договор не является  для него кабальной сделкой, а так же Заемщик заявляет,  что является полностью дееспособным, полностью понимает содержание условий настоящего договора и возможные последствия для него, связанные с неисполнением или  ненадлежащим исполнением условий настоящего договора.<br>7.3. Заемщик гарантирует, что денежные средства, предоставляемые  по настоящему договору, не будут использованы Заемщиком для финансирования терроризма, организованной преступной группы, незаконного вооруженного формирования, преступного сообщества и прочей деятельности, запрещенной на территории Российской Федерации. <br>7.4. Любые изменения и дополнения к настоящему договору действительны при условии, что они совершены в письменной форме и подписаны сторонами.<br>7.5. Стороны обязуются немедленно (не позднее 5 дней) письменно извещать друг друга в случае изменения сведений, указанных в п. 8 настоящего договора.<br>7.6. Настоящий договор вступает в силу с момента передачи Заемщику суммы займа и действует до полного исполнения Заемщиком всех своих обязательств по договору.</td><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:22px">
+<td colspan="17" class="s4">8. Адреса и реквизиты сторон</td><td/>
+</tr>
+<tr style="height:8px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan="4" rowspan="2" class="s0">Заемщик</td><td/><td/><td/>
+</tr>
+<tr style="height:16px">
+<td/><td/><td/><td colspan="5" rowspan="2" class="s0">Заимодавец</td><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:7px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td colspan="8" rowspan="2" class="s5">#(Parameters("Value","lOrganisation"))#</td><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:26px">
+<td/><td/><td colspan="8" class="s1">#(Parameters("Value","lClientsFIO"))#</td>
+</tr>
+<tr style="height:10px">
+<td/><td colspan="8" rowspan="5" class="s1">Юридический адрес: #(Parameters("Value","lOrgAddress"))#</td><td/><td colspan="8" rowspan="3" class="s1">Дата рождения: #(Parameters("Value","lClientsBirthDay"))#</td>
+</tr>
+<tr style="height:1px">
+<td/><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:17px">
+<td/><td/><td colspan="8" rowspan="2" class="s1">Серия/номер: #(Parameters("Value","lPassportNumber"))#</td>
+</tr>
+<tr style="height:1px">
+<td/><td colspan="8" rowspan="3" class="s1">ИНН/КПП:  #(Parameters("Value","lINNKPP"))#</td><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td colspan="8" rowspan="4" class="s1">Кем выдан: #(Parameters("Value","lPassportIssue"))#</td>
+</tr>
+<tr style="height:17px">
+<td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:19px">
+<td/><td colspan="8" class="s1">ОГРН: #(Parameters("Value","lOGRN"))#</td><td/>
+</tr>
+<tr style="height:15px">
+<td/><td colspan="8" rowspan="3" class="s1">Расчетный счет:  #(Parameters("Value","lRS"))#<br>#(Parameters("Value","lBank"))#</td><td/><td colspan="8" class="s1">Дата выдачи: #(Parameters("Value","lPassportDateIssue"))#</td>
+</tr>
+<tr style="height:15px">
+<td/><td/><td colspan="8" class="s1">Код подразделения: #(Parameters("Value","lPassportCode"))#</td>
+</tr>
+<tr style="height:2px">
+<td/><td/><td colspan="8" rowspan="3" class="s1">Телефон: #(Parameters("Value","laPhoneMobile"))#</td>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:11px">
+<td/><td colspan="8" rowspan="3" class="s1">Корреспондентский счет:  #(Parameters("Value","lKS"))#</td><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:2px">
+<td/><td/><td colspan="8" rowspan="3" class="s1">E-mail: #(Parameters("Value","laEMail"))#</td>
+</tr>
+<tr style="height:2px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:11px">
+<td/><td colspan="8" rowspan="2" class="s1">БИК: #(Parameters("Value","lBIK"))#</td><td/>
+</tr>
+<tr style="height:4px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:29px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:13px">
+<td/><td/><td colspan="2" rowspan="3" class="s7">М. П.</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:1px">
+<td/><td/><td/><td colspan="2" class="s6" style="font-size:1px"><span style="font-size:1px">.</span></td><td/><td/><td/><td/><td/><td colspan="2" class="s6" style="font-size:1px"><span style="font-size:1px">.</span> </td><td/><td/><td/><td/>
+</tr>
+<tr style="height:11px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+</table>
+</body></html>
+
+>
+        Quit $$$OK
+]]></Implementation>
+</Method>
+
+<UDLText name="T">
+<Content><![CDATA[
+// Подготовка данных для вывода в отчете
+
+]]></Content>
+</UDLText>
+
+<Method name="GetData">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&Parameters]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	s res=""
+	// Проверка входных параметров
+	// ID
+	// Инициализация данных
+	s Parameters("Value","lSysCode")=" "
+	s Parameters("Value","lSity")=" "
+	s Parameters("Value","lDate")=" "
+	s Parameters("Value","lOrganisation")=" "
+	s Parameters("Value","lWarrant")=" "
+	s Parameters("Value","lFIO")=" "
+	s Parameters("Value","lDateWarrant")=" "
+	s Parameters("Value","lClientsFIO")=" "
+	s Parameters("Value","lLoaSum")=" "
+	s Parameters("Value","lLoaSumProp")=" "
+	s Parameters("Value","lEndDate")=" "
+	s Parameters("Value","lPerc")=" "
+	s Parameters("Value","lPercType")=" "
+	s Parameters("Value","lMinPeriod")=" "
+	s Parameters("Value","lMinPeriodProp")=" "
+	s Parameters("Value","lEdIzm")=" "
+	s Parameters("Value","ProcPros")=" "
+	s Parameters("Value","lOrgAddress")=" "
+	s Parameters("Value","lClientsBirdthDay")=" "
+	s Parameters("Value","lPasportNumber")=" "
+	s Parameters("Value","lINNKPP")=" "
+	s Parameters("Value","lPasportIssue")=" "
+	s Parameters("Value","lOGRN")=" "
+	s Parameters("Value","lRS")=" "
+	s Parameters("Value","lBank")=" "
+	s Parameters("Value","lPasportDateIssue")=" "
+	s Parameters("Value","lPasportCode")=" "
+	s Parameters("Value","laPhoneMobile")=" "
+	s Parameters("Value","lKS")=" "
+	s Parameters("Value","laEMail")=" "
+	s Parameters("Value","lBIK")=" "
+
+	//для теста ID=27525420
+	s ID=$g(%request.Data("ID",1))
+	i ID="" q "Не задан ID класса Docs.Loan."
+ 	s obj=##class(Docs.Loan).%OpenId(ID)
+	i '$IsObject(obj) q "Не найдена договор с ID="_ID_"."
+	try {
+		s res=..InitData(ID,.Parameters)
+	} catch ex {
+		s res="Параметры типа договора не соответствуют ожидаемым в печатной форме."
+	}
+	q res
+]]></Implementation>
+</Method>
+
+<Method name="InitData">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[id="",&Parameters]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+ i id="" q "Не задан ID договора."
+ s obj=##class(Docs.Loan).%OpenId(id)
+ i '$IsObject(obj) q "Не найден договор с ID="_id_"."
+ //s ^||M("Report")= 0
+ //s ^||M("Count") = 0
+ 
+ set obj=##class(System.TInfoObject).%New()
+ set res=##class(System.Options).GetOptions(obj,$$$ApplicationSettingsFirmName,.lOrganisation)
+ set res=##class(System.Options).GetOptions(obj,$$$ApplicationSettingsOGRNOrg,.lOGRN)
+ set res=##class(System.Options).GetOptions(obj,$$$ApplicationSettingsKPPOrg,.lKPP)
+ set res=##class(System.Options).GetOptions(obj,$$$ApplicationSettingsINNOrg,.lINN)
+ set res=##class(System.Options).GetOptions(obj,$$$ApplicationSettingsBIK,.lBIK)
+ set res=##class(System.Options).GetOptions(obj,$$$ApplicationSettingsLoroAccount,.lKS)
+ set res=##class(System.Options).GetOptions(obj,$$$ApplicationSettingsNameBank,.lBank)
+ set res=##class(System.Options).GetOptions(obj,$$$ApplicationSettingsSetAccount,.lRS)
+ set res=##class(System.Options).GetOptions(obj,$$$ApplicationSettingsPostIndexDeJureAddress,.lIndex)
+ set res=##class(System.Options).GetOptions(obj,$$$ApplicationSettingsCityDeJureAddress,.lJureSity)
+ set res=##class(System.Options).GetOptions(obj,$$$ApplicationSettingsLocationDeJureAddress,.lJureAddress) 
+
+ s Parameters("Value","lOrganisation")=lOrganisation
+ s Parameters("Value","lOrgAddress")=lIndex_","_lJureSity_", "_lJureAddress
+ s Parameters("Value","lINNKPP")=lINN_"/"_lKPP
+ s Parameters("Value","lRS")=lRS
+ s Parameters("Value","lBank")=lBank
+ s Parameters("Value","lKS")=lKS
+ s Parameters("Value","lOGRN")=lOGRN
+ s Parameters("Value","lBIK")=lBIK 
+
+
+ s ORefLoan=##class(Docs.Loan).%OpenId(id)
+ If '$IsObject(ORefLoan) {
+	 ////////////s ErrText="Не найден договор ID="_id $$$SysLogError($$$EMCSysErr,ErrText) d OK^%WMUTIL(ErrText) 
+	s Parameters("Value","lSysCode")				="010101010101"
+	s Parameters("Value","lSity")					="Москва"
+	s Parameters("Value","lFIO")					="Терентьева Петра Леонидовича"
+	s Parameters("Value","lWarrant")				="01-01 / 01"
+	s Parameters("Value","lDateWarrant")			="01.01.2011 г."
+	s Parameters("Value","lDate")					="01 января 2011 г."
+	s Parameters("Value","lLoanSum")				="10000"
+	s Parameters("Value","lLoanSumProp")=##class(System.TUtil).NumberToString(10000)
+	s Parameters("Value","lClientsFIO")			="Иванов Иван Иванович"
+	s Parameters("Value","lEndDate")				="10.01.2011 г."
+	s obj=##class(Docs.ProductType).%OpenId(idProductType)
+ 	i $IsObject(obj) {
+		s Parameters("Value","lPerc")=obj.PTProcTek_" %"
+		s Parameters("Value","lPercType")=$s(obj.PTPercentRatePeriod=0:" год",1:"день")
+		  ; Период % ставки
+		  s text=" год, день"
+		  s ProcEd=$p(text,",",obj.PTPercentRatePeriod+1)
+		  //s Parameters("Value","ProcTek")="Из расчета "_ORefLoan.lConditions.ptcProductTypeID.PTProcTek_ProcEd
+		  //сумма прописью
+	 	  s summap=$zstrip(##class(System.TUtil).NumberToString(obj.PTProcPros),"<>W")
+		  s Parameters("Value","ProcPros")=obj.PTProcPros_" ("_summap_")  % от суммы задолженности за каждый "_ProcEd_" просрочки."
+  		 // s Parameters("Value","ProcPros")=ORefLoan.lConditions.ptcProductTypeID.PTProcPros_ProcEd_ " на общую сумму задолженности"
+		 s DCMinPeriod=obj.PTDCMinPeriod
+ 		 s EdCode=obj.PTEd
+		 i obj.PTDynamicConditions=1 {
+			 s Parameters("Value","lMinPeriod")=DCMinPeriod
+ 		 	 s Parameters("Value","lMinPeriodProp")=$zstrip(##class(System.TUtil).NumberToString(DCMinPeriod,$s(EdCode=2:2,1:1),2),"<>W")
+		 } else { 
+		 	s Parameters("Value","lMinPeriod")=0 
+		 	 s Parameters("Value","lMinPeriodProp")=$zstrip(##class(System.TUtil).NumberToString(0),"<>W")
+		 }
+	        if DCMinPeriod {
+		      s Parameters("Value","lEdIzm")=##class(BL.Docs.GP).PeriodInUnit(DCMinPeriod,1,EdCode,2)
+	      } else {
+		      s Parameters("Value","lEdIzm")=" календарных дней"
+	      }
+
+ 	}
+	//s Parameters("Value","lPerc")					="------------------"
+	//s Parameters("Value","lPercType")				="------------------"
+	//s Parameters("Value","ProcPros")				="------------------"
+
+	//s Parameters("Value","lOrganisation")			= "ООО ""Микроорганизация"""
+	//s Parameters("Value","lOrgAddress")			= "г. Москва, пр. Мира, д. 101, оф. 22"
+	//s Parameters("Value","lINNKPP")				= "7767495875/773493345"
+	//s Parameters("Value","lOGRN")					= "1107758768576"
+	//s Parameters("Value","lRS")						= "40794875983475847835"
+	//s Parameters("Value","lBIK")					= "30101094948503943759"
+	//s Parameters("Value","lBank")					= "ЗАО ""МикроБанк"", г. Москва"
+	s Parameters("Value","lClientsBirtDay")		= "01.01.2010 г."
+	s Parameters("Value","lClientsAddress")		= "г. Москва, ул. Правды, д. 12, кв. 36"
+	s Parameters("Value","lPassportNumber")		= "1234 56789"
+	s Parameters("Value","lPassportIssue")			= "ОВД Мещанского р-на г. Москвы"
+	s Parameters("Value","lPassportDateIssue")	= "01.08.1990 г."
+	s Parameters("Value","lPassportCode")			= "674-878"
+ }
+ Else 
+ {
+   s Parameters("Value","ID")			=id
+   s Parameters("Value","ORefLoan")		=ORefLoan
+   s Parameters("Value","lSysCode")		=ORefLoan.SysCode
+   s Parameters("Value","lDate")=$$D^%FD(ORefLoan.lDateReg,"D $m Y г.")
+    // 1 - для договора
+   	&SQL(select max(pgPaysDate) into :dtDateEnd from docs.paysgraphics where pgLoanID=:id and pgNumber=1)
+   	i SQLCODE=0 {s lEndDate=dtDateEnd} else {s lEndDate= ORefLoan.lDateProposeConcl}
+	s Parameters("Value","lEndDate")=$$D^%FD(lEndDate,"D.M.Y")
+   	&SQL(select min(pgPaysDate) into :dtDateStart from docs.paysgraphics where pgLoanID=:id and pgNumber=1)
+   	i SQLCODE=0 {s lStartDate=dtDateStart} else {s lStartDate= ORefLoan.lDateReg}
+	s Parameters("Value","lStartDate")=$$D^%FD(lStartDate,"""d"" $m Y г.")
+	    //s user=##class(System.TAccount).GetSessionAccount()
+    
+   	s userID=##class(System.TAccount).GetSessionAccount().%Id()
+ 	&SQL(SELECT sePersonID->FIO2,seWrntNumber,seWrntDate,seOfficeID->offAddrID->daCity INTO :lFIO,:lWarrant,:lDateWarrant,:lSity FROM Subj.Employee WHERE sePersonID->AccountID = :userID)
+ 	if SQLCODE {
+	 	s lFIO = $s($isObject(ORefLoan.lGiveOutEmployeeID):$s(ORefLoan.lGiveOutEmployeeID.sePersonID.FIO2'="":ORefLoan.lGiveOutEmployeeID.sePersonID.FIO2,1:ORefLoan.lGiveOutEmployeeID.sePersonID.FullName),1:"")
+	 	s lWarrant=$s($isObject(ORefLoan.lGiveOutEmployeeID):ORefLoan.lGiveOutEmployeeID.seWrntNumber,1:"")
+	 	s lDateWarrant=$s($isObject(ORefLoan.lGiveOutEmployeeID):ORefLoan.lGiveOutEmployeeID.seWrntDate,1:"")
+	 	s lSity=ORefLoan.lGiveOutEmployeeID.seOfficeID.offAddrID.daCity
+	 	}
+	s status=$$$scActive
+	&SQL(select lGiveOutEmployeeID->ObjectName,lGiveOutEmployeeID->sePersonID->FIO2 into :FIOLoan,:FIOLoan2
+	 from docs.loan where id=:id and cls='docs.loan'  and status=:status)
+	i SQLCODE=0 {
+		If $IsObject(ORefLoan.lGiveOutEmployeeID.sePersonID) {
+			s Parameters("Value","lFIO")=$s(FIOLoan2'="":FIOLoan2,1:FIOLoan)
+		}else {
+			s Parameters("Value","lFIO")=lFIO
+		}
+	} else {	s Parameters("Value","lFIO")=lFIO}
+ 	s Parameters("Value","lSity")=lSity
+ 	s Parameters("Value","lWarrant")=lWarrant
+    s Parameters("Value","lDateWarrant")=$$D^%FD(lDateWarrant,"D.M.Y г.")
+       
+	s Parameters("Value","lLoanSum")=ORefLoan.lSumm
+	s Parameters("Value","lPerc")=ORefLoan.lConditions.ptcProductTypeID.PTProcTek_" %"
+	s Parameters("Value","lPercType")=$s(ORefLoan.lConditions.ptcProductTypeID.PTPercentRatePeriod=0:" год",1:"день")
+	s Parameters("Value","lLoanSumProp")=##class(System.TUtil).NumberToString(ORefLoan.lSumm,,,1)
+
+	s Parameters("Value","lClientsFIO")=ORefLoan.lLoanAppID.laClientID.PersonID.FullName
+	s Parameters("Value","lClientsBirthDay")=$$$HorologToDateEdit(ORefLoan.lLoanAppID.laClientID.PersonID.DateOfBirth)
+	s Parameters("Value","lClientsAddress")=ORefLoan.lLoanAppID.laRegAddrID.GetAddressForLoanAppInfo()   //ORefLoan.lLoanAppID.laRegAddrID.daKLADRAddress
+	s Parameters("Value","lPassportNumber")=ORefLoan.lLoanAppID.laPassportID.psSeries_" № "_ORefLoan.lLoanAppID.laPassportID.psNumber
+	s Parameters("Value","lPassportIssue")=ORefLoan.lLoanAppID.laPassportID.psIssueDep
+	s Parameters("Value","lPassportDateIssue")=$$$HorologToDateEdit(ORefLoan.lLoanAppID.laPassportID.psDateIssue)
+	s Parameters("Value","lPassportCode")=ORefLoan.lLoanAppID.laPassportID.psIssueDepCode
+	
+	i $IsObject(ORefLoan.lLoanAppID.laPhoneMobileID) {
+		s Parameters("Value","laPhoneMobile")=##class(Application.EMC.Account).SetFormatPhone(ORefLoan.lLoanAppID.laPhoneMobileID.phNumber)
+	}	
+	i $IsObject(ORefLoan.lConditions.ptcProductTypeID) {
+		  ; Период % ставки
+		  s text=" год, день"
+		  s ProcEd=$p(text,",",ORefLoan.lConditions.ptcProductTypeID.PTPercentRatePeriod+1)
+		  //s Parameters("Value","ProcTek")="Из расчета "_ORefLoan.lConditions.ptcProductTypeID.PTProcTek_ProcEd
+		  //сумма прописью
+	 	  s summap=$zstrip(##class(System.TUtil).NumberToString(ORefLoan.lConditions.ptcProductTypeID.PTProcPros),"<>W")
+		  s Parameters("Value","ProcPros")=ORefLoan.lConditions.ptcProductTypeID.PTProcPros_" ("_summap_")  % от суммы задолженности за каждый "_ProcEd_" просрочки."
+  		 // s Parameters("Value","ProcPros")=ORefLoan.lConditions.ptcProductTypeID.PTProcPros_ProcEd_ " на общую сумму задолженности"
+		 s DCMinPeriod=ORefLoan.lConditions.ptcProductTypeID.PTDCMinPeriod
+ 		 s EdCode=ORefLoan.lConditions.ptcProductTypeID.PTEd
+		 i ORefLoan.lConditions.ptcProductTypeID.PTDynamicConditions=1 {
+			 s Parameters("Value","lMinPeriod")=DCMinPeriod
+		 	 s Parameters("Value","lMinPeriodProp")=$zstrip(##class(System.TUtil).NumberToString(DCMinPeriod,$s(EdCode=2:2,1:1),2),"<>W")
+		 } else { 
+		 	s Parameters("Value","lMinPeriod")=0
+		 	 s Parameters("Value","lMinPeriodProp")=$zstrip(##class(System.TUtil).NumberToString(0,$s(EdCode=2:2,1:1),2),"<>W")
+		  }
+	        if DCMinPeriod {
+		      s Parameters("Value","lEdIzm")=##class(BL.Docs.GP).PeriodInUnit(DCMinPeriod,1,EdCode,2)
+	      } else {
+		      s Parameters("Value","lEdIzm")=" календарных дней"
+	      }
+		  
+
+	 }
+	
+ }  // договор
+ 	q ""
+]]></Implementation>
+</Method>
+</Class>
+</Export>

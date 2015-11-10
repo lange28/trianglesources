@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.PassportChange">
+<Description>
+Форма для смены паспортных данных</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62711,32443.250821</TimeCreated>
+
+<Parameter name="PAGENAME">
+<Description>
+Отображаемое имя для нового приложения.</Description>
+<Default>PassportChange</Default>
+</Parameter>
+
+<Property name="LoanID">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="LoanID"/>
+</Property>
+
+<Parameter name="JSINCLUDES">
+<Type>STRING</Type>
+<Default>jquery.js,jquery.maskedinput-1.2.2.js</Default>
+</Parameter>
+
+<XData name="Style">
+<Data><![CDATA[
+<style type="text/css">
+
+#userControls {
+	height: 200px;
+	overflow: auto;
+}
+
+.required {
+}
+.required:after {
+	color: red;
+	content: " *";
+}
+/*перебиваем дефолтное межстрочное растояние между контролами*/
+.zendiv {
+	padding-bottom: 5px;
+}
+/*в группе платежного калькулятора изменем дефолт по межстрочному отступу*/
+#frmCalc .zendiv {
+	padding-bottom: 1px;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<Description>
+Этот XML блок описывает содержимое этой страницы.</Description>
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page title="Смена паспортных данных заемщика" xmlns="http://www.intersystems.com/zen">
+<titleBox id="titlePageHeader" title="" subtitle=""/>
+<fieldSet>
+<hgroup labelPosition="left" align="right">
+<text id="edtDeal" label="Договор" size="60" readOnly="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="clientFIO" label="ФИО клиента" size="60" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="edtDealType" label="Тип займа" size="60" disabled="true"/>
+</hgroup>
+<fieldSet id="frmEditPassport" legend=" Паспортные данные " labelPosition="left">
+<hgroup labelPosition="left" align="right">
+<text id="edtPassportSeries" controlClass="passportSeriesMask" label="Серия" labelClass="required" size="1" maxlength="4" required="true" labelStyle="font-weight:bold"/>
+<spacer width="124"/>
+<text id="edtPassportNumb" controlClass="passportNumbMask" label="Номер" labelClass="required" size="3" maxlength="6" required="true" labelStyle="font-weight:bold"/>
+</hgroup>
+<spacer width="20"/>
+<hgroup labelPosition="left">
+<dateText id="dedtPassportDate" controlClass="dateMask" label="Дата выдачи" format="DMY" labelClass="required" required="true" labelStyle="font-weight:bold" onchange="zenPage.dedtDateChange();"/>
+<spacer width="20"/>
+<text id="edtPassportIssueDepCode" controlClass="depCodeMask" label="Код подразделения" labelClass="required" size="5" maxlength="7" required="true" labelStyle="font-weight:bold"/>
+</hgroup>
+<spacer width="20"/>
+<hgroup labelPosition="left" align="right">
+<text id="edtPassportIssueDep" label="Кем выдан" labelClass="required" size="50" required="true" labelStyle="font-weight:bold"/>
+</hgroup>
+</fieldSet>
+<hgroup align="right">
+<button id="btnExec" caption="   Ок   "  align="center" onclick="zenPage.btnExecClick();"/>
+<button id="btnCancel" caption="Выход" align="right" onclick="zenPage.cancelPopup();"/>
+</hgroup>
+</fieldSet>
+</page>
+]]></Data>
+</XData>
+
+<Method name="%DrawJSStrings">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pVisited:%String]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	d ##super()
+	&js<$(function()
+		{
+			$.mask.definitions['~']='[+-]';
+			$('.passportSeriesMask').mask('9999');
+			$('.passportNumbMask').mask('999999');
+			$('.depCodeMask').mask('999-999');
+			$('.dateMask').mask('99-99-9999');
+		})
+		
+		$('.uppertext').keypress(function(eventObject)
+		{
+			var a=eventObject.which, b=1039;
+			var isTrue = (a+b+Math.abs(a-b))/2;
+			return (isTrue == b ? false : true )
+		})
+		$(".uppertext").css("text-transform", "uppercase");
+		>
+	q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.PassportChange","WebForm","OnClick",1,"Форма для смены паспортных данных")
+	set ^a= $zdt($h)_" ERROR"
+	set c=..%GetComponentById("titlePageHeader")
+	set c.subtitle=##class(Application.TE.Utils).GetConnStr()
+	
+	set obj = ##class(Docs.Loan).%OpenId(..LoanID)
+	if '$IsObject(obj)
+	{
+		set Err="Ошибка открытия объекта Docs.Loan ID="_..LoanID
+		//&js<alert('#(Err)#');>
+		quit $$$OK
+	}
+	set %session.Data("Deal","ID") = ..LoanID
+	do ..fillForm()
+	kill obj
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="fillForm">
+<Implementation><![CDATA[
+	set dealID = %session.Data("Deal","ID")
+	quit:'dealID
+	set deal=##class(Docs.Loan).%OpenId(dealID)
+	if '$IsObject(deal)
+	{
+		set Err="Ошибка открытия объекта Docs.Loan ID="_dealID
+		//&js<alert('#(Err)#');>
+		quit
+	}
+	set str = "№"_deal.SysCode_" от "_$zd(deal.lDateReg,3)
+	set ..%GetComponentById("edtDeal").value = str
+	set str = deal.lLoanAppID.laClientID.PersonID.ObjectName
+	set ..%GetComponentById("clientFIO").value = str
+	set str = deal.lConditions.ptcProductTypeID.ObjectName_", "_deal.lSummCurrent_" руб. на срок "_deal.lPeriodCurrent_" "_
+		deal.lConditions.ptcProductTypeID.PTEdLogicalToDisplay(deal.lConditions.ptcProductTypeID.PTEd)
+	set ..%GetComponentById("edtDealType").value = str
+	set flagEdit = 0
+	set flagTabStop = 1
+	set ..%GetComponentById("edtPassportSeries").readOnly = flagEdit
+	set ..%GetComponentById("edtPassportNumb").readOnly = flagEdit
+	set ..%GetComponentById("dedtPassportDate").readOnly = flagEdit
+	set ..%GetComponentById("edtPassportIssueDepCode").readOnly = flagEdit
+	set ..%GetComponentById("edtPassportIssueDep").readOnly = flagEdit
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="checkForm">
+<Implementation><![CDATA[
+ 
+	set Err = ""
+	;--
+	set Cntrl="edtDeal"
+	set Text = ..%GetComponentById(Cntrl).value
+	if Text=""
+	{
+		set Err = Err_"\nНе указан договор"
+	}
+	if Err'=""
+	{
+		&js<alert('#(Err)#');>
+		quit 1
+	}
+	quit ""
+]]></Implementation>
+</Method>
+
+<Method name="btnExecClick">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	quit:..checkForm()
+	set deal = %session.Data("Deal","ID")
+	if 'deal quit
+	set deal = ##class(Docs.Loan).%OpenId(deal)
+	if '$IsObject(deal) &js<alert("Невозможно открыть объект Docs.Loan id="+'#(deal)#');> quit
+	do deal.%Reload()
+	// Проверки
+	set res = deal.BL.sIsPassportChangeAllow(deal)
+	if res'=""
+	{
+		&js<alert('#(res)#');>
+		quit 
+	}
+	set ErrText=""
+	set err=0
+	// Проверка актуальности паспорта
+	if $IsObject(deal.lLoanAppID.laPassportID)
+	{
+		set gender = $s(deal.lLoanAppID.laClientID.PersonID.Gender=1:"M",deal.lLoanAppID.laClientID.PersonID.Gender=2:"W",1:"") 
+		set res = ##class(BL.Docs.LoanApp).PassportCheck(deal.lLoanAppID.laClientID.PersonID.DateOfBirth,deal.lLoanAppID.laPassportID.psDateIssue,gender,.TypeStatus,.TypeReason,1)
+		if $$$ISERR(res)
+		{
+			&js<alert('#(res)#');>
+			quit
+		}
+		set user = ##class(System.TAccount).GetSessionAccount()
+		set Passport=deal.lLoanAppID.laPassportID
+		set Passport.psFirstName = deal.lLoanAppID.laClientID.PersonID.FirstName
+		set Passport.psSecondName = deal.lLoanAppID.laClientID.PersonID.LastName
+		set Passport.psSurName = deal.lLoanAppID.laClientID.PersonID.MiddleName
+		set Passport.psPersonID = deal.lLoanAppID.laClientID.PersonID
+		set str = ..%GetComponentById("edtPassportSeries").value
+		set Passport.psSeries = str
+		set str = ..%GetComponentById("edtPassportNumb").value
+		set Passport.psNumber = str
+		set str = ..%GetComponentById("edtPassportIssueDepCode").value
+		set Passport.psIssueDepCode = str
+		set str = ..%GetComponentById("edtPassportIssueDep").value
+		set Passport.psIssueDep = str
+		set str = ..%GetComponentById("dedtPassportDate").value
+		if $g(str)'="" set Passport.psDateIssue=$zdh(str,3)
+		else  set Passport.psDateIssue=""
+		set res = user.Exec(.doc,"Common.changeLoanAppPassport",.Passport,,deal.lLoanAppID)
+		if $$$ISERR(res)
+		{
+			set ErrText = "Ошибка при изменении папсортных данных:"
+			set ErrText = ErrText_"\n"_$System.Status.GetErrorText(res)
+			&js<alert('#(ErrText)#');>
+			quit
+		}
+	}
+	&js<alert("Смена паспортных данных проведена успешно");>
+	&js<zenPage.firePopupAction("OK",#(res)#,true);>
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="dedtDateChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = %page.%GetComponentById("edtPassportIssueDepCode").value
+	if (str = "-1") set %page.%GetComponentById("edtPassportIssueDepCode").value = "" quit
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

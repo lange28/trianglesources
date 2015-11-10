@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.InputFile">
+<Description>
+GUI.WEB.InputFile</Description>
+<Super>%ZEN.Component.control,%CSP.Page</Super>
+<TimeCreated>62780,54493.921453</TimeCreated>
+
+<Parameter name="NAMESPACE">
+<Description>
+Это XML область для этого компонента.</Description>
+</Parameter>
+
+<XData name="Style">
+<Description>
+Этот блок Style содержит определение CSS стиля компонента.</Description>
+<Data><![CDATA[
+<style type="text/css">
+#userControls {
+	height: 200px;
+	overflow: auto;
+}
+
+.required {
+}
+.required:after {
+	color: red;
+	content: " *";
+}
+/*перебиваем дефолтное межстрочное растояние между контролами*/
+.zendiv {
+	padding-bottom: 5px;
+}
+/*в группе платежного калькулятора изменем дефолт по межстрочному отступу*/
+#frmCalc .zendiv {
+	padding-bottom: 1px;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+</style>
+]]></Data>
+</XData>
+
+<Method name="%DrawHTML">
+<Description>
+Метод %DrawHTML выдает начальный HTML-код для этого компонента.</Description>
+<Implementation><![CDATA[
+	#; TODO: implement this method
+
+	#; hidden control to hold control value
+	#; (TODO: remove if not needed)
+	&html<
+	
+	<form enctype="multipart/form-data" method="post" action="">
+	Документ: <input type="file" size="30" name="FileStream">
+		<p>
+		<ul><input type="submit" value="Прикрепить" onclick="zenPage.btnExecClick();"></ul>
+		<p>
+	</form>
+	<!-- As form is submitted to this page look to see if we have the stream in the %request object -->
+<csp:if condition='($data(%request.MimeData("FileStream",1)))'>
+	<hr><br>
+	Submitted filename: <b>#(..EscapeHTML(%request.MimeData("FileStream",1).FileName))#</b><br>
+	Size of file: <b>#(..EscapeHTML(%request.MimeData("FileStream",1).Size))#</b><br>
+	Mime Section: <b>#(..EscapeHTML(%request.MimeData("FileStream",1).MimeSection))#</b><br>
+	Type of stream: <b>#(..EscapeHTML($classname(%request.MimeData("FileStream",1))))#</b><br>
+	Content Type: <b>#(..EscapeHTML(%request.MimeData("FileStream",1).ContentType))#</b><br>
+	Content: <b>#(..EscapeHTML(##class(%CSP.Utils).DecodeData(%request.MimeData("FileStream",1).Read(200))))#</b><br>
+	<br>
+	First 200 characters of stream:<br>
+	<ul>
+	<script language="Cache" runat="server">
+		//New bytes
+		//Set bytes=%request.MimeData("FileStream",1).Read(200)
+		//Set bytes=##class(%CSP.Utils).DecodeData(bytes)
+		//Write " !!!!!!->", bytes,!
+		// Тип документа(ID) и заявка (ID)
+		//!!!!!!!!!!!!!!!!!!!s res=##class(Application.UpLoadFile).AddFile(%request.MimeData("FileStream",1),SiteCode,$s(TypFilesID="ALL":"",1:TypFile.SysCode),,FolderID,Replace)
+		
+	</script>
+	</ul>
+</csp:if>
+>
+]]></Implementation>
+</Method>
+</Class>
+</Export>

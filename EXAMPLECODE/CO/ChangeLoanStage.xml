@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.CO.ChangeLoanStage">
+<Description>
+Форма для изменения стадии коллектинга
+Created using the page template: Default</Description>
+<IncludeCode>EMCConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62711,62363.765231</TimeCreated>
+
+<Parameter name="PAGENAME">
+<Description>
+Отображаемое имя для нового приложения</Description>
+<Default>ChangeLoanStage</Default>
+</Parameter>
+
+<Property name="LoanID">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="LoanID"/>
+</Property>
+
+<XData name="Style">
+<Description>
+Этот блок Style содержит определение CSS стиля страницы.</Description>
+<Data><![CDATA[
+<style type="text/css">
+
+#userControls {
+	height: 200px;
+	overflow: auto;
+}
+
+.required {
+}
+.required:after {
+	color: red;
+	content: " *";
+}
+/*перебиваем дефолтное межстрочное растояние между контролами*/
+.zendiv {
+	padding-bottom: 5px;
+}
+/*в группе платежного калькулятора изменем дефолт по межстрочному отступу*/
+#frmCalc .zendiv {
+	padding-bottom: 1px;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<Description>
+Этот XML блок описывает содержимое этой страницы.</Description>
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page title="Изменить стадию коллектинга" xmlns="http://www.intersystems.com/zen">
+<titleBox id="titlePageHeader" title="" subtitle=""/>
+<fieldSet>
+<hgroup labelPosition="left" align="right">
+<text id="edtLoan" label="Договор" size="70" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="edtCurrentStage" label="Текущая стадия" size="20" disabled="true"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<combobox id="cmbSetStage" label="Установить стадию" size="20"/>
+<spacer width="10"/>
+<dateText id="dedtSetStageDate" label="Дата"/>
+</hgroup>
+<hgroup labelPosition="left" align="right">
+<text id="edtComment" label="Комментарий" size="60"/>
+</hgroup>
+<hgroup align="right">
+<button id="btnExec" caption="   Ок   "  align="center" onclick="zenPage.btnExecClick();"/>
+<button id="btnCancel" caption="Выход" align="right" onclick="zenPage.cancelPopup();"/>
+</hgroup>
+</fieldSet>
+</page>
+]]></Data>
+</XData>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.CO.ChangeLoanStage","WebForm","OnClick",1,"Форма для изменения стадии коллектинга")
+	set ^a= $zdt($h)_" ERROR"
+	set c=..%GetComponentById("titlePageHeader")
+	set c.subtitle=##class(Application.TE.Utils).GetConnStr()
+	
+	if '$IsObject(..LoanID)&&(..LoanID) set ..LoanID = ##class(Docs.Loan).%OpenId(..LoanID)
+	if '$IsObject(..LoanID) /*&js<alert("Не указан договор займа")>*/ quit $$$OK
+	set %session.Data("ID") = ..LoanID
+	do ..fillForm()
+	;секретные функционалы
+	do ##CLASS(System.Options).GetOptions(##class(System.TAccount).%New(),"DeveloperID",.devID)
+	set user=##class(System.TAccount).GetSessionAccount()
+	if '$IsObject(user)||(user.%Id()'=$g(devID))
+	{
+		//set ..%GetComponentById("edtSecurityEmpl").hidden = 1
+	}
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="fillForm">
+<Implementation><![CDATA[
+	set LoanID=##class(Docs.Loan).%OpenId(%session.Data("ID"))
+	set ^a= $zdt($h)_" Continue! "_LoanID
+	if '$IsObject(LoanID) /*&js<alert("Объект не найден ID="+'#(LoanID)#')>*/ quit
+	set ..%GetComponentById("edtLoan").value = LoanID.BL.ToString()
+	set ..%GetComponentById("edtCurrentStage").value = LoanID.lStateItemDESID.ObjectName
+	set ..%GetComponentById("dedtSetStageDate").value = $zd($h,3)
+	do ..fillCmbStage(+$H)
+	quit
+]]></Implementation>
+</Method>
+
+<Method name="fillCmbStage">
+<FormalSpec>Data=+$H</FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+	set status = $$$scActive
+	// без сортировки, т.к. порядок предопределен в базе
+	set (valueList,displayList) = ""
+	&SQL(DECLARE stage CURSOR FOR select id into :ID from Data_CO.CollectingStage where cls='Data.CO.CollectingStage' and Status=:status)
+	&SQL(OPEN stage)
+	set i=0
+	for
+	{
+		&SQL(FETCH stage)
+		quit:SQLCODE
+		set ac = ##class(Data.CO.CollectingStage).%OpenId(ID)
+		if '$IsObject(ac) CONTINUE
+		set str = ac.ObjectName
+		set valueList = valueList_$s(valueList'="":",",1:"")_i
+		set displayList = displayList_$s(displayList'="":",",1:"")_ID_"~"_str
+		set i=i+1
+	}
+	&sql(close stage)
+	set tCombo = ..%GetComponentById("cmbSetStage")
+	set tCombo.valueList = valueList
+	set tCombo.displayList = displayList
+	quit
+]]></Implementation>
+</Method>
+</Class>
+</Export>

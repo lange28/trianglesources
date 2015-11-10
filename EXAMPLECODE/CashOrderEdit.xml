@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="GUI.WEB.CashOrderEdit">
+<Description>
+Форма для доставки денег банком/инкассации</Description>
+<IncludeCode>%Guiconst,EMCConst</IncludeCode>
+<Super>%ZEN.Component.page</Super>
+<TimeCreated>62045,54339.751991</TimeCreated>
+
+<Parameter name="APPLICATION">
+<Description>
+Class name of application this page belongs to</Description>
+</Parameter>
+
+<Parameter name="PAGENAME">
+<Description>
+Displayed name of this page</Description>
+<Default>CashOrderEdit</Default>
+</Parameter>
+
+<Property name="coType">
+<Description>
+Тип операции </Description>
+<Type>%String</Type>
+<Parameter name="ZENURL" value="coType"/>
+</Property>
+
+<Property name="CashOrderID">
+<Type>%String</Type>
+<Parameter name="ZENURL" value="CashOrderID"/>
+</Property>
+
+<Property name="ReadOnly">
+<Type>%Boolean</Type>
+<Parameter name="ZENURL" value="ReadOnly"/>
+</Property>
+
+<Parameter name="JSINCLUDES">
+<Type>STRING</Type>
+<Default>jquery.js,jquery.maskedinput-1.2.2.js</Default>
+</Parameter>
+
+<XData name="Style">
+<Data><![CDATA[
+<style type="text/css">
+
+#userControls {
+	height: 200px;
+	overflow: auto;
+}
+
+.required {
+}
+.required:after {
+	color: red;
+	content: " *";
+}
+/*перебиваем дефолтное межстрочное растояние между контролами*/
+.zendiv {
+	padding-bottom: 5px;
+}
+#titlePageHeader .titleBoxTitle {
+	font-size: 1.5em;
+	color: black;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px;
+	border-bottom: 1px solid black;
+	white-space: nowrap;
+}
+#titlePageHeader .titleBoxSubtitle {
+	font-size: 0.5em;
+	color: gray;
+	font-weight: normal;
+	font-style:italic;
+	text-align: left;
+	padding-top: 5px;
+	text-indent: 10px;
+}
+</style>
+]]></Data>
+</XData>
+
+<XData name="Contents">
+<XMLNamespace>http://www.intersystems.com/zen</XMLNamespace>
+<Data><![CDATA[
+<page title="Доставка денег банком/Инкассация" xmlns="http://www.intersystems.com/zen">
+<titleBox id="titlePageHeader" title="" 
+		subtitle=""/>
+<fieldSet id="frmEMCCashOrderEdit" legend="Доставка денег банком/Инкассация" labelPosition="left">
+
+<dateText id="edtPDate" label="Дата операции" controlClass="dateMask" format="DMY" labelClass="required" required="true" onchange="zenPage.dedtDateChange()" />
+<spacer width="20"/>
+
+<text id="edtPOfficeID" label="Точка обслуживания клиентов (касса)" value="" size="50" readOnly="true" disabled="true"/>
+<spacer width="20"/>
+
+<text id="edtPCashier" label="Кассир" size="50" disabled="true" />
+<spacer width="20"/>
+
+<text id="edtpSumm" label="Сумма" labelClass="required" size="15" required="true" />
+<spacer width="20"/>
+
+<textarea id="memoInfo" label="Комментарий" labelClass="required" required="true" rows="4" cols="45"/>
+<spacer width="20"/>
+
+<!-- GLabelTrInfo-->
+
+</fieldSet>
+
+<hgroup align="right">
+<button id="BOK" caption="Сохранить" hidden="true" onclick="zenPage.BOKClick();"/>
+<button id="btnExecute" caption="Провести" onclick="zenPage.btnExecuteClick();"/>
+<button id="BCancel" caption="Закрыть" onclick="zenPage.cancelPopup();"/>
+</hgroup>
+</page>
+]]></Data>
+</XData>
+
+<Method name="%DrawJSStrings">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pVisited:%String]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	d ##super()
+	&js<$(function()
+		{
+			$.mask.definitions['~']='[+-]';
+			$('.dateMask').mask('99-99-9999');
+		})
+		>
+	q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="%OnAfterCreatePage">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc=##class(GUI.HistoryLog).CreateRecord("GUI.WEB.CashOrderEdit","WebForm","OnClick",1,"Форма для доставки денег банком/инкассации")
+ s id=..CashOrderID
+ s ReadOnly=..ReadOnly
+ s type=..coType
+  
+ s userId=$g(%session.Data("UserId"))
+ s (offID,office,emplId)=""
+ i $IsObject(##class(System.TAccount).%OpenId(userId)) {
+	 s user=##class(System.TAccount).%OpenId(userId)
+	 s sc=##class(BL.Subj.Office).GetCurrentOffice(user.%Id(),.offID,,.office,.emplId)
+ }
+ i 'offID {
+	 s ErrText="Для текущего пользователя не удалось определить точку обслуживания"
+	 &js<alert('#(ErrText)#');>
+	 q
+ }
+ i id {
+	 s obj=##class(Docs.CashOrder).%OpenId(id)
+	 ;Кассир
+	 i obj.coCashierID="" s obj.coCashierID=emplId
+ } else {
+	 s obj=##class(Docs.CashOrder).%New()
+	 ;дефолтное заполнение для новой записи
+	 s obj.coType=type
+ 	 s obj.coCashierID=##class(Subj.Employee).%OpenId(emplId)
+ 	 s obj.coOfficeID=##class(Subj.Office).%OpenId(offID)
+ 	 i $IsObject(obj.coOfficeID)&&(obj.coType=$$$coTypeOut) {
+		 s reg=obj.coOfficeID.BL.GetCashReg()
+		 s:$IsObject(reg) obj.coSumm=reg.GetBalance(1)
+	 }
+ }
+ i obj.coExecuted {
+	 s ReadOnly=1  ;запрет редактирования проведенных
+	 set ..%GetComponentById("btnExecute").hidden = 1
+ }
+ d ..FillForm(obj,ReadOnly)
+ q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="FillForm">
+<Description>
+заполнение формы данными из БД</Description>
+<FormalSpec>obj:Docs.CashOrder,ReadOnly:%Integer=0</FormalSpec>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ #dim c as %ZEN.Component.control
+ 
+ i '$IsObject(obj) {
+	s ErrText="Ошибка открытия/создания объекта Docs.CashOrder"
+	&js<alert('#(ErrText)#');>
+	q $$$ERROR($$$GeneralError,ErrText)
+ }
+ s id=+obj.%Id()
+ s caption=$s(id&&('ReadOnly):"Редактирование",'id:"Новая запись",1:"Просмотр")
+ s caption=$s(obj.coType=$$$coTypeIn:"Доставка наличных денег банком",obj.coType=$$$coTypeOut:"Инкассация",1:"")_". "_caption
+ 
+ s c=..%GetComponentById("frmEMCCashOrderEdit")
+ s c.legend=caption
+ 
+ s c=..%GetComponentById("edtPDate")
+ s c.value=$zdt(obj.coDate,3)
+ 
+ s c=..%GetComponentById("edtpSumm")
+ s c.value=$j(obj.coSumm,0,2)
+ i obj.coType=$$$coTypeOut s c.hint="Начальное значение заполняется автоматически по остатку на кассе"
+ 
+ s c=..%GetComponentById("edtPCashier")
+ i $IsObject(obj.coCashierID) {
+	 s c.value=obj.coCashierID.sePersonID.ObjectName 
+	 s c.aux=obj.coCashierID.%Id()
+ }
+
+ s c=..%GetComponentById("memoInfo")
+ s c.value=obj.Info
+ 
+ /*s scActive=$$$scActive
+ &sql(select id into :operID from Data_TE.Oper where dteoxMainDoc=:id and Status=:scActive)
+ i 'SQLCODE {
+	 $$$SetProp(%W,"GLabelTrInfo.Visible",$$$True)
+	 s count=##class(BL.TE.Oper).sGetTrQnt(operID)
+	 i count >0 {s str="Проводок: "_(+count)_"шт."
+	 	$$$SetProp(%W,"GLabelTrInfo.Caption",str)
+	 }
+	 else {$$$SetProp(%W,"GLabelTrInfo.Visible",$$$False)}
+	 
+ }
+ else {
+ 	 $$$SetProp(%W,"GLabelTrInfo.Visible",$$$False)
+ }*/
+ s c=..%GetComponentById("edtPOfficeID")
+ if $IsObject(obj.coOfficeID) {
+	 s c.value=obj.coOfficeID.ObjectName
+	 s c.aux=obj.coOfficeID.%Id()
+ }
+]]></Implementation>
+</Method>
+
+<Method name="FillCard">
+<Description>
+Заполнение данными с формы объекта (card) для последующей записи в БД
+по ссылке возврат сообщения о незаполненных обязательных полях и список контролов по этим полям
+Формат: ControlList=$lb(...)</Description>
+<FormalSpec><![CDATA[card:Docs.CashOrder,&ErrText:%String="",flagExecute=0]]></FormalSpec>
+<Implementation><![CDATA[
+ #dim c as %ZEN.Component.control
+  
+ s c=..%GetComponentById("edtPDate")
+ s text=$zdh(c.value,3,,,,,,,"")
+ i text="" s ErrText=ErrText_"Дата операции^"
+ else  s card.coDate=text
+ ;
+ s c=..%GetComponentById("edtPOfficeID")
+ s id=c.aux
+ i $IsObject(##class(Subj.Office).%OpenId(id)) {s card.coOfficeID=##class(Subj.Office).%OpenId(id)}
+ else  {s ErrText=ErrText_"Точка обслуживания^"}
+ ;
+ s c=..%GetComponentById("edtPCashier")
+ s id=c.aux
+ if $IsObject(##class(Subj.Employee).%OpenId(id)) {s card.coCashierID=##class(Subj.Employee).%OpenId(id)}
+ else {s ErrText=ErrText_"Кассир^"}
+ ;
+ s c=..%GetComponentById("edtpSumm")
+ s value=c.value
+ i ('value)&&(flagExecute) s ErrText=ErrText_"Сумма^"
+ s card.coSumm=+value
+ ;
+ s c=..%GetComponentById("memoInfo")
+ s text=c.value
+ s card.Info=$tr(text,$c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20))
+ 
+ i ErrText'="" s ErrText="Не заполнены следующие поля:\n\r"_$replace(ErrText,"^","\n\r")
+ q $s(ErrText'="":'$$$OK,1:$$$OK)
+]]></Implementation>
+</Method>
+
+<Method name="btnExecuteClick">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+ s Type=..coType
+ i ..CashOrderID {s obj=##class(Docs.CashOrder).%OpenId(..CashOrderID)}
+ else {
+	 s obj=##class(Docs.CashOrder).%New()
+	 s obj.coType=Type
+ }
+ i ..FillCard(obj,.ErrText,1)'=$$$OK {
+	 i ErrText'="" &js<alert('#(ErrText)#');>
+	 q
+ }
+ ;автоматическое создание документа  
+ s obj.coDocType=$$$coAuto
+ s obj.coExecuted=$$$Executed
+ s userId=$g(%session.Data("UserId"))
+ s user=##class(System.TAccount).%OpenId(userId)
+ s ret=user.Exec(.doc,"TE.ExecCashOrder",obj)
+ i $$$ISERR(ret) {
+	 s ErrText=$zcvt($System.Status.GetErrorText(ret),"O","JS")
+	 &js<alert('#(ErrText)#');>
+	 q
+ } 
+ ;все ОК - закрытие формы
+ &js<zenPage.firePopupAction("OK",#(ret)#,true);>
+]]></Implementation>
+</Method>
+
+<Method name="dedtDateChange">
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[
+	set str = %page.%GetComponentById("edtPDate").value
+	if (str = "-1") set %page.%GetComponentById("edtPDate").value = "" quit
+]]></Implementation>
+</Method>
+
+<Method name="%OnBeforeCreatePage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    if $g(%session.Data("UserId"))=""
+	{
+		set %response.Redirect="GUI.WEB.Index.cls"
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>
