@@ -14,13 +14,13 @@ namespace triangle
             //ArgumentException("One of the arguments are greater then the sum of others")
             double value = 0;
             //finding the exceptions
-            if ((a <= 0) || (b <= 0) || (c <= 0)) { throw new ArgumentOutOfRangeException("ds"); }
+            if ((a <= 0) || (b <= 0) || (c <= 0)) { throw new ArgumentOutOfRangeException("One or many of the arguments are bellow or equals zero"); }
             if ((a + b <= c) || (a + c <= b) || (c + b <= a)) { throw new ArgumentException("One of the arguments are greater then the sum of others"); }
 
             value = 0.5 * a * b;
             return value;
         }
-        public static void Main()
+        /*public static void Main()
         {
             string str;
             Console.WriteLine("Input a");
@@ -39,7 +39,7 @@ namespace triangle
 
             Console.WriteLine("Result "+Convert.ToString(s));
             str = Console.ReadLine();
-        }
+        }*/
 
     }
 }
