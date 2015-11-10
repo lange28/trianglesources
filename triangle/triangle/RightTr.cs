@@ -8,12 +8,15 @@ namespace triangle
 {
    public static class RightTr
     {
+       // Finding area of the right triangle, input requiered 3 sides according to the task
         public static double Area(double a, double b, double c)
         {
             //ArgumentException("One of the arguments are greater then the sum of others")
             double value = 0;
+            //finding the exceptions
             if ((a <= 0) || (b <= 0) || (c <= 0)) { throw new ArgumentOutOfRangeException("ds"); }
             if ((a + b <= c) || (a + c <= b) || (c + b <= a)) { throw new ArgumentException("One of the arguments are greater then the sum of others"); }
+
             value = 0.5 * a * b;
             return value;
         }
